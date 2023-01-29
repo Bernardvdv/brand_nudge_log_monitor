@@ -1,5 +1,5 @@
 from django.apps import AppConfig
 
 
-class BudgetConfig(AppConfig):
+class LogMonitorConfig(AppConfig):
     name = 'log_monitor'
