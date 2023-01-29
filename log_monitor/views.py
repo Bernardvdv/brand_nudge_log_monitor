@@ -10,7 +10,7 @@ from .forms import LoginForm
 
 
 class LoginPageView(View):
-    template_name = 'budget/login.html'
+    template_name = 'log_monitor/login.html'
     form_class = LoginForm
 
     def get(self, request):
@@ -33,4 +33,4 @@ class LoginPageView(View):
 
 
 class HomePageView(TemplateView):
-    template_name = 'budget/main.html'
+    template_name = 'log_monitor/main.html'

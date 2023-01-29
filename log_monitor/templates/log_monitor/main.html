@@ -1,4 +1,4 @@
-{% extends 'budget/base.html' %}
+{% extends 'log_monitor/base.html' %}
 {% load check_month %}
 {% block title %}Dashboard{% endblock %}
 
@@ -38,11 +38,6 @@
             </div>
 
             <li class="nav-item">
-                {% if select_month_id == None %}
-                    <a class="nav-link" href="{% url 'breakdown' %}">
-                {% else %}
-                    <a class="nav-link" href="{% url 'breakdown' %}?month={{select_month_id}}">
-                {% endif %}
                     <i class="fas fa-fw fa-table"></i>
                     <span>Breakdown</span></a>
             </li>
