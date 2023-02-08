@@ -7,3 +7,4 @@ boto3==1.14.49
 psycopg2==2.8.5
 
 uwsgi==2.0.19.1
+psycopg2

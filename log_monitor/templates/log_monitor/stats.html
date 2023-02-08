@@ -1,8 +1,7 @@
 {% extends 'log_monitor/base.html' %}
-{% block title %}Dashboard{% endblock %}
+{% block title %}Statistics{% endblock %}
 
 {% block content %}
-
     <body class="sb-nav-fixed">
         <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
             <!-- Navbar Brand-->
@@ -24,7 +23,7 @@
                         <li><a class="dropdown-item" href="#!">Settings</a></li>
                         <li><a class="dropdown-item" href="#!">Activity Log</a></li>
                         <li><hr class="dropdown-divider" /></li>
-                        <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+                        <li><a class="dropdown-item" href="#!">Logout</a></li>
                     </ul>
                 </li>
             </ul>
@@ -55,7 +54,6 @@
                                     <a class="nav-link" href="{% url 'cron' %}">Cron Logs</a>
                                 </nav>
                             </div>
-
 <!--                            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages">-->
 <!--                                <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>-->
 <!--                                Pages-->
@@ -92,7 +90,7 @@
 <!--                                <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>-->
 <!--                                Charts-->
 <!--                            </a>-->
-<!--                            <a class="nav-link" href="logs.html">-->
+<!--                            <a class="nav-link" href="tables.html">-->
 <!--                                <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>-->
 <!--                                Tables-->
 <!--                            </a>-->
@@ -107,73 +105,22 @@
             <div id="layoutSidenav_content">
                 <main>
                     <div class="container-fluid px-4">
-                        <h1 class="mt-4">Dashboard</h1>
-<!--                        <ol class="breadcrumb mb-4">-->
-<!--                            <li class="breadcrumb-item active">Dashboard</li>-->
-<!--                        </ol>-->
-                        <div class="row">
-                            <div class="col-xl-3 col-md-6">
-                                <div class="card bg-primary text-white mb-4">
-                                    <div class="card-body">Retailer Count</div>
-                                    <div class="card-footer d-flex align-items-center justify-content-between">
-<!--                                        <a class="small text-white stretched-link" href="#">View Details</a>-->
-                                        <div class="small text-white">{{ retailer_count }}</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-xl-3 col-md-6">
-                                <div class="card bg-warning text-white mb-4">
-                                    <div class="card-body">Product Count</div>
-                                    <div class="card-footer d-flex align-items-center justify-content-between">
-<!--                                        <a class="small text-white stretched-link" href="#">View Details</a>-->
-                                        <div class="small text-white">{{ all_records_count }}</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-xl-3 col-md-6">
-                                <div class="card bg-success text-white mb-4">
-                                    <div class="card-body">Average Collection Time</div>
-                                    <div class="card-footer d-flex align-items-center justify-content-between">
-<!--                                        <a class="small text-white stretched-link" href="#">View Details</a>-->
-                                        <div class="small text-white">15 Minutes</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-xl-3 col-md-6">
-                                <div class="card bg-danger text-white mb-4">
-                                    <div class="card-body">Number of errors (Today)</div>
-                                    <div class="card-footer d-flex align-items-center justify-content-between">
-                                        <a class="small text-white stretched-link" href="#">View Details</a>
-                                        <div class="small text-white">{{ today_error_count }}</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-xl-6">
-                                <div class="card mb-4">
-                                    <div class="card-header">
-                                        <i class="fas fa-chart-area me-1"></i>
-                                        Product Collection Count Overview
-                                    </div>
-                                    <div class="card-body"><canvas id="myAreaChart" width="100%" height="40"></canvas></div>
-                                </div>
-                            </div>
-                            <div class="col-xl-6">
-                                <div class="card mb-4">
-                                    <div class="card-header">
-                                        <i class="fas fa-chart-bar me-1"></i>
-                                        Product Collection Per Retailer Overview
-                                    </div>
-                                    <div class="card-body"><canvas id="myBarChart" width="100%" height="40"></canvas></div>
-                                </div>
-                            </div>
-                        </div>
-
+                        <h1 class="mt-4">Statistics</h1>
+                        <ol class="breadcrumb mb-4">
+                            <li class="breadcrumb-item"><a href="{% url 'home' %}">Dashboard</a></li>
+                            <li class="breadcrumb-item active">Statistics</li>
+                        </ol>
+<!--                        <div class="card mb-4">-->
+<!--                            <div class="card-body">-->
+<!--&lt;!&ndash;                                DataTables is a third party plugin that is used to generate the demo table below. For more information about DataTables, please visit the&ndash;&gt;-->
+<!--&lt;!&ndash;                                <a target="_blank" href="https://datatables.net/">official DataTables documentation</a>&ndash;&gt;-->
+<!--&lt;!&ndash;                                .&ndash;&gt;-->
+<!--                            </div>-->
+<!--                        </div>-->
                         <div class="card mb-4">
                             <div class="card-header">
                                 <i class="fas fa-table me-1"></i>
-                                Statistics Per Retailer
+                                All Statistics
                             </div>
                             <div class="card-body">
                                 <table id="datatablesSimple">
@@ -200,15 +147,15 @@
                                         </tr>
                                     </tfoot>
                                     <tbody>
-                                    {% for x in stats_records %}
+                                    {% for x in stats_limit_100 %}
                                         <tr>
                                             <td>{{ x.0 }}</td>
                                             <td>{{ x.1 }}</td>
                                             <td>{{ x.2 }}</td>
+                                            <td>0</td>
                                             <td>{{ x.3 }}</td>
                                             <td>{{ x.4 }}</td>
                                             <td>{{ x.5 }}</td>
-                                            <td>{{ x.6 }}</td>
                                         </tr>
                                     {% endfor %}
                                     </tbody>
@@ -220,7 +167,7 @@
                 <footer class="py-4 bg-light mt-auto">
                     <div class="container-fluid px-4">
                         <div class="d-flex align-items-center justify-content-between small">
-                            <div class="text-muted">Copyright &copy; Brand Nudge Log Monitor 2023</div>
+                            <div class="text-muted">Copyright &copy; Your Website 2022</div>
                             <div>
                                 <a href="#">Privacy Policy</a>
                                 &middot;
@@ -231,6 +178,9 @@
                 </footer>
             </div>
         </div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+        <script src="js/scripts.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" crossorigin="anonymous"></script>
+        <script src="js/datatables-simple-demo.js"></script>
+    </body>
 {% endblock %}
-
-
