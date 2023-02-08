@@ -4,7 +4,7 @@ import os
 
 def create_db_con():
     connection = psycopg2.connect(
-            host="host.docker.internal",
+            host=os.getenv("HOST"),
             database=os.getenv("DB"),
             user=os.getenv("USERNAME"),
             password=os.getenv("PASSWORD"),

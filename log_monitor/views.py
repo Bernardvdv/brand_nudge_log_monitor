@@ -1,5 +1,5 @@
-from django.contrib.auth import authenticate, login, logout
-from django.http import HttpResponseRedirect, JsonResponse
+from django.contrib.auth import authenticate, login
+from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from django.views.generic import TemplateView, View
 
