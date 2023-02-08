@@ -50,7 +50,6 @@ fetch(retailers_URL)
     return response.json();
 })
 .then(function (data) {
-    console.log(data)
     var ctx = document.getElementById("myBarChart");
     var chart = new Chart(ctx, {
       type: "bar",
