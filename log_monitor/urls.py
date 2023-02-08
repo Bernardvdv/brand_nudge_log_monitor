@@ -12,8 +12,10 @@ urlpatterns = [
          name='stats'),
     path('cron', views.CronPageView.as_view(),
          name='cron'),
-    path('get_total_product_count_last_10/', views.HomePageView.get_total_product_count_last_10,
+    path('get_total_product_count_last_10/',
+         views.HomePageView.get_total_product_count_last_10,
          name="get_total_product_count_last_10"),
-    path('get_yesterday_today_imports/', views.HomePageView.get_yesterday_today_imports,
+    path('get_yesterday_today_imports/',
+         views.HomePageView.get_yesterday_today_imports,
          name="get_yesterday_today_imports"),
 ]

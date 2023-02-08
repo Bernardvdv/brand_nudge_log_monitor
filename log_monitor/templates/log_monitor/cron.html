@@ -127,19 +127,19 @@
                                     <thead>
                                         <tr>
                                             <th>Date</th>
-                                            <th>Retailer</th>
+                                            <th>Cron Entry</th>
 
                                         </tr>
                                     </thead>
                                     <tfoot>
                                         <tr>
                                             <th>Date</th>
-                                            <th>Retailer</th>
+                                            <th>Cron Entry</th>
 
                                         </tr>
                                     </tfoot>
                                     <tbody>
-                                    {% for x in stats_limit_100 %}
+                                    {% for x in cron_limit_100 %}
                                         <tr>
                                             <td>{{ x.0 }}</td>
                                             <td>{{ x.1 }}</td>

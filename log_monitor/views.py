@@ -169,3 +169,15 @@ class CronPageView(TemplateView):
             return redirect('login')
 
         return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        cron_query = "SELECT date, line FROM public.cron_logs limit 100;"
+
+        cursor = create_db_con()
+        cursor.execute(cron_query)
+        cron_limit_100 = cursor.fetchall()
+
+        context['cron_limit_100'] = cron_limit_100
+        return context
