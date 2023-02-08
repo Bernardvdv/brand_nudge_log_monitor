@@ -33,6 +33,12 @@ class LoginPageView(View):
 class HomePageView(TemplateView):
     template_name = 'log_monitor/main.html'
 
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect('login')
+
+        return super().dispatch(request, *args, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         cursor = create_db_con()
@@ -111,6 +117,12 @@ class HomePageView(TemplateView):
 class LogsPageView(TemplateView):
     template_name = 'log_monitor/logs.html'
 
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect('login')
+
+        return super().dispatch(request, *args, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
@@ -127,6 +139,12 @@ class LogsPageView(TemplateView):
 
 class StatsPageView(TemplateView):
     template_name = 'log_monitor/stats.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect('login')
+
+        return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -145,3 +163,9 @@ class StatsPageView(TemplateView):
 
 class CronPageView(TemplateView):
     template_name = 'log_monitor/cron.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect('login')
+
+        return super().dispatch(request, *args, **kwargs)
