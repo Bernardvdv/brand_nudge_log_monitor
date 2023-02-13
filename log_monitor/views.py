@@ -150,12 +150,17 @@ class StatsPageView(TemplateView):
         context = super().get_context_data(**kwargs)
 
         stats_query = """
-        select created, retailer, itemcount, expectedlinks, navigationlinks,
-                        duration from statistics order by created desc limit 100
+        SELECT  
+        created, retailer, itemcount, "itemCountYesterday", expectedlinks, navigationlinks, duration 
+        FROM
+        public.statistics
+        ORDER by created DESC LIMIT 100;
         """
+
         cursor = create_db_con()
         cursor.execute(stats_query)
         stats_limit_100 = cursor.fetchall()
+        print(stats_limit_100, flush=True)
 
         context['stats_limit_100'] = stats_limit_100
         return context
