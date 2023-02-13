@@ -1,5 +1,5 @@
 {% extends 'log_monitor/base.html' %}
-{% block title %}Logs{% endblock %}
+{% block title %}Cron Logs{% endblock %}
 
 {% block content %}
     <body class="sb-nav-fixed">
@@ -22,7 +22,7 @@
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
 <!--                        <li><a class="dropdown-item" href="#!">Settings</a></li>-->
 <!--                        <li><a class="dropdown-item" href="#!">Activity Log</a></li>-->
-<!--                        <li><hr class="dropdown-divider" /></li>-->
+                        <li><hr class="dropdown-divider" /></li>
                         <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
                     </ul>
                 </li>
@@ -43,6 +43,10 @@
                                 <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                                 Statistics
                             </a>
+                            <a class="nav-link" href="{% url 'retailers' %}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                                Retailers
+                            </a>
                             <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts11" aria-expanded="false" aria-controls="collapseLayouts">
                                 <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
                                 Categories
@@ -58,10 +62,6 @@
                                     <a class="nav-link" href="{% url 'category' %}?c=savers">Savers</a>
                                 </nav>
                             </div>
-                            <a class="nav-link" href="{% url 'retailers' %}">
-                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                                Retailers
-                            </a>
                             <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
                                 <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
                                 Logs
@@ -70,7 +70,7 @@
                             <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav">
                                     <a class="nav-link" href="{% url 'logs' %}">Error Logs</a>
-                                    <a class="nav-link" href="{% url 'cron' %}">Cron Logs</a>
+                                    <a class="nav-link" href="{% url 'logs' %}">Cron Logs</a>
                                 </nav>
                             </div>
 <!--                            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages">-->
@@ -124,54 +124,45 @@
             <div id="layoutSidenav_content">
                 <main>
                     <div class="container-fluid px-4">
-                        <h1 class="mt-4">Error Logs</h1>
+                        <h1 class="mt-4">Category</h1>
                         <ol class="breadcrumb mb-4">
                             <li class="breadcrumb-item"><a href="{% url 'home' %}">Dashboard</a></li>
-                            <li class="breadcrumb-item active">Error Logs</li>
+                            <li class="breadcrumb-item active">Category</li>
                         </ol>
 <!--                        <div class="card mb-4">-->
-<!--&lt;!&ndash;                            <div class="card-body">&ndash;&gt;-->
+<!--                            <div class="card-body">-->
 <!--&lt;!&ndash;                                DataTables is a third party plugin that is used to generate the demo table below. For more information about DataTables, please visit the&ndash;&gt;-->
 <!--&lt;!&ndash;                                <a target="_blank" href="https://datatables.net/">official DataTables documentation</a>&ndash;&gt;-->
 <!--&lt;!&ndash;                                .&ndash;&gt;-->
-<!--&lt;!&ndash;                            </div>&ndash;&gt;-->
+<!--                            </div>-->
 <!--                        </div>-->
                         <div class="card mb-4">
                             <div class="card-header">
                                 <i class="fas fa-table me-1"></i>
-                                Import Error Logs
+                                Category Overview for {{retailer|title}}
                             </div>
                             <div class="card-body">
                                 <table id="datatablesSimple">
                                     <thead>
                                         <tr>
-                                            <th>Date</th>
-                                            <th>Retailer</th>
-                                            <th>Level</th>
-                                            <th>Message</th>
-                                            <th>Function</th>
-                                            <th>Line Nr</th>
+                                            <th>Category</th>
+                                            <th>Yesterday's Count</th>
+                                            <th>Today's Count</th>
                                         </tr>
                                     </thead>
                                     <tfoot>
                                         <tr>
-                                            <th>Date</th>
-                                            <th>Retailer</th>
-                                            <th>Level</th>
-                                            <th>Message</th>
-                                            <th>Function</th>
-                                            <th>Line Nr</th>
+                                            <th>Category</th>
+                                            <th>Yesterday's Count</th>
+                                            <th>Today's Count</th>
                                         </tr>
                                     </tfoot>
                                     <tbody>
-                                    {% for x in logs_last_100 %}
+                                    {% for x in cat_counts %}
                                         <tr>
                                             <td>{{ x.0 }}</td>
                                             <td>{{ x.1 }}</td>
                                             <td>{{ x.2 }}</td>
-                                            <td>{{ x.3 }}</td>
-                                            <td>{{ x.4 }}</td>
-                                            <td>{{ x.5 }}</td>
                                         </tr>
                                     {% endfor %}
                                     </tbody>

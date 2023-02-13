@@ -206,3 +206,48 @@ class RetailersPageView(TemplateView):
         get_retailers = self.get_retailers()
         context['retailers_detail'] = get_retailers
         return context
+
+
+class CategoryPageView(TemplateView):
+    template_name = 'log_monitor/category.html'
+
+    def get(self, request):
+        retailer = self.request.GET.get('c')
+
+        yesterday_query = """
+        SELECT
+        category, count(category)
+        FROM %s 
+        WHERE date = current_date
+        GROUP BY category;
+        """
+
+        todays_query = """
+        SELECT
+        category, count(category)
+        FROM %s 
+        WHERE date = current_date
+        GROUP BY category;
+        """
+
+        cursor = create_db_con()
+        try:
+            cursor.execute(yesterday_query % retailer)
+            cat_yesterday = cursor.fetchall()
+        except:
+            cat_yesterday = None
+        try:
+            cursor.execute(todays_query % retailer)
+            cat_today = cursor.fetchall()
+        except:
+            cat_today = None
+
+        if cat_yesterday and cat_today:
+            result = []
+            for item1, item2 in zip(cat_today, cat_yesterday):
+                if item1[0] == item2[0]:
+                    result.append([item1[0], item1[1], item2[1]])
+        else:
+            result = None
+        return render(request, self.template_name, context={"cat_counts": result,
+                                                            "retailer": retailer})

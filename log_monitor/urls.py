@@ -10,6 +10,8 @@ urlpatterns = [
          name='logs'),
     path('stats', views.StatsPageView.as_view(),
          name='stats'),
+    path('category', views.CategoryPageView.as_view(),
+         name='category'),
     path('retailers', views.RetailersPageView.as_view(),
          name='retailers'),
     path('cron', views.CronPageView.as_view(),
