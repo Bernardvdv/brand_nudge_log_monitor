@@ -10,6 +10,8 @@ urlpatterns = [
          name='logs'),
     path('stats', views.StatsPageView.as_view(),
          name='stats'),
+    path('retailers', views.RetailersPageView.as_view(),
+         name='retailers'),
     path('cron', views.CronPageView.as_view(),
          name='cron'),
     path('get_total_product_count_last_10/',

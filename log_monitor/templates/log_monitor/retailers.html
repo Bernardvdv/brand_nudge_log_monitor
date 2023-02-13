@@ -109,10 +109,10 @@
             <div id="layoutSidenav_content">
                 <main>
                     <div class="container-fluid px-4">
-                        <h1 class="mt-4">Error Logs</h1>
+                        <h1 class="mt-4">Retailers</h1>
                         <ol class="breadcrumb mb-4">
                             <li class="breadcrumb-item"><a href="{% url 'home' %}">Dashboard</a></li>
-                            <li class="breadcrumb-item active">Error Logs</li>
+                            <li class="breadcrumb-item active">Retailers</li>
                         </ol>
 <!--                        <div class="card mb-4">-->
 <!--&lt;!&ndash;                            <div class="card-body">&ndash;&gt;-->
@@ -124,7 +124,7 @@
                         <div class="card mb-4">
                             <div class="card-header">
                                 <i class="fas fa-table me-1"></i>
-                                Import Error Logs
+                                Retailer Details
                             </div>
                             <div class="card-body">
                                 <table id="datatablesSimple">
@@ -132,31 +132,28 @@
                                         <tr>
                                             <th>Date</th>
                                             <th>Retailer</th>
-                                            <th>Level</th>
-                                            <th>Message</th>
-                                            <th>Function</th>
-                                            <th>Line Nr</th>
+                                            <th>Cron Time</th>
+                                            <th>Retailer URL</th>
+                                            <th>Proxy</th>
                                         </tr>
                                     </thead>
                                     <tfoot>
                                         <tr>
                                             <th>Date</th>
                                             <th>Retailer</th>
-                                            <th>Level</th>
-                                            <th>Message</th>
-                                            <th>Function</th>
-                                            <th>Line Nr</th>
+                                            <th>Cron Time</th>
+                                            <th>Retailer URL</th>
+                                            <th>Proxy</th>
                                         </tr>
                                     </tfoot>
                                     <tbody>
-                                    {% for x in logs_last_100 %}
+                                    {% for x in retailers_detail %}
                                         <tr>
-                                            <td>{{ x.0 }}</td>
-                                            <td>{{ x.1 }}</td>
-                                            <td>{{ x.2 }}</td>
-                                            <td>{{ x.3 }}</td>
-                                            <td>{{ x.4 }}</td>
-                                            <td>{{ x.5 }}</td>
+                                            <td>{{ x.date }}</td>
+                                            <td>{{ x.retailer }}</td>
+                                            <td>{{ x.cron_time }}</td>
+                                            <td><a href="{{ x.retailer_url }}">{{ x.retailer_url }}</a></td>
+                                            <td>{{ x.proxy_used }}</td>
                                         </tr>
                                     {% endfor %}
                                     </tbody>

@@ -5,6 +5,7 @@ from django.views.generic import TemplateView, View
 
 from .forms import LoginForm
 from .helpers import create_db_con
+from .models import Retailers
 
 
 class LoginPageView(View):
@@ -160,7 +161,6 @@ class StatsPageView(TemplateView):
         cursor = create_db_con()
         cursor.execute(stats_query)
         stats_limit_100 = cursor.fetchall()
-        print(stats_limit_100, flush=True)
 
         context['stats_limit_100'] = stats_limit_100
         return context
@@ -185,4 +185,24 @@ class CronPageView(TemplateView):
         cron_limit_100 = cursor.fetchall()
 
         context['cron_limit_100'] = cron_limit_100
+        return context
+
+
+class RetailersPageView(TemplateView):
+    template_name = 'log_monitor/retailers.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect('login')
+
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_retailers(self):
+        retailers = Retailers.objects.all()
+        return retailers
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        get_retailers = self.get_retailers()
+        context['retailers_detail'] = get_retailers
         return context
