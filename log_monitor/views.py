@@ -218,7 +218,7 @@ class CategoryPageView(TemplateView):
         SELECT
         category, count(category)
         FROM %s 
-        WHERE date = current_date
+        WHERE date = current_date - 1
         GROUP BY category;
         """
 
