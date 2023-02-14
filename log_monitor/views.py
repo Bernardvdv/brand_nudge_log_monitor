@@ -246,8 +246,16 @@ class CategoryPageView(TemplateView):
             result = []
             for item1, item2 in zip(cat_today, cat_yesterday):
                 if item1[0] == item2[0]:
-                    result.append([item1[0], item1[1], item2[1]])
+                    variance = self.get_percentage_diff(item2[1], item1[1])
+                    result.append([item1[0], item1[1], item2[1], variance])
         else:
             result = None
         return render(request, self.template_name, context={"cat_counts": result,
                                                             "retailer": retailer})
+
+    def get_percentage_diff(self, previous, current):
+        try:
+            percentage = round(abs(previous - current) / max(previous, current) * 100, 2)
+        except ZeroDivisionError:
+            percentage = float('inf')
+        return percentage

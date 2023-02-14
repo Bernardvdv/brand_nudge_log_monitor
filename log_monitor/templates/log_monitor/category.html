@@ -148,6 +148,7 @@
                                             <th>Category</th>
                                             <th>Yesterday's Count</th>
                                             <th>Today's Count</th>
+                                            <th>Variance</th>
                                         </tr>
                                     </thead>
                                     <tfoot>
@@ -155,6 +156,7 @@
                                             <th>Category</th>
                                             <th>Yesterday's Count</th>
                                             <th>Today's Count</th>
+                                            <th>Variance</th>
                                         </tr>
                                     </tfoot>
                                     <tbody>
@@ -163,6 +165,7 @@
                                             <td>{{ x.0 }}</td>
                                             <td>{{ x.1 }}</td>
                                             <td>{{ x.2 }}</td>
+                                            <td class="text-red">{{ x.3 }}%</td>
                                         </tr>
                                     {% endfor %}
                                     </tbody>
