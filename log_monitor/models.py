@@ -18,6 +18,7 @@ class Retailers(models.Model):
         choices=proxies,
         default=DEFAULT
     )
+    table_name = models.CharField(max_length=180, unique=False)
 
     class Meta:
         verbose_name_plural = "Retailers"

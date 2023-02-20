@@ -44,12 +44,26 @@ class HomePageView(TemplateView):
         context = super().get_context_data(**kwargs)
         cursor = create_db_con()
 
-        retailer_count_query = "select count(DISTINCT retailer) FROM public.statistics;"
-        all_products_query = """SELECT SUM(CAST (itemcount AS INTEGER)) 
-                                FROM public.statistics where created = current_date"""
-        error_count_today_query = "select count(message) from public.log where created::date = now()::date;"
-        stats_query = """select created, retailer, itemcount, "itemCountYesterday", expectedlinks, navigationlinks,
-                        duration from statistics where created = current_date"""
+        retailer_count_query = """
+                                SELECT COUNT(DISTINCT retailer) 
+                                FROM public.statistics;
+                                """
+        all_products_query = """
+                                SELECT SUM(CAST (itemcount AS INTEGER)) 
+                                FROM public.statistics 
+                                WHERE created = current_date
+                                """
+        error_count_today_query = """
+                                SELECT count(message) 
+                                FROM public.log 
+                                WHERE created::date = now()::date;
+                                """
+        stats_query = """
+                        SELECT created, retailer, itemcount, "itemCountYesterday", expectedlinks, navigationlinks,
+                        duration 
+                        FROM statistics 
+                        WHERE created = current_date
+                        """
 
         cursor.execute(retailer_count_query)
         retailer_records = cursor.fetchall()
@@ -63,6 +77,7 @@ class HomePageView(TemplateView):
         cursor.execute(stats_query)
         stats_records = cursor.fetchall()
 
+        context['retailer_info'] = Utils.get_retailers(self)
         context['retailer_count'] = retailer_records[0][0]
         context['all_records_count'] = all_records_count[0][0]
         context['today_error_count'] = today_error_count[0][0]
@@ -71,8 +86,11 @@ class HomePageView(TemplateView):
 
     def get_total_product_count_last_10(request):
         last_10_count_products = """
-                SELECT created, SUM(CAST (itemcount AS INTEGER))  FROM public.statistics
-                where created > current_date - interval '10' day group by created;
+                SELECT 
+                created, SUM(CAST (itemcount AS INTEGER))
+                FROM public.statistics
+                WHERE created > current_date - interval '10' day 
+                GROUP BY created;
                 """
         cursor = create_db_con()
         cursor.execute(last_10_count_products)
@@ -91,7 +109,10 @@ class HomePageView(TemplateView):
 
     def get_yesterday_today_imports(request):
         yesterday_today_imports = """
-                select retailer, itemcount, "itemCountYesterday" from statistics where created = current_date
+                SELECT 
+                retailer, itemcount, "itemCountYesterday" 
+                FROM statistics 
+                WHERE created = current_date
                 """
 
         cursor = create_db_con()
@@ -128,13 +149,17 @@ class LogsPageView(TemplateView):
         context = super().get_context_data(**kwargs)
 
         logs_query = """
-        SELECT created, name, level, message, function, lineno FROM public.log order by created desc limit 100;
+        SELECT 
+        created, name, level, message, function, lineno 
+        FROM public.log 
+        ORDER by created DESC LIMIT 100;
         """
         cursor = create_db_con()
         cursor.execute(logs_query)
         logs_last_100 = cursor.fetchall()
 
         context['logs_last_100'] = logs_last_100
+        context['retailer_info'] = Utils.get_retailers(self)
         return context
 
 
@@ -162,6 +187,7 @@ class StatsPageView(TemplateView):
         cursor.execute(stats_query)
         stats_limit_100 = cursor.fetchall()
 
+        context['retailer_info'] = Utils.get_retailers(self)
         context['stats_limit_100'] = stats_limit_100
         return context
 
@@ -178,12 +204,18 @@ class CronPageView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        cron_query = "SELECT date, line FROM public.cron_logs limit 100;"
+        cron_query = """
+                    SELECT
+                    date, line 
+                    FROM public.cron_logs 
+                    LIMIT 100;
+                    """
 
         cursor = create_db_con()
         cursor.execute(cron_query)
         cron_limit_100 = cursor.fetchall()
 
+        context['retailer_info'] = Utils.get_retailers(self)
         context['cron_limit_100'] = cron_limit_100
         return context
 
@@ -204,6 +236,7 @@ class RetailersPageView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         get_retailers = self.get_retailers()
+        context['retailer_info'] = Utils.get_retailers(self)
         context['retailers_detail'] = get_retailers
         return context
 
@@ -250,7 +283,10 @@ class CategoryPageView(TemplateView):
                     result.append([item1[0], item1[1], item2[1], variance])
         else:
             result = None
+
+        retailer_info = Utils.get_retailers(self)
         return render(request, self.template_name, context={"cat_counts": result,
+                                                            "retailer_info": retailer_info,
                                                             "retailer": retailer})
 
     def get_percentage_diff(self, previous, current):
@@ -259,3 +295,9 @@ class CategoryPageView(TemplateView):
         except ZeroDivisionError:
             percentage = float('inf')
         return percentage
+
+
+class Utils:
+    def get_retailers(self):
+        retailer_info = Retailers.objects.values_list('retailer', 'table_name')
+        return retailer_info

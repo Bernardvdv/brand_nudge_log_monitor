@@ -48,22 +48,17 @@
                                 Categories
                                 <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                             </a>
-                            <div class="collapse" id="collapseLayouts11" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
-                                <nav class="sb-sidenav-menu-nested nav">
-                                    <a class="nav-link" href="{% url 'category' %}?c=john_lewis">John Lewis</a>
-                                    <a class="nav-link" href="{% url 'category' %}?c=supervalu">Supervalu</a>
-                                    <a class="nav-link" href="{% url 'category' %}?c=zooplus">Zooplus</a>
-                                    <a class="nav-link" href="{% url 'category' %}?c=dunnes_store">Dunnes Store</a>
-                                    <a class="nav-link" href="{% url 'category' %}?c=bmstores">BMStores</a>
-                                    <a class="nav-link" href="{% url 'category' %}?c=savers">Savers</a>
-                                    <a class="nav-link" href="{% url 'category' %}?c=petsathome">Pets at Home</a>
-                                    <a class="nav-link" href="{% url 'category' %}?c=petplanet">Pet Planet</a>
-                                </nav>
-                            </div>
-                            <a class="nav-link" href="{% url 'retailers' %}">
+                             <a class="nav-link" href="{% url 'retailers' %}">
                                 <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                                 Retailers
                             </a>
+                            <div class="collapse" id="collapseLayouts11" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                                <nav class="sb-sidenav-menu-nested nav">
+                                    {% for x in retailer_info %}
+                                        <a class="nav-link" href="{% url 'category' %}?c={{ x.1 }}">{{ x.0 }}</a>
+                                    {% endfor %}
+                                </nav>
+                            </div>
                             <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
                                 <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
                                 Logs

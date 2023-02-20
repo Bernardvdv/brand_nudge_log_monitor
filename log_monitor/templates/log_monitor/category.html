@@ -1,4 +1,5 @@
 {% extends 'log_monitor/base.html' %}
+{% load replace_withspace %}
 {% block title %}Cron Logs{% endblock %}
 
 {% block content %}
@@ -54,14 +55,9 @@
                             </a>
                             <div class="collapse" id="collapseLayouts11" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav">
-                                    <a class="nav-link" href="{% url 'category' %}?c=john_lewis">John Lewis</a>
-                                    <a class="nav-link" href="{% url 'category' %}?c=supervalu">Supervalu</a>
-                                    <a class="nav-link" href="{% url 'category' %}?c=zooplus">Zooplus</a>
-                                    <a class="nav-link" href="{% url 'category' %}?c=dunnes_store">Dunnes Store</a>
-                                    <a class="nav-link" href="{% url 'category' %}?c=bmstores">BMStores</a>
-                                    <a class="nav-link" href="{% url 'category' %}?c=savers">Savers</a>
-                                    <a class="nav-link" href="{% url 'category' %}?c=petsathome">Pets at Home</a>
-                                    <a class="nav-link" href="{% url 'category' %}?c=petplanet">Pet Planet</a>
+                                    {% for x in retailer_info %}
+                                        <a class="nav-link" href="{% url 'category' %}?c={{ x.1 }}">{{ x.0 }}</a>
+                                    {% endfor %}
                                 </nav>
                             </div>
                             <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
@@ -141,7 +137,7 @@
                         <div class="card mb-4">
                             <div class="card-header">
                                 <i class="fas fa-table me-1"></i>
-                                Category Overview for {{retailer|title}}
+                                Category Overview for {{retailer|title|replace_withspace}}
                             </div>
                             <div class="card-body">
                                 <table id="datatablesSimple">
