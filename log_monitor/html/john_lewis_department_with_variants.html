@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>john_lewis_department_with_variants module &mdash; Brand Nudge DC 1.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Brand Nudge DC
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">john_lewis_department_with_variants module</a><ul>
+<li><a class="reference internal" href="#john_lewis_department_with_variants.get_brand"><code class="docutils literal notranslate"><span class="pre">get_brand()</span></code></a></li>
+<li><a class="reference internal" href="#john_lewis_department_with_variants.get_data"><code class="docutils literal notranslate"><span class="pre">get_data()</span></code></a></li>
+<li><a class="reference internal" href="#john_lewis_department_with_variants.get_description"><code class="docutils literal notranslate"><span class="pre">get_description()</span></code></a></li>
+<li><a class="reference internal" href="#john_lewis_department_with_variants.get_navigation_urls"><code class="docutils literal notranslate"><span class="pre">get_navigation_urls()</span></code></a></li>
+<li><a class="reference internal" href="#john_lewis_department_with_variants.get_promotions"><code class="docutils literal notranslate"><span class="pre">get_promotions()</span></code></a></li>
+<li><a class="reference internal" href="#john_lewis_department_with_variants.get_review_detail"><code class="docutils literal notranslate"><span class="pre">get_review_detail()</span></code></a></li>
+<li><a class="reference internal" href="#john_lewis_department_with_variants.get_variants"><code class="docutils literal notranslate"><span class="pre">get_variants()</span></code></a></li>
+<li><a class="reference internal" href="#john_lewis_department_with_variants.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+<li><a class="reference internal" href="#john_lewis_department_with_variants.parse_urls"><code class="docutils literal notranslate"><span class="pre">parse_urls()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Brand Nudge DC</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">john_lewis_department_with_variants module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/john_lewis_department_with_variants.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-john_lewis_department_with_variants">
+<span id="john-lewis-department-with-variants-module"></span><h1>john_lewis_department_with_variants module<a class="headerlink" href="#module-john_lewis_department_with_variants" title="Permalink to this heading"></a></h1>
+<p>John Lewis product main scraper file.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="john_lewis_department_with_variants.get_brand">
+<span class="sig-prename descclassname"><span class="pre">john_lewis_department_with_variants.</span></span><span class="sig-name descname"><span class="pre">get_brand</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/john_lewis_department_with_variants.html#get_brand"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#john_lewis_department_with_variants.get_brand" title="Permalink to this definition"></a></dt>
+<dd><p>Get the brand form the schema
+:param schema: Product schema
+:return: Brand if found else None</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="john_lewis_department_with_variants.get_data">
+<span class="sig-prename descclassname"><span class="pre">john_lewis_department_with_variants.</span></span><span class="sig-name descname"><span class="pre">get_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">category</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/john_lewis_department_with_variants.html#get_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#john_lewis_department_with_variants.get_data" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="john_lewis_department_with_variants.get_description">
+<span class="sig-prename descclassname"><span class="pre">john_lewis_department_with_variants.</span></span><span class="sig-name descname"><span class="pre">get_description</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/john_lewis_department_with_variants.html#get_description"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#john_lewis_department_with_variants.get_description" title="Permalink to this definition"></a></dt>
+<dd><p>Get the description form the schema
+:param schema: Product schema
+:return: Description if found else None</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="john_lewis_department_with_variants.get_navigation_urls">
+<span class="sig-prename descclassname"><span class="pre">john_lewis_department_with_variants.</span></span><span class="sig-name descname"><span class="pre">get_navigation_urls</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/john_lewis_department_with_variants.html#get_navigation_urls"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#john_lewis_department_with_variants.get_navigation_urls" title="Permalink to this definition"></a></dt>
+<dd><p>Get all navigation URLs from the state API
+:returns URLs as a dictionary</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="john_lewis_department_with_variants.get_promotions">
+<span class="sig-prename descclassname"><span class="pre">john_lewis_department_with_variants.</span></span><span class="sig-name descname"><span class="pre">get_promotions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/john_lewis_department_with_variants.html#get_promotions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#john_lewis_department_with_variants.get_promotions" title="Permalink to this definition"></a></dt>
+<dd><p>Get the promotions form the schema
+:param schema: Product schema
+:return: List of promotions</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="john_lewis_department_with_variants.get_review_detail">
+<span class="sig-prename descclassname"><span class="pre">john_lewis_department_with_variants.</span></span><span class="sig-name descname"><span class="pre">get_review_detail</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/john_lewis_department_with_variants.html#get_review_detail"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#john_lewis_department_with_variants.get_review_detail" title="Permalink to this definition"></a></dt>
+<dd><p>Get the product review detail form the schema
+:param schema: Product schema
+:return: review count if found else None</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="john_lewis_department_with_variants.get_variants">
+<span class="sig-prename descclassname"><span class="pre">john_lewis_department_with_variants.</span></span><span class="sig-name descname"><span class="pre">get_variants</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/john_lewis_department_with_variants.html#get_variants"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#john_lewis_department_with_variants.get_variants" title="Permalink to this definition"></a></dt>
+<dd><p>Get the product variants form the schema
+:param schema: Product schema
+:return: variants if found else None</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="john_lewis_department_with_variants.main">
+<span class="sig-prename descclassname"><span class="pre">john_lewis_department_with_variants.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/john_lewis_department_with_variants.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#john_lewis_department_with_variants.main" title="Permalink to this definition"></a></dt>
+<dd><p>Initiate scraper and validate data.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="john_lewis_department_with_variants.parse_urls">
+<span class="sig-prename descclassname"><span class="pre">john_lewis_department_with_variants.</span></span><span class="sig-name descname"><span class="pre">parse_urls</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">urls</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/john_lewis_department_with_variants.html#parse_urls"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#john_lewis_department_with_variants.parse_urls" title="Permalink to this definition"></a></dt>
+<dd><p>Create BS4 object from url
+:param urls:
+:return:</p>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Bernard Van Der Vyver.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

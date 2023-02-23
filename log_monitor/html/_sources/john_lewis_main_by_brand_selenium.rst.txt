@@ -1,0 +1,7 @@
+john\_lewis\_main\_by\_brand\_selenium module
+=============================================
+
+.. automodule:: john_lewis_main_by_brand_selenium
+   :members:
+   :undoc-members:
+   :show-inheritance:

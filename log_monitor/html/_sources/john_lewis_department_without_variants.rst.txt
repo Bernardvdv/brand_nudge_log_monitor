@@ -1,0 +1,7 @@
+john\_lewis\_department\_without\_variants module
+=================================================
+
+.. automodule:: john_lewis_department_without_variants
+   :members:
+   :undoc-members:
+   :show-inheritance:

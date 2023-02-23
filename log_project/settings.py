@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'log_monitor',
+    'docs',
 ]
 
 MIDDLEWARE = [
@@ -129,3 +130,9 @@ STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 LOGOUT_REDIRECT_URL = "/"
+PROJECT_PATH = os.path.abspath(os.path.dirname(__name__))
+
+DOCS_ROOT = os.path.join(BASE_DIR, 'html')
+PROJECT_DIR = os.path.join(BASE_DIR, 'log_monitor')
+DOCS_ROOT = os.path.join(PROJECT_DIR, "html")
+DOCS_ACCESS = 'staff'

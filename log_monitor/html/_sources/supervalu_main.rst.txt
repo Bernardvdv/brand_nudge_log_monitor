@@ -1,0 +1,7 @@
+supervalu\_main module
+======================
+
+.. automodule:: supervalu_main
+   :members:
+   :undoc-members:
+   :show-inheritance:

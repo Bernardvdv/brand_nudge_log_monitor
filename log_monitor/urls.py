@@ -22,4 +22,5 @@ urlpatterns = [
     path('get_yesterday_today_imports/',
          views.HomePageView.get_yesterday_today_imports,
          name="get_yesterday_today_imports"),
+    path('docs', include('docs.urls')),
 ]

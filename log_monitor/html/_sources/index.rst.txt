@@ -1,0 +1,12 @@
+Documentation for the Code
+**************************
+
+.. include:: logging_class.rst
+
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`

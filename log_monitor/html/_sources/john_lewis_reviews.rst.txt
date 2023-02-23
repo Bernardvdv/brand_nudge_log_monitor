@@ -1,0 +1,7 @@
+john\_lewis\_reviews module
+===========================
+
+.. automodule:: john_lewis_reviews
+   :members:
+   :undoc-members:
+   :show-inheritance:

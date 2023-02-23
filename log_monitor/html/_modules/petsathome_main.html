@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>petsathome_main &mdash; Brand Nudge DC 1.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Brand Nudge DC
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Brand Nudge DC</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">petsathome_main</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for petsathome_main</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;www.petsathome.com main collection file.&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+
+<span class="kn">import</span> <span class="nn">lxml</span>  <span class="c1"># noqa</span>
+<span class="kn">from</span> <span class="nn">bs4</span> <span class="kn">import</span> <span class="n">BeautifulSoup</span>
+<span class="kn">from</span> <span class="nn">dotenv</span> <span class="kn">import</span> <span class="n">load_dotenv</span>
+<span class="kn">from</span> <span class="nn">fake_useragent</span> <span class="kn">import</span> <span class="n">UserAgent</span>
+
+<span class="n">load_dotenv</span><span class="p">()</span>
+
+<span class="kn">from</span> <span class="nn">logging_class</span> <span class="kn">import</span> <span class="n">LogHandler</span><span class="p">,</span> <span class="n">Statistics</span><span class="p">,</span> <span class="n">Utils</span>
+
+<span class="n">log_error</span> <span class="o">=</span> <span class="n">LogHandler</span><span class="p">()</span>
+<span class="n">statistics_class</span> <span class="o">=</span> <span class="n">Statistics</span><span class="p">()</span>
+<span class="n">retailer</span> <span class="o">=</span> <span class="s2">&quot;Pets at Home&quot;</span>
+
+<span class="c1"># Generate fake Request headers</span>
+<span class="n">ua</span> <span class="o">=</span> <span class="n">UserAgent</span><span class="p">()</span>
+<span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;user-agent&quot;</span><span class="p">:</span> <span class="n">ua</span><span class="o">.</span><span class="n">chrome</span><span class="p">}</span>
+
+<span class="c1"># Proxies</span>
+<span class="n">PROXIES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;http&quot;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;PROXIES_HTTP&quot;</span><span class="p">),</span>
+    <span class="s2">&quot;https&quot;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;PROXIES_HTTPS&quot;</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="n">PROXIES_RES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;http&quot;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;PROXIES_HTTP_RES&quot;</span><span class="p">),</span>
+    <span class="s2">&quot;https&quot;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;PROXIES_HTTPS_RES&quot;</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="n">BASE_URL</span> <span class="o">=</span> <span class="s2">&quot;www.petsathome.com&quot;</span>
+<span class="n">MAX_RETRIES</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="n">TABLE_NAME</span> <span class="o">=</span> <span class="s2">&quot;petsathome&quot;</span>
+
+
+<div class="viewcode-block" id="get_sidenav_urls_per_category"><a class="viewcode-back" href="../petsathome_main.html#petsathome_main.get_sidenav_urls_per_category">[docs]</a><span class="k">def</span> <span class="nf">get_sidenav_urls_per_category</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get all urls from the specific category from the sidenav</span>
+<span class="sd">    :param url: Category url</span>
+<span class="sd">    :return: list of urls</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">navigation_urls</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">make_request</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="p">,</span> <span class="n">PROXIES_RES</span><span class="p">,</span> <span class="n">retailer</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">r</span> <span class="ow">and</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
+        <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="s2">&quot;lxml&quot;</span><span class="p">)</span>
+        <span class="n">sidenav</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;nav&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;side-nav-category&quot;</span><span class="p">})</span>
+        <span class="k">if</span> <span class="n">sidenav</span><span class="p">:</span>
+            <span class="n">nav_urls_a</span> <span class="o">=</span> <span class="n">sidenav</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">nav_urls_a</span><span class="p">:</span>
+                <span class="n">navigation_urls</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s1">&#39;href&#39;</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">navigation_urls</span></div>
+
+
+<div class="viewcode-block" id="get_wasprice"><a class="viewcode-back" href="../petsathome_main.html#petsathome_main.get_wasprice">[docs]</a><span class="k">def</span> <span class="nf">get_wasprice</span><span class="p">(</span><span class="n">soup</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check if item has a was price</span>
+<span class="sd">    :param soup: Soup object of product page</span>
+<span class="sd">    :return: Was price if found</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;span&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;pdp-price__was&quot;</span><span class="p">})</span><span class="o">.</span><span class="n">text</span>
+        <span class="k">if</span> <span class="n">p</span> <span class="ow">and</span> <span class="s2">&quot;Was&quot;</span> <span class="ow">in</span> <span class="n">p</span><span class="p">:</span>
+            <span class="n">wasprice</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;Was £&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">wasprice</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">wasprice</span></div>
+
+
+<div class="viewcode-block" id="get_stock"><a class="viewcode-back" href="../petsathome_main.html#petsathome_main.get_stock">[docs]</a><span class="k">def</span> <span class="nf">get_stock</span><span class="p">(</span><span class="n">soup</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check if item is in stock</span>
+<span class="sd">    :param soup: Soup object of product page</span>
+<span class="sd">    :return: true of false</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;section&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;pdp-stock&quot;</span><span class="p">})</span>
+    <span class="k">if</span> <span class="n">p</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="get_brand"><a class="viewcode-back" href="../petsathome_main.html#petsathome_main.get_brand">[docs]</a><span class="k">def</span> <span class="nf">get_brand</span><span class="p">(</span><span class="n">soup</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the brand from the product page</span>
+<span class="sd">    :param soup: Soup object of product page</span>
+<span class="sd">    :return: brand if found</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">schema_products</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s2">&quot;script&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">schema</span> <span class="ow">in</span> <span class="n">schema_products</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s2">&quot;variant&quot;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">schema</span><span class="p">):</span>
+                <span class="n">pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;&quot;brand&quot;\s*:\s*&quot;(.+?)&quot;&#39;</span><span class="p">)</span>
+                <span class="n">match</span> <span class="o">=</span> <span class="n">pattern</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">schema</span><span class="p">))</span>
+                <span class="k">if</span> <span class="n">match</span><span class="p">:</span>
+                    <span class="n">brand</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="n">brand</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="c1"># Log to DB</span>
+        <span class="n">log_error</span><span class="o">.</span><span class="n">error_db</span><span class="p">(</span><span class="n">retailer</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">())</span>
+        <span class="c1"># Log to file</span>
+        <span class="n">log_error</span><span class="o">.</span><span class="n">error_file</span><span class="p">(</span><span class="n">retailer</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">())</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="get_pagination"><a class="viewcode-back" href="../petsathome_main.html#petsathome_main.get_pagination">[docs]</a><span class="k">def</span> <span class="nf">get_pagination</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get max pagination number from products page</span>
+<span class="sd">    :param url: Products url</span>
+<span class="sd">    :return: Max pagination number as int</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">full_url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">url</span><span class="si">}</span><span class="s2">?currentPage=1&amp;pageSize=72&amp;orderBy=1&quot;</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">make_request</span><span class="p">(</span><span class="n">full_url</span><span class="p">,</span> <span class="n">headers</span><span class="p">,</span> <span class="n">PROXIES_RES</span><span class="p">,</span> <span class="n">retailer</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">r</span> <span class="ow">and</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
+        <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="s2">&quot;lxml&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">soup</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;pagination__link--last&quot;</span><span class="p">})[</span><span class="s2">&quot;data-page&quot;</span><span class="p">])</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">return</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">1</span></div>
+
+
+<div class="viewcode-block" id="get_data"><a class="viewcode-back" href="../petsathome_main.html#petsathome_main.get_data">[docs]</a><span class="k">def</span> <span class="nf">get_data</span><span class="p">(</span><span class="n">sidenav_urls</span><span class="p">,</span> <span class="n">category</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Collect data from product page</span>
+<span class="sd">    :param sidenav_urls: List of urls to collect from</span>
+<span class="sd">    :param category: Item category</span>
+<span class="sd">    :return: True of false and item count</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">item_counter</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="n">countryCode</span> <span class="o">=</span> <span class="s2">&quot;UK&quot;</span>
+        <span class="n">currency</span> <span class="o">=</span> <span class="s2">&quot;GBP&quot;</span>
+        <span class="n">date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+        <span class="n">cardPrice</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">bundled</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">masterSku</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">ean</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="n">insert_query</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">                            INSERT INTO public.petsathome(</span>
+<span class="s2">                                date, retailer, countrycode, currency, &quot;sourceId&quot;, ean, </span>
+<span class="s2">                                brand, title, &quot;shelfPrice&quot;, &quot;wasPrice&quot;, &quot;cardPrice&quot;, </span>
+<span class="s2">                                &quot;inStock&quot;, &quot;onPromo&quot;, &quot;promoData&quot;, &quot;skuURL&quot;, &quot;imageURL&quot;, </span>
+<span class="s2">                                bundled, &quot;masterSku&quot;, category, &quot;partNumber&quot;, </span>
+<span class="s2">                                &quot;overLayText&quot;, &quot;hasVariants&quot;, size, weight)</span>
+<span class="s2">                                VALUES (</span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span>
+<span class="s2">                                </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">);</span>
+<span class="s2">                        &quot;&quot;&quot;</span>
+
+        <span class="k">for</span> <span class="n">url</span> <span class="ow">in</span> <span class="n">sidenav_urls</span><span class="p">:</span>
+            <span class="n">last_pagination_number</span> <span class="o">=</span> <span class="n">get_pagination</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">page</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">last_pagination_number</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="n">full_url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">url</span><span class="si">}</span><span class="s2">?currentPage=</span><span class="si">{</span><span class="n">page</span><span class="si">}</span><span class="s2">&amp;pageSize=72&amp;orderBy=1&quot;</span>
+                <span class="n">r</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">make_request</span><span class="p">(</span><span class="n">full_url</span><span class="p">,</span> <span class="n">headers</span><span class="p">,</span> <span class="n">PROXIES_RES</span><span class="p">,</span> <span class="n">retailer</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">r</span> <span class="ow">and</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
+                    <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="s2">&quot;lxml&quot;</span><span class="p">)</span>
+                    <span class="n">products_grid</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;section&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;layout-product-tile-holder&quot;</span><span class="p">})</span>
+                    <span class="n">sub_category</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;h2&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;content-container__heading-1&quot;</span><span class="p">})</span>
+                    <span class="k">if</span> <span class="n">sub_category</span><span class="p">:</span>
+                        <span class="n">sub_category</span> <span class="o">=</span> <span class="n">sub_category</span><span class="o">.</span><span class="n">text</span>
+                    <span class="k">if</span> <span class="n">sub_category</span> <span class="ow">and</span> <span class="n">sub_category</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">category</span><span class="p">:</span>
+                        <span class="n">category</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">category</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">sub_category</span><span class="si">}</span><span class="s2">&quot;</span>
+
+                    <span class="k">if</span> <span class="n">products_grid</span><span class="p">:</span>
+                        <span class="n">product_info_div</span> <span class="o">=</span> <span class="n">products_grid</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s2">&quot;div&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;-js-ProductInfoPostAjaxJavascript&quot;</span><span class="p">})</span>
+
+                        <span class="k">for</span> <span class="n">info</span> <span class="ow">in</span> <span class="n">product_info_div</span><span class="p">:</span>
+                            <span class="n">script_tag</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;script&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;text/javascript&quot;</span><span class="p">)</span>
+                            <span class="k">try</span><span class="p">:</span>
+                                <span class="k">if</span> <span class="n">script_tag</span><span class="p">:</span>
+                                    <span class="n">script_tag</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">script_tag</span><span class="p">)</span>
+                                    <span class="k">if</span> <span class="s2">&quot;shortDescription&quot;</span> <span class="ow">in</span> <span class="n">script_tag</span><span class="p">:</span>
+                                        <span class="n">second_brace_pos</span> <span class="o">=</span> <span class="n">script_tag</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;{&quot;</span><span class="p">,</span> <span class="n">script_tag</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;{&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                                        <span class="n">cleaned_string</span> <span class="o">=</span> <span class="n">script_tag</span><span class="p">[</span><span class="n">second_brace_pos</span><span class="p">:]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;;&quot;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>\
+                                            <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;;&quot;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&lt;/script&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;})&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+                                        <span class="n">cleaned_product</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">cleaned_string</span><span class="p">)</span>
+                                        <span class="k">if</span> <span class="n">cleaned_product</span><span class="p">:</span>
+                                            <span class="n">skuURL</span> <span class="o">=</span> <span class="n">BASE_URL</span> <span class="o">+</span> <span class="n">cleaned_product</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;productDetailsPageURL&quot;</span><span class="p">)</span>
+                                            <span class="n">overLayText</span> <span class="o">=</span> <span class="n">cleaned_product</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;overlayText&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+                                            <span class="n">r</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">make_request</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;https://</span><span class="si">{</span><span class="n">skuURL</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">headers</span><span class="p">,</span> <span class="n">PROXIES_RES</span><span class="p">,</span>
+                                                                   <span class="n">retailer</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+                                            <span class="k">if</span> <span class="n">r</span> <span class="ow">and</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
+                                                <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="s2">&quot;lxml&quot;</span><span class="p">)</span>
+                                                <span class="k">if</span> <span class="n">soup</span><span class="p">:</span>
+                                                    <span class="n">brand</span> <span class="o">=</span> <span class="n">get_brand</span><span class="p">(</span><span class="n">soup</span><span class="p">)</span>
+                                                    <span class="n">inStock</span> <span class="o">=</span> <span class="n">get_stock</span><span class="p">(</span><span class="n">soup</span><span class="p">)</span>
+                                                    <span class="n">wasPrice</span> <span class="o">=</span> <span class="n">get_wasprice</span><span class="p">(</span><span class="n">soup</span><span class="p">)</span>
+                                                <span class="k">else</span><span class="p">:</span>
+                                                    <span class="n">brand</span> <span class="o">=</span> <span class="kc">None</span>
+                                                    <span class="n">inStock</span> <span class="o">=</span> <span class="kc">None</span>
+                                                    <span class="n">wasPrice</span> <span class="o">=</span> <span class="kc">None</span>
+                                            <span class="k">else</span><span class="p">:</span>
+                                                <span class="n">brand</span> <span class="o">=</span> <span class="kc">None</span>
+                                                <span class="n">inStock</span> <span class="o">=</span> <span class="kc">None</span>
+                                                <span class="n">wasPrice</span> <span class="o">=</span> <span class="kc">None</span>
+
+                                            <span class="n">hasVariants</span> <span class="o">=</span> <span class="n">cleaned_product</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;hasVariants&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                                            <span class="k">if</span> <span class="n">hasVariants</span><span class="p">:</span>
+                                                <span class="n">attributes</span> <span class="o">=</span> <span class="n">cleaned_product</span><span class="p">[</span><span class="s2">&quot;attrs&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;weights&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                                                <span class="n">sizes</span> <span class="o">=</span> <span class="n">cleaned_product</span><span class="p">[</span><span class="s2">&quot;attrs&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sizes&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                                                <span class="n">variants</span> <span class="o">=</span> <span class="n">cleaned_product</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SKUDetails&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                                                <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">variants</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                                                    <span class="n">title</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                                                    <span class="n">sourceId</span> <span class="o">=</span> <span class="n">key</span>
+                                                    <span class="n">shelfPrice</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="s2">&quot;price&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;displayPrice&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">:]</span>
+                                                    <span class="n">onPromo</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="s2">&quot;price&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;isDiscountedPrice&quot;</span><span class="p">)</span>
+                                                    <span class="n">promoData</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="s2">&quot;price&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;promoTextList&quot;</span><span class="p">)</span>
+                                                    <span class="n">imageURL</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;//media.petsathome.com</span><span class="si">{</span><span class="n">value</span><span class="p">[</span><span class="s1">&#39;fullImage&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+                                                    <span class="n">partNumber</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;partnumber&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                                                    <span class="k">if</span> <span class="n">sizes</span><span class="p">:</span>
+                                                        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">sizes</span><span class="p">:</span>
+                                                            <span class="k">if</span> <span class="n">s</span><span class="p">[</span><span class="s2">&quot;partnumber&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">partNumber</span><span class="p">:</span>
+                                                                <span class="n">size</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span>
+                                                    <span class="k">else</span><span class="p">:</span>
+                                                        <span class="n">size</span> <span class="o">=</span> <span class="kc">None</span>
+                                                    <span class="k">if</span> <span class="n">attributes</span><span class="p">:</span>
+                                                        <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">attributes</span><span class="p">:</span>
+                                                            <span class="k">if</span> <span class="n">attr</span><span class="p">[</span><span class="s2">&quot;partnumber&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">partNumber</span><span class="p">:</span>
+                                                                <span class="n">weight</span> <span class="o">=</span> <span class="n">attr</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span>
+                                                    <span class="k">else</span><span class="p">:</span>
+                                                        <span class="n">weight</span> <span class="o">=</span> <span class="kc">None</span>
+
+                                                    <span class="n">item_counter</span> <span class="o">+=</span> <span class="mi">1</span>
+
+                                                    <span class="n">row_data</span> <span class="o">=</span> <span class="p">[</span><span class="n">date</span><span class="p">,</span> <span class="n">retailer</span><span class="p">,</span> <span class="n">countryCode</span><span class="p">,</span> <span class="n">currency</span><span class="p">,</span> <span class="n">sourceId</span><span class="p">,</span>
+                                                                <span class="n">ean</span><span class="p">,</span>
+                                                                <span class="n">brand</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">shelfPrice</span><span class="p">,</span> <span class="n">wasPrice</span><span class="p">,</span> <span class="n">cardPrice</span><span class="p">,</span>
+                                                                <span class="n">inStock</span><span class="p">,</span>
+                                                                <span class="n">onPromo</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">promoData</span><span class="p">),</span> <span class="n">skuURL</span><span class="p">,</span>
+                                                                <span class="n">imageURL</span><span class="p">,</span>
+                                                                <span class="n">bundled</span><span class="p">,</span> <span class="n">masterSku</span><span class="p">,</span> <span class="n">category</span><span class="p">,</span> <span class="n">partNumber</span><span class="p">,</span>
+                                                                <span class="n">overLayText</span><span class="p">,</span>
+                                                                <span class="n">hasVariants</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">weight</span><span class="p">]</span>
+
+                                                    <span class="n">Utils</span><span class="o">.</span><span class="n">insert_to_db</span><span class="p">(</span><span class="n">insert_query</span><span class="p">,</span> <span class="n">row_data</span><span class="p">,</span> <span class="n">retailer</span><span class="p">)</span>
+                                            <span class="k">else</span><span class="p">:</span>
+                                                <span class="n">title</span> <span class="o">=</span> <span class="n">cleaned_product</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;title&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                                                <span class="n">sourceId</span> <span class="o">=</span> <span class="n">cleaned_product</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;singleSKUCatentryId&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                                                <span class="n">shelfPrice</span> <span class="o">=</span> <span class="n">cleaned_product</span><span class="p">[</span><span class="s2">&quot;price&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;displayPrice&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">:]</span>
+                                                <span class="n">onPromo</span> <span class="o">=</span> <span class="n">cleaned_product</span><span class="p">[</span><span class="s2">&quot;price&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;isDiscountedPrice&quot;</span><span class="p">)</span>
+                                                <span class="n">promoData</span> <span class="o">=</span> <span class="n">cleaned_product</span><span class="p">[</span><span class="s2">&quot;price&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;promoTextList&quot;</span><span class="p">)</span>
+                                                <span class="n">imageURL</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;//media.petsathome.com</span><span class="si">{</span><span class="n">cleaned_product</span><span class="p">[</span><span class="s1">&#39;fullImage&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+                                                <span class="n">partNumber</span> <span class="o">=</span> <span class="n">cleaned_product</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;partnumber&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                                                <span class="n">size</span> <span class="o">=</span> <span class="kc">None</span>
+                                                <span class="n">weight</span> <span class="o">=</span> <span class="kc">None</span>
+
+                                                <span class="n">item_counter</span> <span class="o">+=</span> <span class="mi">1</span>
+
+                                                <span class="n">row_data</span> <span class="o">=</span> <span class="p">[</span><span class="n">date</span><span class="p">,</span> <span class="n">retailer</span><span class="p">,</span> <span class="n">countryCode</span><span class="p">,</span> <span class="n">currency</span><span class="p">,</span> <span class="n">sourceId</span><span class="p">,</span> <span class="n">ean</span><span class="p">,</span>
+                                                            <span class="n">brand</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">shelfPrice</span><span class="p">,</span> <span class="n">wasPrice</span><span class="p">,</span> <span class="n">cardPrice</span><span class="p">,</span> <span class="n">inStock</span><span class="p">,</span>
+                                                            <span class="n">onPromo</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">promoData</span><span class="p">),</span> <span class="n">skuURL</span><span class="p">,</span> <span class="n">imageURL</span><span class="p">,</span>
+                                                            <span class="n">bundled</span><span class="p">,</span> <span class="n">masterSku</span><span class="p">,</span> <span class="n">category</span><span class="p">,</span> <span class="n">partNumber</span><span class="p">,</span> <span class="n">overLayText</span><span class="p">,</span>
+                                                            <span class="n">hasVariants</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">weight</span><span class="p">]</span>
+                                                <span class="n">Utils</span><span class="o">.</span><span class="n">insert_to_db</span><span class="p">(</span><span class="n">insert_query</span><span class="p">,</span> <span class="n">row_data</span><span class="p">,</span> <span class="n">retailer</span><span class="p">)</span>
+                            <span class="k">except</span><span class="p">:</span>
+                                <span class="k">pass</span>
+        <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="n">item_counter</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="c1"># Log to DB</span>
+        <span class="n">log_error</span><span class="o">.</span><span class="n">error_db</span><span class="p">(</span><span class="n">retailer</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">())</span>
+        <span class="c1"># Log to file</span>
+        <span class="n">log_error</span><span class="o">.</span><span class="n">error_file</span><span class="p">(</span><span class="n">retailer</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">())</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="get_navigation_urls"><a class="viewcode-back" href="../petsathome_main.html#petsathome_main.get_navigation_urls">[docs]</a><span class="k">def</span> <span class="nf">get_navigation_urls</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Get all navigation URLs from the state API</span>
+<span class="sd">    :returns URLs as a dictionary</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">item_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">urls</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">{</span><span class="s2">&quot;category&quot;</span><span class="p">:</span> <span class="s2">&quot;Dog&quot;</span><span class="p">,</span> <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;https://www.petsathome.com/shop/en/pets/dog&quot;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;category&quot;</span><span class="p">:</span> <span class="s2">&quot;Cat&quot;</span><span class="p">,</span> <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;https://www.petsathome.com/shop/en/pets/cat&quot;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;category&quot;</span><span class="p">:</span> <span class="s2">&quot;Small Animal&quot;</span><span class="p">,</span> <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;https://www.petsathome.com/shop/en/pets/small-pet&quot;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;category&quot;</span><span class="p">:</span> <span class="s2">&quot;Fish&quot;</span><span class="p">,</span> <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;https://www.petsathome.com/shop/en/pets/fish&quot;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;category&quot;</span><span class="p">:</span> <span class="s2">&quot;Reptile&quot;</span><span class="p">,</span> <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;https://www.petsathome.com/shop/en/pets/reptile&quot;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;category&quot;</span><span class="p">:</span> <span class="s2">&quot;Bird &amp; Wildlife&quot;</span><span class="p">,</span> <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;https://www.petsathome.com/shop/en/pets/bird-and-wildlife&quot;</span><span class="p">},</span>
+    <span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">urls</span><span class="p">:</span>
+        <span class="n">url_list_item</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;url&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;category&quot;</span><span class="p">:</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;category&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;attempts&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="s2">&quot;max_attempts&quot;</span><span class="p">:</span> <span class="n">MAX_RETRIES</span><span class="p">,</span>
+            <span class="s2">&quot;success&quot;</span><span class="p">:</span> <span class="kc">False</span>
+        <span class="p">}</span>
+        <span class="n">item_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">url_list_item</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">item_list</span></div>
+
+
+<div class="viewcode-block" id="parse_urls"><a class="viewcode-back" href="../petsathome_main.html#petsathome_main.parse_urls">[docs]</a><span class="k">def</span> <span class="nf">parse_urls</span><span class="p">(</span><span class="n">urls</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Pass all URLS to get_data method and updates stats</span>
+<span class="sd">    :param urls: Navigation URLS to parse through</span>
+<span class="sd">    :return:None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">navigation_counter</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">item_counter</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">url</span> <span class="ow">in</span> <span class="n">urls</span><span class="p">:</span>
+        <span class="n">navigation_counter</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">navigation_url_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">urls</span><span class="p">)</span>
+        <span class="k">while</span> <span class="n">url</span><span class="p">[</span><span class="s2">&quot;success&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">and</span> <span class="n">url</span><span class="p">[</span><span class="s2">&quot;attempts&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">url</span><span class="p">[</span><span class="s2">&quot;max_attempts&quot;</span><span class="p">]:</span>
+            <span class="c1"># Increment attempts counter</span>
+            <span class="n">url</span><span class="p">[</span><span class="s2">&quot;attempts&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">sidenav_urls</span> <span class="o">=</span> <span class="n">get_sidenav_urls_per_category</span><span class="p">(</span><span class="n">url</span><span class="p">[</span><span class="s2">&quot;url&quot;</span><span class="p">])</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">get_data</span><span class="p">(</span><span class="n">sidenav_urls</span><span class="p">,</span> <span class="n">url</span><span class="p">[</span><span class="s2">&quot;category&quot;</span><span class="p">])</span>
+
+            <span class="k">if</span> <span class="n">result</span><span class="p">:</span>
+                <span class="n">url</span><span class="p">[</span><span class="s2">&quot;success&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">item_counter_actual</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">item_counter_actual</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="n">item_counter</span> <span class="o">+=</span> <span class="n">item_counter_actual</span>
+
+    <span class="n">duration</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span>
+    <span class="c1"># Lets record some stats</span>
+    <span class="n">Statistics</span><span class="o">.</span><span class="n">statistics</span><span class="p">(</span><span class="n">navigation_counter</span><span class="p">,</span>
+                          <span class="n">navigation_url_count</span><span class="p">,</span>
+                          <span class="n">item_counter</span><span class="p">,</span>
+                          <span class="n">duration</span><span class="p">,</span>
+                          <span class="n">urls</span><span class="p">,</span>
+                          <span class="n">retailer</span><span class="p">,</span>
+                          <span class="n">TABLE_NAME</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../petsathome_main.html#petsathome_main.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Initiate scraper and validate data.&quot;&quot;&quot;</span>
+    <span class="n">navigation_urls</span> <span class="o">=</span> <span class="n">get_navigation_urls</span><span class="p">()</span>
+    <span class="n">parse_urls</span><span class="p">(</span><span class="n">navigation_urls</span><span class="p">)</span></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Bernard Van Der Vyver.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
