@@ -1,0 +1,7 @@
+dunnes\_store\_main module
+==========================
+
+.. automodule:: dunnes_store_main
+   :members:
+   :undoc-members:
+   :show-inheritance:

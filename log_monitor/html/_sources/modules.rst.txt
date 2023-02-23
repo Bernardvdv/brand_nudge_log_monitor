@@ -6,3 +6,10 @@ docs
 
    logging_class
    john_lewis_main
+   supervalu_main
+   dunnes_store_main
+   bm_main
+   pet_planet_main
+   petsathome_main
+   savers_main
+   zooplus_main

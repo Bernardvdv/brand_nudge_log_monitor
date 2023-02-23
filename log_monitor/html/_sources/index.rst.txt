@@ -3,6 +3,13 @@ Brand Nudge Documentation
 
 .. include:: logging_class.rst
 .. include:: john_lewis_main.rst
+.. include:: supervalu_main.rst
+.. include:: dunnes_store_main.rst
+.. include:: bm_main.rst
+.. include:: pet_planet_main.rst
+.. include:: petsathome_main.rst
+.. include:: savers_main.rst
+.. include:: zooplus_main.rst
 
 Indices and tables
 ==================

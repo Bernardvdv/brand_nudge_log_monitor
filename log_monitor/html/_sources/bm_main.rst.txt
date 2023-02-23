@@ -1,0 +1,7 @@
+bm\_main module
+===============
+
+.. automodule:: bm_main
+   :members:
+   :undoc-members:
+   :show-inheritance:
