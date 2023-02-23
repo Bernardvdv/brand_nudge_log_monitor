@@ -96,6 +96,9 @@
              
   <section id="module-logging_class">
 <span id="logging-class-module"></span><h1>logging_class module<a class="headerlink" href="#module-logging_class" title="Permalink to this heading"></a></h1>
+<p>A class that provides generic reusable features for data collect.</p>
+<p>This class is designed to provide common functionality that can be used across different Python programs.
+It includes methods for handling error logging, string manipulation, data conversion, and more.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="logging_class.LogHandler">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">logging_class.</span></span><span class="sig-name descname"><span class="pre">LogHandler</span></span><a class="reference internal" href="_modules/logging_class.html#LogHandler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#logging_class.LogHandler" title="Permalink to this definition"></a></dt>
@@ -158,7 +161,7 @@ and the Slack API to push messages to a defined Slack channel</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="logging_class.LogHandler.error_db">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">error_db</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">retailer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sys_info</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/logging_class.html#LogHandler.error_db"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#logging_class.LogHandler.error_db" title="Permalink to this definition"></a></dt>
-<dd><p>Handler to insert error record to the DB</p>
+<dd><p>Handler to insert error messages to the database</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -382,7 +385,7 @@ If the connection is successful, it returns a database connection object.</p>
 <dd class="field-odd"><p><strong>text</strong> – string of text to be cleaned</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>cleaned string</p>
+<dd class="field-even"><p>Cleaned string</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>String</p>

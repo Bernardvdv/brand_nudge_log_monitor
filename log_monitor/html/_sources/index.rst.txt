@@ -2,6 +2,7 @@ Brand Nudge Documentation
 =========================
 
 .. include:: logging_class.rst
+.. include:: john_lewis_main.rst
 
 Indices and tables
 ==================

@@ -5,3 +5,4 @@ docs
    :maxdepth: 4
 
    logging_class
+   john_lewis_main
