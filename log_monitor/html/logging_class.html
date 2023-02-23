@@ -45,19 +45,14 @@
 <li><a class="reference internal" href="#logging_class.LogHandler"><code class="docutils literal notranslate"><span class="pre">LogHandler</span></code></a><ul>
 <li><a class="reference internal" href="#logging_class.LogHandler.create_cron_table"><code class="docutils literal notranslate"><span class="pre">LogHandler.create_cron_table()</span></code></a></li>
 <li><a class="reference internal" href="#logging_class.LogHandler.create_log_table"><code class="docutils literal notranslate"><span class="pre">LogHandler.create_log_table()</span></code></a></li>
-<li><a class="reference internal" href="#logging_class.LogHandler.cron_insertion"><code class="docutils literal notranslate"><span class="pre">LogHandler.cron_insertion</span></code></a></li>
 <li><a class="reference internal" href="#logging_class.LogHandler.cron_logs"><code class="docutils literal notranslate"><span class="pre">LogHandler.cron_logs()</span></code></a></li>
-<li><a class="reference internal" href="#logging_class.LogHandler.cron_table"><code class="docutils literal notranslate"><span class="pre">LogHandler.cron_table</span></code></a></li>
 <li><a class="reference internal" href="#logging_class.LogHandler.error_db"><code class="docutils literal notranslate"><span class="pre">LogHandler.error_db()</span></code></a></li>
 <li><a class="reference internal" href="#logging_class.LogHandler.error_file"><code class="docutils literal notranslate"><span class="pre">LogHandler.error_file()</span></code></a></li>
 <li><a class="reference internal" href="#logging_class.LogHandler.error_slack"><code class="docutils literal notranslate"><span class="pre">LogHandler.error_slack()</span></code></a></li>
-<li><a class="reference internal" href="#logging_class.LogHandler.initial_sql"><code class="docutils literal notranslate"><span class="pre">LogHandler.initial_sql</span></code></a></li>
-<li><a class="reference internal" href="#logging_class.LogHandler.insertion_sql"><code class="docutils literal notranslate"><span class="pre">LogHandler.insertion_sql</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#logging_class.Statistics"><code class="docutils literal notranslate"><span class="pre">Statistics</span></code></a><ul>
 <li><a class="reference internal" href="#logging_class.Statistics.create_stats_table"><code class="docutils literal notranslate"><span class="pre">Statistics.create_stats_table()</span></code></a></li>
-<li><a class="reference internal" href="#logging_class.Statistics.initial_stats"><code class="docutils literal notranslate"><span class="pre">Statistics.initial_stats</span></code></a></li>
 <li><a class="reference internal" href="#logging_class.Statistics.log_to_db"><code class="docutils literal notranslate"><span class="pre">Statistics.log_to_db()</span></code></a></li>
 <li><a class="reference internal" href="#logging_class.Statistics.statistics"><code class="docutils literal notranslate"><span class="pre">Statistics.statistics()</span></code></a></li>
 </ul>
@@ -101,103 +96,127 @@
              
   <section id="module-logging_class">
 <span id="logging-class-module"></span><h1>logging_class module<a class="headerlink" href="#module-logging_class" title="Permalink to this heading"></a></h1>
-<p>Log handler class to file and DB
-Example usage:</p>
-<p>import sys
-from logging_class import LogHandler</p>
-<p>log_error = LogHandler()
-retailer = “John Lewis”</p>
-<dl class="simple">
-<dt>def main():</dt><dd><dl class="simple">
-<dt>try:</dt><dd><p>print(a)</p>
-</dd>
-<dt>except Exception as e:</dt><dd><p># Log to DB
-log_error.error_db(retailer, e, sys.exc_info())
-# Log to file
-log_error.error_file(retailer, e, sys.exc_info())
-# Log to Slack
-log_error.error_slack(retailer, e)</p>
-</dd>
-</dl>
-</dd>
-</dl>
 <dl class="py class">
 <dt class="sig sig-object py" id="logging_class.LogHandler">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">logging_class.</span></span><span class="sig-name descname"><span class="pre">LogHandler</span></span><a class="reference internal" href="_modules/logging_class.html#LogHandler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#logging_class.LogHandler" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A class for logging errors and Slack messages.</p>
+<p>This class provides methods for logging various types of errors and messages.
+It uses the standard logging module to write error messages to a file or database
+and the Slack API to push messages to a defined Slack channel</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="logging_class.LogHandler.create_cron_table">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create_cron_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connection</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/logging_class.html#LogHandler.create_cron_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#logging_class.LogHandler.create_cron_table" title="Permalink to this definition"></a></dt>
-<dd><p>Create the cron table if it does not exist
-:param connection: DB connection object
-:return: None</p>
+<dd><p>Create the cron table if it does not exist</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>connection</strong> – DB connection object</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="logging_class.LogHandler.create_log_table">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create_log_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connection</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/logging_class.html#LogHandler.create_log_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#logging_class.LogHandler.create_log_table" title="Permalink to this definition"></a></dt>
-<dd><p>Create the log table if it does not exist
-:param connection: DB connection object
-:return: None</p>
+<dd><p>Create the log table if it does not exist</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>connection</strong> – DB connection object</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
 </dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="logging_class.LogHandler.cron_insertion">
-<span class="sig-name descname"><span class="pre">cron_insertion</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">INSERT</span> <span class="pre">INTO</span> <span class="pre">public.cron_logs(\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">date,</span> <span class="pre">line)\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">VALUES</span> <span class="pre">(%s,</span> <span class="pre">%s);\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">'</span></em><a class="headerlink" href="#logging_class.LogHandler.cron_insertion" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="logging_class.LogHandler.cron_logs">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cron_logs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lines</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/logging_class.html#LogHandler.cron_logs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#logging_class.LogHandler.cron_logs" title="Permalink to this definition"></a></dt>
-<dd><p>Log cron.log entries to the DB table
-:param lines: cron file content
-:return: None</p>
+<dd><p>Log cron.log entries to the DB table</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>lines</strong> – cron file content</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
 </dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="logging_class.LogHandler.cron_table">
-<span class="sig-name descname"><span class="pre">cron_table</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">CREATE</span> <span class="pre">TABLE</span> <span class="pre">IF</span> <span class="pre">NOT</span> <span class="pre">EXISTS</span> <span class="pre">public.cron_logs\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">(\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">line</span> <span class="pre">text</span> <span class="pre">COLLATE</span> <span class="pre">pg_catalog.&quot;default&quot;,\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">date</span> <span class="pre">timestamp</span> <span class="pre">without</span> <span class="pre">time</span> <span class="pre">zone\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">)\n\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">TABLESPACE</span> <span class="pre">pg_default;\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">ALTER</span> <span class="pre">TABLE</span> <span class="pre">IF</span> <span class="pre">EXISTS</span> <span class="pre">public.cron_logs\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">OWNER</span> <span class="pre">to</span> <span class="pre">postgres;\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">'</span></em><a class="headerlink" href="#logging_class.LogHandler.cron_table" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="logging_class.LogHandler.error_db">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">error_db</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">retailer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sys_info</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/logging_class.html#LogHandler.error_db"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#logging_class.LogHandler.error_db" title="Permalink to this definition"></a></dt>
-<dd><p>Handler to insert error record to the DB
-:param retailer: Retailer name
-:param message: Error message from exception
-:param sys_info: Error object
-:return: None</p>
+<dd><p>Handler to insert error record to the DB</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>retailer</strong> – Retailer name</p></li>
+<li><p><strong>message</strong> – Error message from exception</p></li>
+<li><p><strong>sys_info</strong> – Error object</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="logging_class.LogHandler.error_file">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">error_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">retailer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sys_info</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/logging_class.html#LogHandler.error_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#logging_class.LogHandler.error_file" title="Permalink to this definition"></a></dt>
-<dd><p>Log error messages to file
-:param retailer: Retailer name
-:param message: Error message from exception
-:param sys_info: Error object
-:return: None</p>
+<dd><p>Log error messages to file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>retailer</strong> – Retailer name</p></li>
+<li><p><strong>message</strong> – Error message from exception</p></li>
+<li><p><strong>sys_info</strong> – Error object</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="logging_class.LogHandler.error_slack">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">error_slack</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">retailer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/logging_class.html#LogHandler.error_slack"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#logging_class.LogHandler.error_slack" title="Permalink to this definition"></a></dt>
-<dd><p>Send a Slack message to a channel via a webhook.
-:param retailer: Retailer name
-:param message: Containing Slack message
-:param message_type: Error or statistics
-:return: HTTP response code</p>
+<dd><p>Send a Slack message to a channel via a webhook.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>retailer</strong> – Retailer name</p></li>
+<li><p><strong>message</strong> – Containing Slack message</p></li>
+<li><p><strong>message_type</strong> – Error or statistics</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>HTTP response code</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>integer</p>
+</dd>
+</dl>
 </dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="logging_class.LogHandler.initial_sql">
-<span class="sig-name descname"><span class="pre">initial_sql</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'CREATE</span> <span class="pre">TABLE</span> <span class="pre">IF</span> <span class="pre">NOT</span> <span class="pre">EXISTS</span> <span class="pre">public.log\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">(\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">created</span> <span class="pre">date,\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">name</span> <span class="pre">text</span> <span class="pre">COLLATE</span> <span class="pre">pg_catalog.&quot;default&quot;,\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">level</span> <span class="pre">integer,\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">message</span> <span class="pre">text</span> <span class="pre">COLLATE</span> <span class="pre">pg_catalog.&quot;default&quot;,\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">function</span> <span class="pre">text</span> <span class="pre">COLLATE</span> <span class="pre">pg_catalog.&quot;default&quot;,\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">lineno</span> <span class="pre">integer\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">)'</span></em><a class="headerlink" href="#logging_class.LogHandler.initial_sql" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="logging_class.LogHandler.insertion_sql">
-<span class="sig-name descname"><span class="pre">insertion_sql</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'INSERT</span> <span class="pre">INTO</span> <span class="pre">log(\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">Created,\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">Name,\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">Level,\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">Message,\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">Function,\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">LineNo)</span> <span class="pre">VALUES</span> <span class="pre">(\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">%(Created)s,\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">%(Name)s,\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">%(Level)s,\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">%(Message)s,\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">%(Function)s,\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">%(LineNo)s\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">);'</span></em><a class="headerlink" href="#logging_class.LogHandler.insertion_sql" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
 
 </dd></dl>
 
@@ -205,38 +224,63 @@ log_error.error_slack(retailer, e)</p>
 <dt class="sig sig-object py" id="logging_class.Statistics">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">logging_class.</span></span><span class="sig-name descname"><span class="pre">Statistics</span></span><a class="reference internal" href="_modules/logging_class.html#Statistics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#logging_class.Statistics" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A collection of methods used to store statistical data.</p>
+<p>This class contains a variety of methods for storing statistical data,
+from creating the tables to inserting the data.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="logging_class.Statistics.create_stats_table">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create_stats_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connection</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/logging_class.html#Statistics.create_stats_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#logging_class.Statistics.create_stats_table" title="Permalink to this definition"></a></dt>
-<dd><p>Create the log table if it does not exist
-:param connection: DB connection object
-:return: None</p>
+<dd><p>Create the log table if it does not exist</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>connection</strong> – DB connection object</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
 </dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="logging_class.Statistics.initial_stats">
-<span class="sig-name descname"><span class="pre">initial_stats</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'CREATE</span> <span class="pre">TABLE</span> <span class="pre">IF</span> <span class="pre">NOT</span> <span class="pre">EXISTS</span> <span class="pre">public.statistics\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">(\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">created</span> <span class="pre">date,\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">retailer</span> <span class="pre">text</span> <span class="pre">COLLATE</span> <span class="pre">pg_catalog.&quot;default&quot;,\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">navigationLinks</span> <span class="pre">text</span> <span class="pre">COLLATE</span> <span class="pre">pg_catalog.&quot;default&quot;,\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">expectedLinks</span> <span class="pre">text</span> <span class="pre">COLLATE</span> <span class="pre">pg_catalog.&quot;default&quot;,\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">itemCount</span> <span class="pre">text</span> <span class="pre">COLLATE</span> <span class="pre">pg_catalog.&quot;default&quot;,\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">duration</span> <span class="pre">text</span> <span class="pre">COLLATE</span> <span class="pre">pg_catalog.&quot;default&quot;,\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">failedURLS</span> <span class="pre">json\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">)'</span></em><a class="headerlink" href="#logging_class.Statistics.initial_stats" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="logging_class.Statistics.log_to_db">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">log_to_db</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">retailer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stats</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/logging_class.html#Statistics.log_to_db"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#logging_class.Statistics.log_to_db" title="Permalink to this definition"></a></dt>
-<dd><p>Log statistics to the DB per retailer
-:return:</p>
+<dd><p>Log statistics to the DB per retailer</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>retailer</strong> – Retailer’s name</p>
+</dd>
+</dl>
+<p>:param stats Statistics provided in a dict
+:return: None
+:rtype: None</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="logging_class.Statistics.statistics">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">statistics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">navigation_counter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">navigation_url_count</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">item_counter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">urls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retailer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/logging_class.html#Statistics.statistics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#logging_class.Statistics.statistics" title="Permalink to this definition"></a></dt>
-<dd><p>Information on expected and collected data
-:param navigation_counter: Amount of navigation URLs accessed
-:param navigation_url_count: Expected navigation URLs
-:param item_counter: Amount of items collected
-:param duration: Time the scraper took to complete
-:param urls: URL dictionary post scraping used for statistics
-:param retailer: Retailer collected
-:param table_name: SQL table name where data are inserted
-:return: None</p>
+<dd><p>Information on expected and collected data</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>navigation_counter</strong> – Amount of navigation URLs accessed</p></li>
+<li><p><strong>navigation_url_count</strong> – Expected navigation URLs</p></li>
+<li><p><strong>item_counter</strong> – Amount of items collected</p></li>
+<li><p><strong>duration</strong> – Time the scraper took to complete</p></li>
+<li><p><strong>urls</strong> – URL dictionary post scraping used for statistics</p></li>
+<li><p><strong>retailer</strong> – Retailer collected</p></li>
+<li><p><strong>table_name</strong> – SQL table name where data are inserted</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -245,58 +289,123 @@ log_error.error_slack(retailer, e)</p>
 <dt class="sig sig-object py" id="logging_class.Utils">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">logging_class.</span></span><span class="sig-name descname"><span class="pre">Utils</span></span><a class="reference internal" href="_modules/logging_class.html#Utils"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#logging_class.Utils" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A collection of utility methods for common Python tasks.</p>
+<p>This class contains a variety of methods that can be reused across different Python scripts
+and projects. These methods cover a range of tasks, including string manipulation, file
+handling, data validation, and more.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="logging_class.Utils.create_db_con">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create_db_con</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/logging_class.html#Utils.create_db_con"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#logging_class.Utils.create_db_con" title="Permalink to this definition"></a></dt>
-<dd><p>DB Connection
-:return: Connection cursor</p>
+<dd><p>Connect to a PostgreSQL database.</p>
+<p>This function creates a connection to a PostgreSQL database using the given credentials.
+If the connection is successful, it returns a database connection object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A connection object that can be used to execute queries against the database.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Object</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="logging_class.Utils.get_product_schema">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_product_schema</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema_products</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">search_term</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/logging_class.html#Utils.get_product_schema"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#logging_class.Utils.get_product_schema" title="Permalink to this definition"></a></dt>
-<dd><p>Loops through available schema’s to find the product one
-:param schema_products: Available json schema’s
-:param search_term: Value to look for in schema to find the product dict
-:return: product schema</p>
+<dd><p>Loops through available schema’s to find the product object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>schema_products</strong> – Available json schema’s</p></li>
+<li><p><strong>search_term</strong> – Value to look for in schema to find the product dict</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>product schema</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>String</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="logging_class.Utils.insert_to_db">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">insert_to_db</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">insert_query</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retailer</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/logging_class.html#Utils.insert_to_db"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#logging_class.Utils.insert_to_db" title="Permalink to this definition"></a></dt>
-<dd><p>Add row data to DB
-:param insert_query: Retailer specific query
-:param row: Items details
-:param retailer: Retailer collected
-:return: None</p>
+<dd><p>Add row data to the database</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>insert_query</strong> – Retailer specific query</p></li>
+<li><p><strong>row</strong> – Items details</p></li>
+<li><p><strong>retailer</strong> – Retailer collected</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="logging_class.Utils.make_request">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">make_request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">request_headers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">proxy</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retailer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/logging_class.html#Utils.make_request"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#logging_class.Utils.make_request" title="Permalink to this definition"></a></dt>
-<dd><p>Request made to provided URL
-:param url: Target URL
-:param request_headers: HTTP header used in the HTTP request to provide information
-:param proxy: Enabled True else false
-:param retailer: Retailer collected
-:param verify: whether we verify the server’s TLS certificate
-:return: Response object</p>
+<dd><p>Request made to provided URL by using provided headers, proxy and SSL verification</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>url</strong> – Target URL</p></li>
+<li><p><strong>request_headers</strong> – HTTP header used in the HTTP request to provide information</p></li>
+<li><p><strong>proxy</strong> – Enabled True else false</p></li>
+<li><p><strong>retailer</strong> – Retailer collected</p></li>
+<li><p><strong>verify</strong> – whether we verify the server’s TLS certificate</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Response object</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Object</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="logging_class.Utils.remove_html_tags">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">remove_html_tags</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/logging_class.html#Utils.remove_html_tags"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#logging_class.Utils.remove_html_tags" title="Permalink to this definition"></a></dt>
-<dd><p>Remove all html tags from a string
-:param text: string of text to be cleaned
-:return: cleaned string</p>
+<dd><p>Remove all html tags from a string</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>text</strong> – string of text to be cleaned</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>cleaned string</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>String</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="logging_class.Utils.time_format">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">time_format</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">duration</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/logging_class.html#Utils.time_format"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#logging_class.Utils.time_format" title="Permalink to this definition"></a></dt>
-<dd><p>Convert duration to human-readable time
-:param duration: Duration in millisecond
-:return: Time</p>
+<dd><p>Convert duration provided to friendly readable time
+e.g. 01H 08m 55s</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>duration</strong> – Duration in millisecond</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Reformatted time</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>String</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>

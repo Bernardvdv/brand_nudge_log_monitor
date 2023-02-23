@@ -1,7 +1,0 @@
-template\_main module
-=====================
-
-.. automodule:: template_main
-   :members:
-   :undoc-members:
-   :show-inheritance:

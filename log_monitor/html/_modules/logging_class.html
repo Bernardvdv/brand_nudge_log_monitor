@@ -65,30 +65,7 @@
            <div itemprop="articleBody">
              
   <h1>Source code for logging_class</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Log handler class to file and DB</span>
-<span class="sd">Example usage:</span>
-
-<span class="sd">import sys</span>
-<span class="sd">from logging_class import LogHandler</span>
-
-<span class="sd">log_error = LogHandler()</span>
-<span class="sd">retailer = &quot;John Lewis&quot;</span>
-
-
-<span class="sd">def main():</span>
-<span class="sd">    try:</span>
-<span class="sd">        print(a)</span>
-<span class="sd">    except Exception as e:</span>
-<span class="sd">        # Log to DB</span>
-<span class="sd">        log_error.error_db(retailer, e, sys.exc_info())</span>
-<span class="sd">        # Log to file</span>
-<span class="sd">        log_error.error_file(retailer, e, sys.exc_info())</span>
-<span class="sd">        # Log to Slack</span>
-<span class="sd">        log_error.error_slack(retailer, e)</span>
-<span class="sd">&quot;&quot;&quot;</span>
-
-<span class="kn">import</span> <span class="nn">json</span>
+<span></span><span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">re</span>
@@ -99,6 +76,7 @@
 <span class="kn">import</span> <span class="nn">psycopg2</span>
 <span class="kn">import</span> <span class="nn">requests</span>
 <span class="kn">from</span> <span class="nn">dotenv</span> <span class="kn">import</span> <span class="n">load_dotenv</span>
+<span class="kn">import</span> <span class="nn">constants</span>
 
 <span class="n">load_dotenv</span><span class="p">()</span>
 
@@ -111,59 +89,25 @@
 
 
 <div class="viewcode-block" id="LogHandler"><a class="viewcode-back" href="../logging_class.html#logging_class.LogHandler">[docs]</a><span class="k">class</span> <span class="nc">LogHandler</span><span class="p">:</span>
-    <span class="n">initial_sql</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;CREATE TABLE IF NOT EXISTS public.log</span>
-<span class="s2">                                (</span>
-<span class="s2">                                    created date,</span>
-<span class="s2">                                    name text COLLATE pg_catalog.&quot;default&quot;,</span>
-<span class="s2">                                    level integer,</span>
-<span class="s2">                                    message text COLLATE pg_catalog.&quot;default&quot;,</span>
-<span class="s2">                                    function text COLLATE pg_catalog.&quot;default&quot;,</span>
-<span class="s2">                                    lineno integer</span>
-<span class="s2">                                )&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A class for logging errors and Slack messages.</span>
 
-    <span class="n">insertion_sql</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;INSERT INTO log(</span>
-<span class="s2">                                    Created,</span>
-<span class="s2">                                    Name,</span>
-<span class="s2">                                    Level,</span>
-<span class="s2">                                    Message,</span>
-<span class="s2">                                    Function,</span>
-<span class="s2">                                    LineNo) VALUES (</span>
-<span class="s2">                                    </span><span class="si">%(Created)s</span><span class="s2">,</span>
-<span class="s2">                                    </span><span class="si">%(Name)s</span><span class="s2">,</span>
-<span class="s2">                                    </span><span class="si">%(Level)s</span><span class="s2">,</span>
-<span class="s2">                                    </span><span class="si">%(Message)s</span><span class="s2">,</span>
-<span class="s2">                                    </span><span class="si">%(Function)s</span><span class="s2">,</span>
-<span class="s2">                                    </span><span class="si">%(LineNo)s</span>
-<span class="s2">                            );&quot;&quot;&quot;</span>
-
-    <span class="n">cron_table</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
-<span class="s2">                CREATE TABLE IF NOT EXISTS public.cron_logs</span>
-<span class="s2">                (</span>
-<span class="s2">                    line text COLLATE pg_catalog.&quot;default&quot;,</span>
-<span class="s2">                    date timestamp without time zone</span>
-<span class="s2">                )</span>
-
-<span class="s2">                TABLESPACE pg_default;</span>
-<span class="s2">                </span>
-<span class="s2">                ALTER TABLE IF EXISTS public.cron_logs</span>
-<span class="s2">                    OWNER to postgres;</span>
-<span class="s2">                &quot;&quot;&quot;</span>
-
-    <span class="n">cron_insertion</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
-<span class="s2">                    INSERT INTO public.cron_logs(</span>
-<span class="s2">                    date, line)</span>
-<span class="s2">                    VALUES (</span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">);</span>
-<span class="s2">                    &quot;&quot;&quot;</span>
+<span class="sd">    This class provides methods for logging various types of errors and messages.</span>
+<span class="sd">    It uses the standard logging module to write error messages to a file or database</span>
+<span class="sd">    and the Slack API to push messages to a defined Slack channel</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="LogHandler.create_log_table"><a class="viewcode-back" href="../logging_class.html#logging_class.LogHandler.create_log_table">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">create_log_table</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create the log table if it does not exist</span>
+
 <span class="sd">        :param connection: DB connection object</span>
 <span class="sd">        :return: None</span>
+<span class="sd">        :rtype: None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">connection_cursor</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
-        <span class="n">connection_cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">LogHandler</span><span class="o">.</span><span class="n">initial_sql</span><span class="p">)</span>
+        <span class="n">connection_cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">constants</span><span class="o">.</span><span class="n">initial_sql</span><span class="p">)</span>
         <span class="n">connection</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
         <span class="n">connection</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
@@ -171,11 +115,13 @@
     <span class="k">def</span> <span class="nf">create_cron_table</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create the cron table if it does not exist</span>
+
 <span class="sd">        :param connection: DB connection object</span>
 <span class="sd">        :return: None</span>
+<span class="sd">        :rtype: None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">connection_cursor</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
-        <span class="n">connection_cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">LogHandler</span><span class="o">.</span><span class="n">cron_table</span><span class="p">)</span>
+        <span class="n">connection_cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">constants</span><span class="o">.</span><span class="n">cron_table</span><span class="p">)</span>
         <span class="n">connection</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
         <span class="n">connection</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
@@ -183,10 +129,12 @@
     <span class="k">def</span> <span class="nf">error_db</span><span class="p">(</span><span class="n">retailer</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">sys_info</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Handler to insert error record to the DB</span>
+
 <span class="sd">        :param retailer: Retailer name</span>
 <span class="sd">        :param message: Error message from exception</span>
 <span class="sd">        :param sys_info: Error object</span>
 <span class="sd">        :return: None</span>
+<span class="sd">        :rtype: None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">tb</span> <span class="o">=</span> <span class="n">sys_info</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
@@ -206,7 +154,7 @@
             <span class="n">connection_cursor</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
             <span class="c1"># Let&#39;s check if the log table exist and create if not</span>
             <span class="n">LogHandler</span><span class="o">.</span><span class="n">create_log_table</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
-            <span class="n">connection_cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">LogHandler</span><span class="o">.</span><span class="n">insertion_sql</span><span class="p">,</span> <span class="n">error_record</span><span class="p">)</span>
+            <span class="n">connection_cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">constants</span><span class="o">.</span><span class="n">insertion_sql</span><span class="p">,</span> <span class="n">error_record</span><span class="p">)</span>
 
             <span class="n">connection</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
             <span class="n">connection</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
@@ -217,10 +165,12 @@
     <span class="k">def</span> <span class="nf">error_file</span><span class="p">(</span><span class="n">retailer</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">sys_info</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Log error messages to file</span>
+
 <span class="sd">        :param retailer: Retailer name</span>
 <span class="sd">        :param message: Error message from exception</span>
 <span class="sd">        :param sys_info: Error object</span>
 <span class="sd">        :return: None</span>
+<span class="sd">        :rtype: None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span>
             <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;scrapers.log&#39;</span><span class="p">,</span>
@@ -239,10 +189,12 @@
 <div class="viewcode-block" id="LogHandler.error_slack"><a class="viewcode-back" href="../logging_class.html#logging_class.LogHandler.error_slack">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">error_slack</span><span class="p">(</span><span class="n">retailer</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">message_type</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Send a Slack message to a channel via a webhook.</span>
+
 <span class="sd">        :param retailer: Retailer name</span>
 <span class="sd">        :param message: Containing Slack message</span>
 <span class="sd">        :param message_type: Error or statistics</span>
 <span class="sd">        :return: HTTP response code</span>
+<span class="sd">        :rtype: integer</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">message_type</span> <span class="o">==</span> <span class="s2">&quot;error&quot;</span><span class="p">:</span>
             <span class="n">payload</span> <span class="o">=</span> <span class="p">{</span>
@@ -304,8 +256,10 @@
     <span class="k">def</span> <span class="nf">cron_logs</span><span class="p">(</span><span class="n">lines</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Log cron.log entries to the DB table</span>
+
 <span class="sd">        :param lines: cron file content</span>
 <span class="sd">        :return: None</span>
+<span class="sd">        :rtype: None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">connection</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">create_db_con</span><span class="p">()</span>
@@ -314,34 +268,36 @@
             <span class="n">LogHandler</span><span class="o">.</span><span class="n">create_cron_table</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
                 <span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span> <span class="n">line</span><span class="p">]</span>
-                <span class="n">connection_cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">LogHandler</span><span class="o">.</span><span class="n">cron_insertion</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+                <span class="n">connection_cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">constants</span><span class="o">.</span><span class="n">cron_insertion</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
                 <span class="n">connection</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
             <span class="n">connection</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="c1"># Log to DB</span>
+            <span class="n">LogHandler</span><span class="o">.</span><span class="n">error_db</span><span class="p">(</span><span class="s2">&quot;cron&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">())</span>
+            <span class="c1"># Log to file</span>
+            <span class="n">LogHandler</span><span class="o">.</span><span class="n">error_file</span><span class="p">(</span><span class="s2">&quot;cron&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">())</span>
             <span class="k">pass</span></div></div>
 
 
 <div class="viewcode-block" id="Statistics"><a class="viewcode-back" href="../logging_class.html#logging_class.Statistics">[docs]</a><span class="k">class</span> <span class="nc">Statistics</span><span class="p">:</span>
-    <span class="n">initial_stats</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;CREATE TABLE IF NOT EXISTS public.statistics</span>
-<span class="s2">                                (</span>
-<span class="s2">                                    created date,</span>
-<span class="s2">                                    retailer text COLLATE pg_catalog.&quot;default&quot;,</span>
-<span class="s2">                                    navigationLinks text COLLATE pg_catalog.&quot;default&quot;,</span>
-<span class="s2">                                    expectedLinks text COLLATE pg_catalog.&quot;default&quot;,</span>
-<span class="s2">                                    itemCount text COLLATE pg_catalog.&quot;default&quot;,</span>
-<span class="s2">                                    duration text COLLATE pg_catalog.&quot;default&quot;,</span>
-<span class="s2">                                    failedURLS json</span>
-<span class="s2">                                )&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A collection of methods used to store statistical data.</span>
+
+<span class="sd">    This class contains a variety of methods for storing statistical data,</span>
+<span class="sd">    from creating the tables to inserting the data.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="Statistics.create_stats_table"><a class="viewcode-back" href="../logging_class.html#logging_class.Statistics.create_stats_table">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">create_stats_table</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create the log table if it does not exist</span>
+
 <span class="sd">        :param connection: DB connection object</span>
 <span class="sd">        :return: None</span>
+<span class="sd">        :rtype: None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">connection_cursor</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
-        <span class="n">connection_cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Statistics</span><span class="o">.</span><span class="n">initial_stats</span><span class="p">)</span>
+        <span class="n">connection_cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">constants</span><span class="o">.</span><span class="n">initial_stats</span><span class="p">)</span>
         <span class="n">connection</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
         <span class="n">connection</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
@@ -349,7 +305,11 @@
     <span class="k">def</span> <span class="nf">log_to_db</span><span class="p">(</span><span class="n">retailer</span><span class="p">,</span> <span class="n">stats</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Log statistics to the DB per retailer</span>
-<span class="sd">        :return:</span>
+
+<span class="sd">        :param retailer: Retailer&#39;s name</span>
+<span class="sd">        :param stats Statistics provided in a dict</span>
+<span class="sd">        :return: None</span>
+<span class="sd">        :rtype: None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">connection</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">create_db_con</span><span class="p">()</span>
         <span class="n">connection</span><span class="o">.</span><span class="n">autocommit</span> <span class="o">=</span> <span class="kc">True</span>
@@ -368,6 +328,7 @@
     <span class="k">def</span> <span class="nf">statistics</span><span class="p">(</span><span class="n">navigation_counter</span><span class="p">,</span> <span class="n">navigation_url_count</span><span class="p">,</span> <span class="n">item_counter</span><span class="p">,</span> <span class="n">duration</span><span class="p">,</span> <span class="n">urls</span><span class="p">,</span> <span class="n">retailer</span><span class="p">,</span> <span class="n">table_name</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Information on expected and collected data</span>
+
 <span class="sd">        :param navigation_counter: Amount of navigation URLs accessed</span>
 <span class="sd">        :param navigation_url_count: Expected navigation URLs</span>
 <span class="sd">        :param item_counter: Amount of items collected</span>
@@ -376,11 +337,8 @@
 <span class="sd">        :param retailer: Retailer collected</span>
 <span class="sd">        :param table_name: SQL table name where data are inserted</span>
 <span class="sd">        :return: None</span>
+<span class="sd">        :rtype: None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># print(f&quot;Main navigation links: {navigation_counter}&quot;)</span>
-        <span class="c1"># print(f&quot;Expected navigation links count: {navigation_url_count}&quot;)</span>
-        <span class="c1"># print(f&quot;Products collected: {item_counter}&quot;)</span>
-        <span class="c1"># print(f&quot;Duration: {Utils.time_format(duration)}&quot;)</span>
         <span class="n">failed_urls</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">url</span> <span class="ow">in</span> <span class="n">urls</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">url</span><span class="p">[</span><span class="s2">&quot;success&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
@@ -400,11 +358,24 @@
 
 
 <div class="viewcode-block" id="Utils"><a class="viewcode-back" href="../logging_class.html#logging_class.Utils">[docs]</a><span class="k">class</span> <span class="nc">Utils</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A collection of utility methods for common Python tasks.</span>
+
+<span class="sd">    This class contains a variety of methods that can be reused across different Python scripts</span>
+<span class="sd">    and projects. These methods cover a range of tasks, including string manipulation, file</span>
+<span class="sd">    handling, data validation, and more.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
 <div class="viewcode-block" id="Utils.create_db_con"><a class="viewcode-back" href="../logging_class.html#logging_class.Utils.create_db_con">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">create_db_con</span><span class="p">():</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        DB Connection</span>
-<span class="sd">        :return: Connection cursor</span>
+<span class="sd">        Connect to a PostgreSQL database.</span>
+
+<span class="sd">        This function creates a connection to a PostgreSQL database using the given credentials.</span>
+<span class="sd">        If the connection is successful, it returns a database connection object.</span>
+
+<span class="sd">        :return: A connection object that can be used to execute queries against the database.</span>
+<span class="sd">        :rtype: Object</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">connection</span> <span class="o">=</span> <span class="n">psycopg2</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
             <span class="n">host</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;LOCALHOST_AWS&quot;</span><span class="p">),</span>
@@ -418,9 +389,12 @@
 <div class="viewcode-block" id="Utils.time_format"><a class="viewcode-back" href="../logging_class.html#logging_class.Utils.time_format">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">time_format</span><span class="p">(</span><span class="n">duration</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Convert duration to human-readable time</span>
+<span class="sd">        Convert duration provided to friendly readable time</span>
+<span class="sd">        e.g. 01H 08m 55s</span>
+
 <span class="sd">        :param duration: Duration in millisecond</span>
-<span class="sd">        :return: Time</span>
+<span class="sd">        :return: Reformatted time</span>
+<span class="sd">        :rtype: String</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">duration</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">seconds</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">duration</span><span class="p">)</span>
@@ -441,11 +415,13 @@
 <div class="viewcode-block" id="Utils.insert_to_db"><a class="viewcode-back" href="../logging_class.html#logging_class.Utils.insert_to_db">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">insert_to_db</span><span class="p">(</span><span class="n">insert_query</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">retailer</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Add row data to DB</span>
+<span class="sd">        Add row data to the database</span>
+
 <span class="sd">        :param insert_query: Retailer specific query</span>
 <span class="sd">        :param row: Items details</span>
 <span class="sd">        :param retailer: Retailer collected</span>
 <span class="sd">        :return: None</span>
+<span class="sd">        :rtype: None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">connection</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">create_db_con</span><span class="p">()</span>
         <span class="n">cursor</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
@@ -463,13 +439,15 @@
 <div class="viewcode-block" id="Utils.make_request"><a class="viewcode-back" href="../logging_class.html#logging_class.Utils.make_request">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">make_request</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">request_headers</span><span class="p">,</span> <span class="n">proxy</span><span class="p">,</span> <span class="n">retailer</span><span class="p">,</span> <span class="n">verify</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Request made to provided URL</span>
+<span class="sd">        Request made to provided URL by using provided headers, proxy and SSL verification</span>
+
 <span class="sd">        :param url: Target URL</span>
 <span class="sd">        :param request_headers: HTTP header used in the HTTP request to provide information</span>
 <span class="sd">        :param proxy: Enabled True else false</span>
 <span class="sd">        :param retailer: Retailer collected</span>
 <span class="sd">        :param verify: whether we verify the server&#39;s TLS certificate</span>
 <span class="sd">        :return: Response object</span>
+<span class="sd">        :rtype: Object</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">MAX_RETRIES</span><span class="p">):</span>
@@ -495,10 +473,12 @@
 <div class="viewcode-block" id="Utils.get_product_schema"><a class="viewcode-back" href="../logging_class.html#logging_class.Utils.get_product_schema">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_product_schema</span><span class="p">(</span><span class="n">schema_products</span><span class="p">,</span> <span class="n">search_term</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Loops through available schema&#39;s to find the product one</span>
+<span class="sd">        Loops through available schema&#39;s to find the product object</span>
+
 <span class="sd">        :param schema_products: Available json schema&#39;s</span>
 <span class="sd">        :param search_term: Value to look for in schema to find the product dict</span>
 <span class="sd">        :return: product schema</span>
+<span class="sd">        :rtype: String</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">schema</span> <span class="ow">in</span> <span class="n">schema_products</span><span class="p">:</span>
             <span class="n">schema</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">schema</span><span class="p">)</span>
@@ -514,8 +494,10 @@
     <span class="k">def</span> <span class="nf">remove_html_tags</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Remove all html tags from a string</span>
+
 <span class="sd">        :param text: string of text to be cleaned</span>
 <span class="sd">        :return: cleaned string</span>
+<span class="sd">        :rtype: String</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">clean</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">&#39;&lt;.*?&gt;&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">clean</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span></div></div>

@@ -1,7 +1,0 @@
-john\_lewis\_main module
-========================
-
-.. automodule:: john_lewis_main
-   :members:
-   :undoc-members:
-   :show-inheritance:

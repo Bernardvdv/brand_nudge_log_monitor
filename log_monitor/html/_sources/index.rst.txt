@@ -1,8 +1,7 @@
-Documentation for the Code
-**************************
+Brand Nudge Documentation
+=========================
 
 .. include:: logging_class.rst
-
 
 Indices and tables
 ==================
