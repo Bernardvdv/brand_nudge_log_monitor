@@ -319,7 +319,7 @@ class ExceptionPageView(TemplateView):
         SELECT 
         created, name, url, message 
         FROM public.exception_logs
-        ORDER by created DESC LIMIT 100;
+        ORDER by created DESC LIMIT 1500;
         """
 
         cursor = create_db_con()
