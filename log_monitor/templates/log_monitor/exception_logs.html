@@ -6,20 +6,20 @@
         {% include "log_monitor/topnav.html" %}
         <div id="layoutSidenav">
             <div id="layoutSidenav_nav">
-               {% include "log_monitor/sidenav.html" %}
+                {% include "log_monitor/sidenav.html" %}
             </div>
             <div id="layoutSidenav_content">
                 <main>
                     <div class="container-fluid px-4">
-                        <h1 class="mt-4">Retailers</h1>
+                        <h1 class="mt-4">Error Logs</h1>
                         <ol class="breadcrumb mb-4">
                             <li class="breadcrumb-item"><a href="{% url 'home' %}">Dashboard</a></li>
-                            <li class="breadcrumb-item active">Retailers</li>
+                            <li class="breadcrumb-item active">Exception Logs</li>
                         </ol>
                         <div class="card mb-4">
                             <div class="card-header">
                                 <i class="fas fa-table me-1"></i>
-                                Retailer Details
+                                Exception Logs (Failed URL's)
                             </div>
                             <div class="card-body">
                                 <table id="datatablesSimple">
@@ -27,28 +27,25 @@
                                         <tr>
                                             <th>Date</th>
                                             <th>Retailer</th>
-                                            <th>Cron Time</th>
-                                            <th>Retailer URL</th>
-                                            <th>Proxy</th>
+                                            <th>URL</th>
+                                            <th>Message</th>
                                         </tr>
                                     </thead>
                                     <tfoot>
                                         <tr>
                                             <th>Date</th>
                                             <th>Retailer</th>
-                                            <th>Cron Time</th>
-                                            <th>Retailer URL</th>
-                                            <th>Proxy</th>
+                                            <th>URL</th>
+                                            <th>Message</th>
                                         </tr>
                                     </tfoot>
                                     <tbody>
-                                    {% for x in retailers_detail %}
+                                    {% for x in exception_logs %}
                                         <tr>
-                                            <td>{{ x.date }}</td>
-                                            <td>{{ x.retailer }}</td>
-                                            <td>{{ x.cron_time }}</td>
-                                            <td><a href="{{ x.retailer_url }}">{{ x.retailer_url }}</a></td>
-                                            <td>{{ x.proxy_used }}</td>
+                                            <td>{{ x.0 }}</td>
+                                            <td>{{ x.1 }}</td>
+                                            <td>{{ x.2 }}</td>
+                                            <td>{{ x.3 }}</td>
                                         </tr>
                                     {% endfor %}
                                     </tbody>
@@ -59,7 +56,7 @@
                 </main>
                 <footer class="py-4 bg-light mt-auto">
                     <div class="container-fluid px-4">
-                      <div class="d-flex align-items-center justify-content-between small">
+                        <div class="d-flex align-items-center justify-content-between small">
                             <div class="text-muted">Copyright &copy; Brand Nudge Log Monitor {% now 'Y' %}</div>
 <!--                            <div>-->
 <!--                                <a href="#">Privacy Policy</a>-->

@@ -16,6 +16,8 @@ urlpatterns = [
          name='retailers'),
     path('cron', views.CronPageView.as_view(),
          name='cron'),
+    path('exceptions', views.ExceptionPageView.as_view(),
+         name='exceptions'),
     path('get_total_product_count_last_10/',
          views.HomePageView.get_total_product_count_last_10,
          name="get_total_product_count_last_10"),

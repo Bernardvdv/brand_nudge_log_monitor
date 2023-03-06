@@ -301,3 +301,30 @@ class Utils:
     def get_retailers(self):
         retailer_info = Retailers.objects.values_list('retailer', 'table_name')
         return retailer_info
+
+
+class ExceptionPageView(TemplateView):
+    template_name = 'log_monitor/exception_logs.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect('login')
+
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        exception_logs_query = """
+        SELECT 
+        created, name, url, message 
+        FROM public.exception_logs
+        ORDER by created DESC LIMIT 100;
+        """
+
+        cursor = create_db_con()
+        cursor.execute(exception_logs_query)
+        exception_logs = cursor.fetchall()
+
+        context['exception_logs'] = exception_logs
+        return context
