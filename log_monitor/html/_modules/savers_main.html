@@ -84,13 +84,13 @@
 
 <span class="n">log_error</span> <span class="o">=</span> <span class="n">LogHandler</span><span class="p">()</span>
 <span class="n">statistics_class</span> <span class="o">=</span> <span class="n">Statistics</span><span class="p">()</span>
-<span class="n">retailer</span> <span class="o">=</span> <span class="s2">&quot;Savers&quot;</span>
 
 <span class="c1"># Generate fake Request headers</span>
 <span class="n">ua</span> <span class="o">=</span> <span class="n">UserAgent</span><span class="p">()</span>
-<span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;user-agent&quot;</span><span class="p">:</span> <span class="n">ua</span><span class="o">.</span><span class="n">chrome</span><span class="p">}</span>
-<span class="n">custom_headers</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;User-Agent&#39;</span><span class="p">:</span> <span class="s1">&#39;Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.76 Safari/537.36&#39;</span><span class="p">,</span>
+<span class="n">HEADERS</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;user-agent&quot;</span><span class="p">:</span> <span class="n">ua</span><span class="o">.</span><span class="n">chrome</span><span class="p">}</span>
+<span class="n">CUSTOM_HEADERS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;User-Agent&#39;</span><span class="p">:</span> <span class="s1">&#39;Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) &#39;</span>
+                  <span class="s1">&#39;Chrome/56.0.2924.76 Safari/537.36&#39;</span><span class="p">,</span>
     <span class="s2">&quot;Upgrade-Insecure-Requests&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span>
     <span class="s2">&quot;DNT&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span>
     <span class="s2">&quot;Accept&quot;</span><span class="p">:</span> <span class="s2">&quot;text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8&quot;</span><span class="p">,</span>
@@ -108,36 +108,10 @@
     <span class="s2">&quot;https&quot;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;PROXIES_HTTPS_RES&quot;</span><span class="p">)</span>
 <span class="p">}</span>
 
+<span class="n">RETAILER</span> <span class="o">=</span> <span class="s2">&quot;Savers&quot;</span>
 <span class="n">BASE_URL</span> <span class="o">=</span> <span class="s2">&quot;https://www.savers.co.uk/&quot;</span>
 <span class="n">MAX_RETRIES</span> <span class="o">=</span> <span class="mi">4</span>
 <span class="n">TABLE_NAME</span> <span class="o">=</span> <span class="s2">&quot;savers&quot;</span>
-
-
-<div class="viewcode-block" id="get_navigation_urls"><a class="viewcode-back" href="../savers_main.html#savers_main.get_navigation_urls">[docs]</a><span class="k">def</span> <span class="nf">get_navigation_urls</span><span class="p">():</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Get all navigation URLs from the base URL</span>
-
-<span class="sd">    :return: All navigation URLs</span>
-<span class="sd">    :rtype: Dictionary</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">item_list</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">r</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">make_request</span><span class="p">(</span><span class="n">BASE_URL</span><span class="p">,</span> <span class="n">custom_headers</span><span class="p">,</span> <span class="n">PROXIES_RES</span><span class="p">,</span> <span class="n">retailer</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">r</span> <span class="ow">and</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
-        <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="s2">&quot;lxml&quot;</span><span class="p">)</span>
-        <span class="n">nav_bar</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;li&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;shopcategories-class&quot;</span><span class="p">})</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">)</span>
-
-        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">nav_bar</span><span class="p">:</span>
-            <span class="n">cat_url</span> <span class="o">=</span> <span class="n">item</span><span class="p">[</span><span class="s1">&#39;href&#39;</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">cat_url</span><span class="p">:</span>
-                <span class="n">url_list_item</span> <span class="o">=</span> <span class="p">{</span>
-                    <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="n">cat_url</span><span class="p">,</span>
-                    <span class="s2">&quot;category&quot;</span><span class="p">:</span> <span class="n">item</span><span class="o">.</span><span class="n">text</span><span class="p">,</span>
-                    <span class="s2">&quot;attempts&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-                    <span class="s2">&quot;max_attempts&quot;</span><span class="p">:</span> <span class="n">MAX_RETRIES</span><span class="p">,</span>
-                    <span class="s2">&quot;success&quot;</span><span class="p">:</span> <span class="kc">False</span>
-                <span class="p">}</span>
-                <span class="n">item_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">url_list_item</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">item_list</span></div>
 
 
 <div class="viewcode-block" id="get_data"><a class="viewcode-back" href="../savers_main.html#savers_main.get_data">[docs]</a><span class="k">def</span> <span class="nf">get_data</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
@@ -149,25 +123,29 @@
 <span class="sd">    :rtype: Boolean and integer</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">r</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">make_request</span><span class="p">(</span><span class="n">BASE_URL</span> <span class="o">+</span> <span class="n">url</span><span class="p">,</span> <span class="n">custom_headers</span><span class="p">,</span> <span class="n">PROXIES_RES</span><span class="p">,</span> <span class="n">retailer</span><span class="p">)</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">make_request</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">url</span><span class="si">}</span><span class="s2">?resultsForPage=20&quot;</span><span class="p">,</span> <span class="n">CUSTOM_HEADERS</span><span class="p">,</span> <span class="n">PROXIES_RES</span><span class="p">,</span> <span class="n">RETAILER</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">r</span> <span class="ow">and</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
             <span class="n">soup_cat</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="s2">&quot;lxml&quot;</span><span class="p">)</span>
-            <span class="n">last_pagination_value</span> <span class="o">=</span> <span class="n">soup_cat</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;li&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;lastpage&quot;</span><span class="p">})</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">last_pagination_value</span> <span class="o">=</span> <span class="n">soup_cat</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;li&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;lastpage&quot;</span><span class="p">})</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">last_pagination_value</span> <span class="o">=</span> <span class="mi">1</span>
             <span class="n">item_counter</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="k">for</span> <span class="n">page</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">last_pagination_value</span><span class="p">)):</span>
-                <span class="n">full_url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">BASE_URL</span><span class="si">}{</span><span class="n">url</span><span class="si">}</span><span class="s2">?page=</span><span class="si">{</span><span class="n">page</span><span class="si">}</span><span class="s2">&amp;resultsForPage=100&quot;</span>
-                <span class="n">r</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">make_request</span><span class="p">(</span><span class="n">full_url</span><span class="p">,</span> <span class="n">custom_headers</span><span class="p">,</span> <span class="n">PROXIES_RES</span><span class="p">,</span> <span class="n">retailer</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">page</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">last_pagination_value</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="n">full_url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">url</span><span class="si">}</span><span class="s2">?page=</span><span class="si">{</span><span class="n">page</span><span class="si">}</span><span class="s2">&amp;resultsForPage=20&quot;</span>
+                <span class="n">r</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">make_request</span><span class="p">(</span><span class="n">full_url</span><span class="p">,</span> <span class="n">CUSTOM_HEADERS</span><span class="p">,</span> <span class="n">PROXIES_RES</span><span class="p">,</span> <span class="n">RETAILER</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">r</span> <span class="ow">and</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
                     <span class="n">product_page</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="s2">&quot;lxml&quot;</span><span class="p">)</span>
 
                     <span class="k">if</span> <span class="n">product_page</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;div&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;plp__product-list-container&quot;</span><span class="p">})</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                        <span class="n">product_container</span> <span class="o">=</span> <span class="n">product_page</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;div&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;plp__product-list-container&quot;</span><span class="p">})</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">)</span>
+                        <span class="n">product_container</span> <span class="o">=</span> <span class="n">product_page</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;div&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;plp__product-list-container&quot;</span><span class="p">})</span><span class="o">.</span>\
+                            <span class="n">find_all</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;item__productName&quot;</span><span class="p">})</span>
                         <span class="n">product_container_without_duplicates</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">product_container</span><span class="p">))</span>
 
                         <span class="k">for</span> <span class="n">product_url</span> <span class="ow">in</span> <span class="n">product_container_without_duplicates</span><span class="p">:</span>
                             <span class="k">if</span> <span class="n">product_url</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;href&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                                 <span class="n">full_product_url</span> <span class="o">=</span> <span class="n">BASE_URL</span> <span class="o">+</span> <span class="n">product_url</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;href&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-                                <span class="n">r</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">make_request</span><span class="p">(</span><span class="n">full_product_url</span><span class="p">,</span> <span class="n">custom_headers</span><span class="p">,</span> <span class="n">PROXIES_RES</span><span class="p">,</span> <span class="n">retailer</span><span class="p">)</span>
+                                <span class="n">r</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">make_request</span><span class="p">(</span><span class="n">full_product_url</span><span class="p">,</span> <span class="n">CUSTOM_HEADERS</span><span class="p">,</span> <span class="n">PROXIES_RES</span><span class="p">,</span> <span class="n">RETAILER</span><span class="p">)</span>
                                 <span class="k">if</span> <span class="n">r</span> <span class="ow">and</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
                                     <span class="n">product_item_page</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="s2">&quot;lxml&quot;</span><span class="p">)</span>
                                     <span class="n">schema_products</span> <span class="o">=</span> <span class="n">product_item_page</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s2">&quot;script&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;application/ld+json&#39;</span><span class="p">)</span>
@@ -185,21 +163,21 @@
                                             <span class="k">except</span><span class="p">:</span>
                                                 <span class="n">title</span> <span class="o">=</span> <span class="kc">None</span>
                                             <span class="k">try</span><span class="p">:</span>
-                                                <span class="n">shelfPrice</span> <span class="o">=</span> <span class="n">product_list</span><span class="p">[</span><span class="s2">&quot;offers&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;price&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                                                <span class="n">shelf_price</span> <span class="o">=</span> <span class="n">product_list</span><span class="p">[</span><span class="s2">&quot;offers&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;price&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
                                             <span class="k">except</span><span class="p">:</span>
-                                                <span class="n">shelfPrice</span> <span class="o">=</span> <span class="kc">None</span>
+                                                <span class="n">shelf_price</span> <span class="o">=</span> <span class="kc">None</span>
                                             <span class="k">try</span><span class="p">:</span>
                                                 <span class="n">currency</span> <span class="o">=</span> <span class="n">product_list</span><span class="p">[</span><span class="s2">&quot;offers&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;priceCurrency&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
                                             <span class="k">except</span><span class="p">:</span>
                                                 <span class="n">currency</span> <span class="o">=</span> <span class="kc">None</span>
                                             <span class="k">try</span><span class="p">:</span>
-                                                <span class="n">sourceId</span> <span class="o">=</span> <span class="n">product_list</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sku&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                                                <span class="n">source_id</span> <span class="o">=</span> <span class="n">product_list</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sku&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
                                             <span class="k">except</span><span class="p">:</span>
-                                                <span class="n">sourceId</span> <span class="o">=</span> <span class="kc">None</span>
+                                                <span class="n">source_id</span> <span class="o">=</span> <span class="kc">None</span>
                                             <span class="k">try</span><span class="p">:</span>
-                                                <span class="n">imageURL</span> <span class="o">=</span> <span class="n">product_list</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;image&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                                                <span class="n">image_url</span> <span class="o">=</span> <span class="n">BASE_URL</span> <span class="o">+</span> <span class="n">product_list</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;image&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
                                             <span class="k">except</span><span class="p">:</span>
-                                                <span class="n">imageURL</span> <span class="o">=</span> <span class="kc">None</span>
+                                                <span class="n">image_url</span> <span class="o">=</span> <span class="kc">None</span>
                                             <span class="k">try</span><span class="p">:</span>
                                                 <span class="n">brand</span> <span class="o">=</span> <span class="n">product_list</span><span class="p">[</span><span class="s2">&quot;brand&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
                                             <span class="k">except</span><span class="p">:</span>
@@ -213,17 +191,17 @@
                                             <span class="k">except</span><span class="p">:</span>
                                                 <span class="n">description</span> <span class="o">=</span> <span class="kc">None</span>
                                             <span class="k">try</span><span class="p">:</span>
-                                                <span class="n">inStock_schema</span> <span class="o">=</span> <span class="n">product_list</span><span class="p">[</span><span class="s2">&quot;offers&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;availability&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-                                                <span class="k">if</span> <span class="s2">&quot;InStock&quot;</span> <span class="ow">in</span> <span class="n">inStock_schema</span><span class="p">:</span>
-                                                    <span class="n">inStock</span> <span class="o">=</span> <span class="kc">True</span>
+                                                <span class="n">in_stock_schema</span> <span class="o">=</span> <span class="n">product_list</span><span class="p">[</span><span class="s2">&quot;offers&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;availability&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                                                <span class="k">if</span> <span class="s2">&quot;InStock&quot;</span> <span class="ow">in</span> <span class="n">in_stock_schema</span><span class="p">:</span>
+                                                    <span class="n">in_stock</span> <span class="o">=</span> <span class="kc">True</span>
                                                 <span class="k">else</span><span class="p">:</span>
-                                                    <span class="n">inStock</span> <span class="o">=</span> <span class="kc">False</span>
+                                                    <span class="n">in_stock</span> <span class="o">=</span> <span class="kc">False</span>
                                             <span class="k">except</span><span class="p">:</span>
-                                                <span class="n">inStock</span> <span class="o">=</span> <span class="kc">None</span>
+                                                <span class="n">in_stock</span> <span class="o">=</span> <span class="kc">None</span>
                                             <span class="k">try</span><span class="p">:</span>
-                                                <span class="n">skuURL</span> <span class="o">=</span> <span class="n">product_list</span><span class="p">[</span><span class="s2">&quot;offers&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;url&quot;</span><span class="p">)</span>
+                                                <span class="n">sku_url</span> <span class="o">=</span> <span class="n">BASE_URL</span> <span class="o">+</span> <span class="n">product_list</span><span class="p">[</span><span class="s2">&quot;offers&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;url&quot;</span><span class="p">)</span>
                                             <span class="k">except</span><span class="p">:</span>
-                                                <span class="n">skuURL</span> <span class="o">=</span> <span class="kc">None</span>
+                                                <span class="n">sku_url</span> <span class="o">=</span> <span class="kc">None</span>
 
                                             <span class="n">category_div</span> <span class="o">=</span> <span class="n">product_item_page</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;div&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;breadcrumb&quot;</span><span class="p">})</span>
                                             <span class="n">category_urls</span> <span class="o">=</span> <span class="n">category_div</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">)</span>
@@ -235,36 +213,83 @@
                                             <span class="n">category_list</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
                                             <span class="n">category</span> <span class="o">=</span> <span class="s2">&quot;/&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">category_list</span><span class="p">)</span>
 
-                                            <span class="n">countryCode</span> <span class="o">=</span> <span class="s2">&quot;UK&quot;</span>
+                                            <span class="n">country_code</span> <span class="o">=</span> <span class="s2">&quot;UK&quot;</span>
                                             <span class="n">date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
-                                            <span class="n">wasPrice</span> <span class="o">=</span> <span class="kc">None</span>
-                                            <span class="n">cardPrice</span> <span class="o">=</span> <span class="kc">None</span>
+                                            <span class="n">was_price</span> <span class="o">=</span> <span class="kc">None</span>
+                                            <span class="n">card_price</span> <span class="o">=</span> <span class="kc">None</span>
                                             <span class="n">bundled</span> <span class="o">=</span> <span class="kc">None</span>
-                                            <span class="n">masterSku</span> <span class="o">=</span> <span class="kc">None</span>
-                                            <span class="n">onPromo</span> <span class="o">=</span> <span class="kc">None</span>
-                                            <span class="n">promoData</span> <span class="o">=</span> <span class="p">[]</span>
+                                            <span class="n">master_sku</span> <span class="o">=</span> <span class="kc">None</span>
+                                            <span class="n">on_promo</span> <span class="o">=</span> <span class="kc">None</span>
+                                            <span class="n">promo_data</span> <span class="o">=</span> <span class="p">[]</span>
 
                                             <span class="n">insert_query</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">                                                    INSERT INTO public.savers(</span>
-<span class="s2">                                                        date, retailer, countrycode, currency, &quot;sourceId&quot;, ean, brand, title, &quot;shelfPrice&quot;, &quot;wasPrice&quot;, </span>
-<span class="s2">                                                        &quot;cardPrice&quot;, &quot;inStock&quot;, &quot;onPromo&quot;, &quot;promoData&quot;, &quot;skuURL&quot;, &quot;imageURL&quot;, bundled, &quot;masterSku&quot;, </span>
-<span class="s2">                                                        description, category)</span>
-<span class="s2">                                                        VALUES (</span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">);</span>
+<span class="s2">                                                        date, retailer, &quot;countryCode&quot;, currency, &quot;sourceId&quot;, ean,</span>
+<span class="s2">                                                        brand, title, &quot;shelfPrice&quot;, &quot;wasPrice&quot;, &quot;cardPrice&quot;,</span>
+<span class="s2">                                                        &quot;inStock&quot;, &quot;onPromo&quot;, &quot;promoData&quot;, &quot;skuURL&quot;, &quot;imageURL&quot;,</span>
+<span class="s2">                                                        bundled, &quot;masterSku&quot;, description, category)</span>
+<span class="s2">                                                        VALUES (</span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">,</span>
+<span class="s2">                                                        </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">);</span>
 <span class="s2">                                                &quot;&quot;&quot;</span>
 
-                                            <span class="n">row_data</span> <span class="o">=</span> <span class="p">[</span><span class="n">date</span><span class="p">,</span> <span class="n">retailer</span><span class="p">,</span> <span class="n">countryCode</span><span class="p">,</span> <span class="n">currency</span><span class="p">,</span> <span class="n">sourceId</span><span class="p">,</span> <span class="n">ean</span><span class="p">,</span> <span class="n">brand</span><span class="p">,</span>
-                                                        <span class="n">title</span><span class="p">,</span> <span class="n">shelfPrice</span><span class="p">,</span> <span class="n">wasPrice</span><span class="p">,</span> <span class="n">cardPrice</span><span class="p">,</span> <span class="n">inStock</span><span class="p">,</span> <span class="n">onPromo</span><span class="p">,</span>
-                                                        <span class="n">promoData</span><span class="p">,</span> <span class="n">skuURL</span><span class="p">,</span> <span class="n">imageURL</span><span class="p">,</span> <span class="n">bundled</span><span class="p">,</span> <span class="n">masterSku</span><span class="p">,</span> <span class="n">description</span><span class="p">,</span> <span class="n">category</span><span class="p">]</span>
+                                            <span class="n">row_data</span> <span class="o">=</span> <span class="p">[</span><span class="n">date</span><span class="p">,</span> <span class="n">RETAILER</span><span class="p">,</span> <span class="n">country_code</span><span class="p">,</span> <span class="n">currency</span><span class="p">,</span> <span class="n">source_id</span><span class="p">,</span> <span class="n">ean</span><span class="p">,</span>
+                                                        <span class="n">brand</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">shelf_price</span><span class="p">,</span> <span class="n">was_price</span><span class="p">,</span> <span class="n">card_price</span><span class="p">,</span> <span class="n">in_stock</span><span class="p">,</span>
+                                                        <span class="n">on_promo</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">promo_data</span><span class="p">),</span> <span class="n">sku_url</span><span class="p">,</span> <span class="n">image_url</span><span class="p">,</span> <span class="n">bundled</span><span class="p">,</span>
+                                                        <span class="n">master_sku</span><span class="p">,</span> <span class="n">description</span><span class="p">,</span> <span class="n">category</span><span class="p">]</span>
                                             <span class="n">item_counter</span> <span class="o">+=</span> <span class="mi">1</span>
 
-                                            <span class="n">Utils</span><span class="o">.</span><span class="n">insert_to_db</span><span class="p">(</span><span class="n">insert_query</span><span class="p">,</span> <span class="n">row_data</span><span class="p">,</span> <span class="n">retailer</span><span class="p">)</span>
+                                            <span class="n">Utils</span><span class="o">.</span><span class="n">insert_to_db</span><span class="p">(</span><span class="n">insert_query</span><span class="p">,</span> <span class="n">row_data</span><span class="p">,</span> <span class="n">RETAILER</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="n">item_counter</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="c1"># Log to DB</span>
-        <span class="n">log_error</span><span class="o">.</span><span class="n">error_db</span><span class="p">(</span><span class="n">retailer</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">())</span>
+        <span class="n">log_error</span><span class="o">.</span><span class="n">error_db</span><span class="p">(</span><span class="n">RETAILER</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">())</span>
         <span class="c1"># Log to file</span>
-        <span class="n">log_error</span><span class="o">.</span><span class="n">error_file</span><span class="p">(</span><span class="n">retailer</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">())</span>
+        <span class="n">log_error</span><span class="o">.</span><span class="n">error_file</span><span class="p">(</span><span class="n">RETAILER</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">())</span>
         <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<span class="c1"># def retry_failed_products():</span>
+<span class="c1">#     &quot;&quot;&quot;</span>
+<span class="c1">#     Get failed urls from exceptions table and retry</span>
+<span class="c1">#     :return: None</span>
+<span class="c1">#     &quot;&quot;&quot;</span>
+<span class="c1">#</span>
+<span class="c1">#     from logging_class import Utils</span>
+<span class="c1">#</span>
+<span class="c1">#     failed_urls_query = &quot;&quot;&quot;</span>
+<span class="c1">#     SELECT url from public.exception_logs</span>
+<span class="c1">#     WHERE NAME = %s AND created::date = now()::date;</span>
+<span class="c1">#     &quot;&quot;&quot;</span>
+<span class="c1">#</span>
+<span class="c1">#     connection = Utils.create_db_con()</span>
+<span class="c1">#     cursor = connection.cursor()</span>
+<span class="c1">#     params = (RETAILER,)</span>
+<span class="c1">#</span>
+<span class="c1">#     # Get failed urls exception table</span>
+<span class="c1">#     cursor.execute(failed_urls_query, params)</span>
+<span class="c1">#     failed_urls = cursor.fetchall()</span>
+<span class="c1">#</span>
+<span class="c1">#     delete_urls_query = &quot;&quot;&quot;</span>
+<span class="c1">#     DELETE FROM public.exception_logs</span>
+<span class="c1">#     WHERE NAME = %s;</span>
+<span class="c1">#     &quot;&quot;&quot;</span>
+
+    <span class="c1"># Delete failed urls from exception table</span>
+    <span class="c1"># cursor.execute(delete_urls_query, params)</span>
+    <span class="c1"># connection.commit()</span>
+    <span class="c1"># connection.cursor().close()</span>
+
+    <span class="c1"># for failed_url in failed_urls:</span>
+    <span class="c1">#     try:</span>
+    <span class="c1">#         failed_url_string = failed_url[0]</span>
+    <span class="c1">#         converted_url = failed_url_string.split(&#39;?&#39;)[0]</span>
+    <span class="c1">#         get_data(converted_url)</span>
+    <span class="c1">#     except Exception as e:</span>
+    <span class="c1">#         # Log to DB</span>
+    <span class="c1">#         log_error.error_db(RETAILER, e, sys.exc_info())</span>
+    <span class="c1">#         # Log to file</span>
+    <span class="c1">#         log_error.error_file(RETAILER, e, sys.exc_info())</span>
+    <span class="c1">#         pass</span>
 
 
 <div class="viewcode-block" id="parse_urls"><a class="viewcode-back" href="../savers_main.html#savers_main.parse_urls">[docs]</a><span class="k">def</span> <span class="nf">parse_urls</span><span class="p">(</span><span class="n">urls</span><span class="p">):</span>
@@ -298,13 +323,136 @@
 
     <span class="n">duration</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span>
     <span class="c1"># Lets record some stats</span>
-    <span class="n">Statistics</span><span class="o">.</span><span class="n">statistics</span><span class="p">(</span><span class="n">navigation_counter</span><span class="p">,</span> <span class="n">navigation_url_count</span><span class="p">,</span> <span class="n">item_counter</span><span class="p">,</span> <span class="n">duration</span><span class="p">,</span> <span class="n">urls</span><span class="p">,</span> <span class="n">retailer</span><span class="p">,</span> <span class="n">TABLE_NAME</span><span class="p">)</span></div>
+    <span class="n">Statistics</span><span class="o">.</span><span class="n">statistics</span><span class="p">(</span><span class="n">navigation_counter</span><span class="p">,</span> <span class="n">navigation_url_count</span><span class="p">,</span> <span class="n">item_counter</span><span class="p">,</span>
+                          <span class="n">duration</span><span class="p">,</span> <span class="n">urls</span><span class="p">,</span> <span class="n">RETAILER</span><span class="p">,</span> <span class="n">TABLE_NAME</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_navigation_urls"><a class="viewcode-back" href="../savers_main.html#savers_main.get_navigation_urls">[docs]</a><span class="k">def</span> <span class="nf">get_navigation_urls</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get all navigation URLs from the base URL</span>
+
+<span class="sd">    :return: All navigation URLs</span>
+<span class="sd">    :rtype: Dictionary</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">categories_per_cat</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Allergy&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.savers.co.uk/Health-%26-Wellbeing/Allergy/c/allergy&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Pain Relief&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.savers.co.uk/Health-%26-Wellbeing/Pain-Relief/c/pain-relief&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Cold &amp; Flu Remedies&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.savers.co.uk/Health-%26-Wellbeing/Cold-%26-Flu-Remedies/c/cough-cold-flu&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Childrens Medicines&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.savers.co.uk/Health-%26-Wellbeing/Children</span><span class="si">%27s</span><span class="s1">-Medicines/c/childrens-medicines&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;First Aid&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.savers.co.uk/Health-%26-Wellbeing/First-Aid/c/first-aid&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Foot Care&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.savers.co.uk/Health-%26-Wellbeing/Foot-Care/c/foot-care&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Incontinence&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.savers.co.uk/Health-%26-Wellbeing/Incontinence/c/incontinence&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Quit Smoking Products&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.savers.co.uk/Health-%26-Wellbeing/Quit-Smoking-Products/c/quit-smoking&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Vitamins &amp; Supplements&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.savers.co.uk/Health-%26-Wellbeing/Vitamins-%26-Supplements/c/vitamins-suppliements&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Weight Management&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.savers.co.uk/Health-%26-Wellbeing/Weight-Management/c/weight-management&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Stomach And Bowel&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.savers.co.uk/Health-%26-Wellbeing/Stomach-and-Bowel/c/stomach-bowel&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Sexual And Intimate Health&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.savers.co.uk/Health-%26-Wellbeing/Sexual-and-Intimate-Health/c/sexual-intimate-health&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Ear &amp; Eye Care&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.savers.co.uk/Health-%26-Wellbeing/Ear-%26-Eye-Care/c/ear-eye-care&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Oral Care&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.savers.co.uk/Health-%26-Wellbeing/Oral-Care/c/mouth&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home Fragrance&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.savers.co.uk/Household/Home-Fragrance/c/home-fragrance&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Cleaning Products&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.savers.co.uk/Household/Cleaning-Products/c/cleaning-products&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Laundry &amp; Ironing&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.savers.co.uk/Household/Laundry-&amp;-Ironing/c/laundry-and-ironing&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Household Essentials&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.savers.co.uk/Household/Household-Essentials/c/household-essentials&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Kitchen, Toilet Rolls &amp; Tissues&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.savers.co.uk/Household/Kitchen%2C-Toilet-Rolls-%26-Tissues/c/kitchen-&#39;</span>
+                <span class="s1">&#39;toilet-rolls-and-tissues&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Household Electricals&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.savers.co.uk/Household/Household-Electricals-/c/household_electricals&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Cleansing&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.savers.co.uk/Skin-Care/Cleansing/c/cleansing&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Face Moisturiser&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.savers.co.uk/Skin-Care/Face-Moisturiser/c/face-moisturiser&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Eye Care&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.savers.co.uk/Skin-Care/Eye-Care/c/eye_care&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Masks&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.savers.co.uk/Skin-Care/Masks/c/masks&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Lip Care&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.savers.co.uk/Skin-Care/Lip-Care/c/lip-balm&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Body Care&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.savers.co.uk/Skin-Care/Body-Care/c/body-care&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Cotton Wool&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.savers.co.uk/Skin-Care/Cotton-Wool/c/cotton-wool&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Fake Tan &amp; Bronzing&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.savers.co.uk/Skin-Care/Fake-Tan-%26-Bronzing/c/fake-tan-bronzing&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Hand Care&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.savers.co.uk/Skin-Care/Hand-Care/c/hand-care&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Suncare&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.savers.co.uk/Skin-Care/Suncare/c/suncare?q=</span><span class="si">%3a</span><span class="s1">bestBiz&amp;articleQ=</span><span class="si">%3a</span><span class="s1">bestBiz&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Washing &amp; Bathing&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.savers.co.uk/Toiletries/Washing-%26-Bathing-/c/washing_bathing&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Bathing Accessories&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.savers.co.uk/Toiletries/Bathing-Accessories/c/bathing_accessories&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Deodorants&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.savers.co.uk/Toiletries/Deodorants/c/deodorants&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Dental Care&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.savers.co.uk/Toiletries/Dental-Care/c/dental_new&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Female Hair Removal&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.savers.co.uk/Toiletries/Female-Hair-Removal-/c/female_hair_removal&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Mens Shaving&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.savers.co.uk/Toiletries/Men</span><span class="si">%27s</span><span class="s1">-Shaving/c/shaving_for_men&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Menstrual Care&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.savers.co.uk/Toiletries/Menstrual-Care/c/feminine_care&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Baby &amp; Childrens Toiletries&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.savers.co.uk/Toiletries/Baby-%26-Children</span><span class="si">%27s</span><span class="s1">-Toiletries/c/kids&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Bath &amp; Body Gift Sets&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.savers.co.uk/Toiletries/Bath-%26-Body-Gift-Sets-/c/bath_body_gift_sets&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Womens Perfumes&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.savers.co.uk/perfume/Women</span><span class="si">%27s</span><span class="s1">-Perfumes/c/for-her&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;For Him&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.savers.co.uk/perfume/For-Him/c/for-him&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Eye Makeup&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.savers.co.uk/Makeup/Eye-Makeup/c/eyes&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Face Makeup&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.savers.co.uk/Makeup/Face-Makeup/c/face&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Lip Makeup&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.savers.co.uk/Makeup/Lip-Makeup/c/lips&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Nails&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.savers.co.uk/Makeup/Nails/c/nails&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Makeup Accessories&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.savers.co.uk/Makeup/Makeup-Accessories/c/tools-accessories&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Shampoo&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.savers.co.uk/Hair/Shampoo/c/hair_shampoo&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Conditioner&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.savers.co.uk/Hair/Conditioner/c/hair_conditioner&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Hair Treatments&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.savers.co.uk/Hair/Hair-Treatments/c/hair_treatment&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Hair Dyes&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.savers.co.uk/Hair/Hair-Dyes/c/hair_dyes&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Hair Styling Products&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.savers.co.uk/Hair/Hair-Styling-Products/c/hair_styling&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Hair Accessories&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.savers.co.uk/Hair/Hair-Accessories/c/hair_accessories&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Baby Bath Time&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.savers.co.uk/Baby/Baby-Bath-Time/c/bath-time&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Baby Changing&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.savers.co.uk/Baby/Baby-Changing/c/baby-changing&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Baby Feeding&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.savers.co.uk/Baby/Baby-Feeding/c/feeding&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Baby Medicine&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.savers.co.uk/Baby/Baby-Medicine/c/baby-medicine&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Baby Accessories&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.savers.co.uk/Baby/Baby-Accessories/c/baby-accessories&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Deodorants &amp; Antiperspirants&#39;</span><span class="p">,</span>
+         <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;https://www.savers.co.uk/Men&#39;s/Deodorants-&amp;-Antiperspirants/c/mens-deodorants-and-antiperspirants&quot;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Washing &amp; Bathing&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s2">&quot;https://www.savers.co.uk/Men&#39;s/Washing-&amp;-Bathing/c/mens-washing-and-bathing&quot;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Shaving &amp; Grooming&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.savers.co.uk/Men</span><span class="si">%27s</span><span class="s1">/Shaving-&amp;-Grooming/c/mens-shaving-and-grooming&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Beard Care&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.savers.co.uk/Men</span><span class="si">%27s</span><span class="s1">/Beard-Care/c/mens-beard-grooming&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Skincare For Men&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.savers.co.uk/Men</span><span class="si">%27s</span><span class="s1">/Skincare-For-Men/c/mens-skin-care&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Hair Care&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.savers.co.uk/Men</span><span class="si">%27s</span><span class="s1">/Hair-Care/c/mens-hair-care&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Food&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.savers.co.uk/Food-%26-Drink/Food/c/food&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Drinks&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.savers.co.uk/Food-%26-Drink/Drinks/c/drinks&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Dogs&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.savers.co.uk/Pets/Dogs-/c/pet_dogs&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Cats&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.savers.co.uk/Pets/Cats/c/pet_cat&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Small Pets &amp; Animals&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.savers.co.uk/Pets/Small-Pets-%26-Animals-/c/pet_small&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Pet Cleaning&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.savers.co.uk/Pets/Pet-Cleaning/c/pet_cleaning&#39;</span><span class="p">},</span>
+    <span class="p">]</span>
+
+    <span class="n">item_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">categories_per_cat</span><span class="p">:</span>
+        <span class="n">url_list_item</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;url&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;category&quot;</span><span class="p">:</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;category&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;attempts&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="s2">&quot;max_attempts&quot;</span><span class="p">:</span> <span class="n">MAX_RETRIES</span><span class="p">,</span>
+            <span class="s2">&quot;success&quot;</span><span class="p">:</span> <span class="kc">False</span>
+        <span class="p">}</span>
+        <span class="n">item_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">url_list_item</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">item_list</span></div>
 
 
 <div class="viewcode-block" id="main"><a class="viewcode-back" href="../savers_main.html#savers_main.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Initiate collection&quot;&quot;&quot;</span>
     <span class="n">navigation_urls</span> <span class="o">=</span> <span class="n">get_navigation_urls</span><span class="p">()</span>
     <span class="n">parse_urls</span><span class="p">(</span><span class="n">navigation_urls</span><span class="p">)</span></div>
+    <span class="c1"># retry_failed_products()</span>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>

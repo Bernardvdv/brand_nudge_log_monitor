@@ -1,0 +1,7 @@
+racecrate\_main module
+======================
+
+.. automodule:: racecrate_main
+   :members:
+   :undoc-members:
+   :show-inheritance:

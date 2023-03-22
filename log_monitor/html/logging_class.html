@@ -44,9 +44,11 @@
 <li><a class="reference internal" href="#">logging_class module</a><ul>
 <li><a class="reference internal" href="#logging_class.LogHandler"><code class="docutils literal notranslate"><span class="pre">LogHandler</span></code></a><ul>
 <li><a class="reference internal" href="#logging_class.LogHandler.create_cron_table"><code class="docutils literal notranslate"><span class="pre">LogHandler.create_cron_table()</span></code></a></li>
+<li><a class="reference internal" href="#logging_class.LogHandler.create_exception_table"><code class="docutils literal notranslate"><span class="pre">LogHandler.create_exception_table()</span></code></a></li>
 <li><a class="reference internal" href="#logging_class.LogHandler.create_log_table"><code class="docutils literal notranslate"><span class="pre">LogHandler.create_log_table()</span></code></a></li>
 <li><a class="reference internal" href="#logging_class.LogHandler.cron_logs"><code class="docutils literal notranslate"><span class="pre">LogHandler.cron_logs()</span></code></a></li>
 <li><a class="reference internal" href="#logging_class.LogHandler.error_db"><code class="docutils literal notranslate"><span class="pre">LogHandler.error_db()</span></code></a></li>
+<li><a class="reference internal" href="#logging_class.LogHandler.error_exception_report"><code class="docutils literal notranslate"><span class="pre">LogHandler.error_exception_report()</span></code></a></li>
 <li><a class="reference internal" href="#logging_class.LogHandler.error_file"><code class="docutils literal notranslate"><span class="pre">LogHandler.error_file()</span></code></a></li>
 <li><a class="reference internal" href="#logging_class.LogHandler.error_slack"><code class="docutils literal notranslate"><span class="pre">LogHandler.error_slack()</span></code></a></li>
 </ul>
@@ -97,8 +99,10 @@
   <section id="module-logging_class">
 <span id="logging-class-module"></span><h1>logging_class module<a class="headerlink" href="#module-logging_class" title="Permalink to this heading"></a></h1>
 <p>A class that provides generic reusable features for data collect.</p>
-<p>This class is designed to provide common functionality that can be used across different Python programs.
-It includes methods for handling error logging, string manipulation, data conversion, and more.</p>
+<p>This class is designed to provide common functionality that can be used across
+different Python programs.
+It includes methods for handling error logging, string manipulation,
+data conversion, and more.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="logging_class.LogHandler">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">logging_class.</span></span><span class="sig-name descname"><span class="pre">LogHandler</span></span><a class="reference internal" href="_modules/logging_class.html#LogHandler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#logging_class.LogHandler" title="Permalink to this definition"></a></dt>
@@ -111,6 +115,23 @@ and the Slack API to push messages to a defined Slack channel</p>
 <dt class="sig sig-object py" id="logging_class.LogHandler.create_cron_table">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create_cron_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connection</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/logging_class.html#LogHandler.create_cron_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#logging_class.LogHandler.create_cron_table" title="Permalink to this definition"></a></dt>
 <dd><p>Create the cron table if it does not exist</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>connection</strong> – DB connection object</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="logging_class.LogHandler.create_exception_table">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create_exception_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connection</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/logging_class.html#LogHandler.create_exception_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#logging_class.LogHandler.create_exception_table" title="Permalink to this definition"></a></dt>
+<dd><p>Create the exception table if it does not exist</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>connection</strong> – DB connection object</p>
@@ -168,6 +189,27 @@ and the Slack API to push messages to a defined Slack channel</p>
 <li><p><strong>retailer</strong> – Retailer name</p></li>
 <li><p><strong>message</strong> – Error message from exception</p></li>
 <li><p><strong>sys_info</strong> – Error object</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="logging_class.LogHandler.error_exception_report">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">error_exception_report</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">retailer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/logging_class.html#LogHandler.error_exception_report"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#logging_class.LogHandler.error_exception_report" title="Permalink to this definition"></a></dt>
+<dd><p>Log failed urls to the exception report table</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>retailer</strong> – Retailer name</p></li>
+<li><p><strong>url</strong> – Failed URL</p></li>
+<li><p><strong>message</strong> – Error message from exception</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>

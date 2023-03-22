@@ -68,8 +68,10 @@
 <span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">A class that provides generic reusable features for data collect.</span>
 
-<span class="sd">This class is designed to provide common functionality that can be used across different Python programs.</span>
-<span class="sd">It includes methods for handling error logging, string manipulation, data conversion, and more.</span>
+<span class="sd">This class is designed to provide common functionality that can be used across</span>
+<span class="sd">different Python programs.</span>
+<span class="sd">It includes methods for handling error logging, string manipulation,</span>
+<span class="sd">data conversion, and more.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">json</span>
@@ -83,6 +85,7 @@
 <span class="kn">import</span> <span class="nn">psycopg2</span>
 <span class="kn">import</span> <span class="nn">requests</span>
 <span class="kn">from</span> <span class="nn">dotenv</span> <span class="kn">import</span> <span class="n">load_dotenv</span>
+<span class="kn">from</span> <span class="nn">psycopg2</span> <span class="kn">import</span> <span class="n">errors</span>
 
 <span class="kn">import</span> <span class="nn">constants</span>
 
@@ -91,6 +94,7 @@
 <span class="n">requests</span><span class="o">.</span><span class="n">adapters</span><span class="o">.</span><span class="n">DEFAULT_RETRIES</span> <span class="o">=</span> <span class="mi">5</span>
 <span class="kn">from</span> <span class="nn">requests.packages.urllib3.exceptions</span> <span class="kn">import</span> <span class="n">InsecureRequestWarning</span>
 
+<span class="n">UniqueViolation</span> <span class="o">=</span> <span class="n">errors</span><span class="o">.</span><span class="n">lookup</span><span class="p">(</span><span class="s1">&#39;23505&#39;</span><span class="p">)</span>
 <span class="n">requests</span><span class="o">.</span><span class="n">packages</span><span class="o">.</span><span class="n">urllib3</span><span class="o">.</span><span class="n">disable_warnings</span><span class="p">(</span><span class="n">InsecureRequestWarning</span><span class="p">)</span>
 <span class="n">SLACK_WEBHOOK</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;SLACK_WEBHOOK&quot;</span><span class="p">)</span>
 
@@ -115,6 +119,20 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">connection_cursor</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
         <span class="n">connection_cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">constants</span><span class="o">.</span><span class="n">initial_sql</span><span class="p">)</span>
+        <span class="n">connection</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+        <span class="n">connection</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="LogHandler.create_exception_table"><a class="viewcode-back" href="../logging_class.html#logging_class.LogHandler.create_exception_table">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">create_exception_table</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create the exception table if it does not exist</span>
+
+<span class="sd">        :param connection: DB connection object</span>
+<span class="sd">        :return: None</span>
+<span class="sd">        :rtype: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">connection_cursor</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+        <span class="n">connection_cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">constants</span><span class="o">.</span><span class="n">exception_sql</span><span class="p">)</span>
         <span class="n">connection</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
         <span class="n">connection</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
@@ -193,6 +211,33 @@
 
         <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Retailer: </span><span class="si">{</span><span class="n">retailer</span><span class="si">}</span><span class="s2">, Message: </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">, Function: </span><span class="si">{</span><span class="n">function_name</span><span class="si">}</span><span class="s2">, Line Nr: </span><span class="si">{</span><span class="n">lineno</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="LogHandler.error_exception_report"><a class="viewcode-back" href="../logging_class.html#logging_class.LogHandler.error_exception_report">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">error_exception_report</span><span class="p">(</span><span class="n">retailer</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Log failed urls to the exception report table</span>
+
+<span class="sd">        :param retailer: Retailer name</span>
+<span class="sd">        :param url: Failed URL</span>
+<span class="sd">        :param message: Error message from exception</span>
+<span class="sd">        :return: None</span>
+<span class="sd">        :rtype: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">error_record</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;Created&quot;</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span>
+            <span class="s2">&quot;Name&quot;</span><span class="p">:</span> <span class="n">retailer</span><span class="p">,</span>
+            <span class="s2">&quot;Url&quot;</span><span class="p">:</span> <span class="n">url</span><span class="p">,</span>
+            <span class="s2">&quot;Message&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">message</span><span class="p">),</span>
+        <span class="p">}</span>
+
+        <span class="n">connection</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">create_db_con</span><span class="p">()</span>
+        <span class="n">connection_cursor</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+        <span class="c1"># Let&#39;s check if the exception log table exist and create if not</span>
+        <span class="n">LogHandler</span><span class="o">.</span><span class="n">create_exception_table</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
+        <span class="n">connection_cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">constants</span><span class="o">.</span><span class="n">insert_exception_sql</span><span class="p">,</span> <span class="n">error_record</span><span class="p">)</span>
+
+        <span class="n">connection</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+        <span class="n">connection</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
 <div class="viewcode-block" id="LogHandler.error_slack"><a class="viewcode-back" href="../logging_class.html#logging_class.LogHandler.error_slack">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">error_slack</span><span class="p">(</span><span class="n">retailer</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">message_type</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Send a Slack message to a channel via a webhook.</span>
@@ -205,58 +250,58 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">message_type</span> <span class="o">==</span> <span class="s2">&quot;error&quot;</span><span class="p">:</span>
             <span class="n">payload</span> <span class="o">=</span> <span class="p">{</span>
-                        <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="s2">&quot;Error&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;blocks&quot;</span><span class="p">:</span> <span class="p">[</span>
-                            <span class="p">{</span>
-                                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;section&quot;</span><span class="p">,</span>
-                                <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="p">{</span>
-                                    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;mrkdwn&quot;</span><span class="p">,</span>
-                                    <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="s2">&quot;*Error*&quot;</span>
-                                <span class="p">}</span>
-                            <span class="p">},</span>
-                            <span class="p">{</span>
-                                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;divider&quot;</span>
-                            <span class="p">},</span>
-                            <span class="p">{</span>
-                                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;section&quot;</span><span class="p">,</span>
-                                <span class="s2">&quot;block_id&quot;</span><span class="p">:</span> <span class="s2">&quot;section567&quot;</span><span class="p">,</span>
-                                <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="p">{</span>
-                                    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;mrkdwn&quot;</span><span class="p">,</span>
-                                    <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;*Retailer:* </span><span class="si">{</span><span class="n">retailer</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
-                                            <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2"> *Message:* </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span>
-                                <span class="p">},</span>
-                            <span class="p">},</span>
-                        <span class="p">]</span>
-                    <span class="p">}</span>
+                <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="s2">&quot;Error&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;blocks&quot;</span><span class="p">:</span> <span class="p">[</span>
+                    <span class="p">{</span>
+                        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;section&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="p">{</span>
+                            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;mrkdwn&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="s2">&quot;*Error*&quot;</span>
+                        <span class="p">}</span>
+                    <span class="p">},</span>
+                    <span class="p">{</span>
+                        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;divider&quot;</span>
+                    <span class="p">},</span>
+                    <span class="p">{</span>
+                        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;section&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;block_id&quot;</span><span class="p">:</span> <span class="s2">&quot;section567&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="p">{</span>
+                            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;mrkdwn&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;*Retailer:* </span><span class="si">{</span><span class="n">retailer</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+                                    <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2"> *Message:* </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span>
+                        <span class="p">},</span>
+                    <span class="p">},</span>
+                <span class="p">]</span>
+            <span class="p">}</span>
         <span class="k">elif</span> <span class="n">message_type</span> <span class="o">==</span> <span class="s2">&quot;stats&quot;</span><span class="p">:</span>
             <span class="n">payload</span> <span class="o">=</span> <span class="p">{</span>
-                        <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="s2">&quot;Statistics Report&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;blocks&quot;</span><span class="p">:</span> <span class="p">[</span>
-                            <span class="p">{</span>
-                                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;section&quot;</span><span class="p">,</span>
-                                <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="p">{</span>
-                                    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;mrkdwn&quot;</span><span class="p">,</span>
-                                    <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="s2">&quot;*Statistics Report*&quot;</span>
-                                <span class="p">}</span>
-                            <span class="p">},</span>
-                            <span class="p">{</span>
-                                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;divider&quot;</span>
-                            <span class="p">},</span>
-                            <span class="p">{</span>
-                                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;section&quot;</span><span class="p">,</span>
-                                <span class="s2">&quot;block_id&quot;</span><span class="p">:</span> <span class="s2">&quot;section567&quot;</span><span class="p">,</span>
-                                <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="p">{</span>
-                                    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;mrkdwn&quot;</span><span class="p">,</span>
-                                    <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;*Retailer:* </span><span class="si">{</span><span class="n">retailer</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
-                                            <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2"> *Main Navigation Links:* </span><span class="si">{</span><span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Navigation_count&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;N/a&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
-                                            <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2"> *Expected Navigation Links Count:* </span><span class="si">{</span><span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Navigation_url_count&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;N/a&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
-                                            <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2"> *Products Collected:* </span><span class="si">{</span><span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Item_counter&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;N/a&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
-                                            <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2"> *Duration:* </span><span class="si">{</span><span class="n">Utils</span><span class="o">.</span><span class="n">time_format</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Duration&#39;</span><span class="p">,</span><span class="w"> </span><span class="kc">None</span><span class="p">))</span><span class="si">}</span><span class="s2">&quot;</span>
-                                            <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2"> *Failed URLS:* </span><span class="si">{</span><span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Failed_URLS&#39;</span><span class="p">,</span><span class="w"> </span><span class="kc">None</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
-                                <span class="p">},</span>
-                            <span class="p">},</span>
-                        <span class="p">]</span>
-                    <span class="p">}</span>
+                <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="s2">&quot;Statistics Report&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;blocks&quot;</span><span class="p">:</span> <span class="p">[</span>
+                    <span class="p">{</span>
+                        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;section&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="p">{</span>
+                            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;mrkdwn&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="s2">&quot;*Statistics Report*&quot;</span>
+                        <span class="p">}</span>
+                    <span class="p">},</span>
+                    <span class="p">{</span>
+                        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;divider&quot;</span>
+                    <span class="p">},</span>
+                    <span class="p">{</span>
+                        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;section&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;block_id&quot;</span><span class="p">:</span> <span class="s2">&quot;section567&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="p">{</span>
+                            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;mrkdwn&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;*Retailer:* </span><span class="si">{</span><span class="n">retailer</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+                                    <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2"> *Main Navigation Links:* </span><span class="si">{</span><span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Navigation_count&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;N/a&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+                                    <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2"> *Expected Navigation Links:* </span><span class="si">{</span><span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Navigation_url_count&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;N/a&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+                                    <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2"> *Products Collected:* </span><span class="si">{</span><span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Item_counter&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;N/a&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+                                    <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2"> *Duration:* </span><span class="si">{</span><span class="n">Utils</span><span class="o">.</span><span class="n">time_format</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Duration&#39;</span><span class="p">,</span><span class="w"> </span><span class="kc">None</span><span class="p">))</span><span class="si">}</span><span class="s2">&quot;</span>
+                                    <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2"> *Failed URLS:* </span><span class="si">{</span><span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Failed_URLS&#39;</span><span class="p">,</span><span class="w"> </span><span class="kc">None</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+                        <span class="p">},</span>
+                    <span class="p">},</span>
+                <span class="p">]</span>
+            <span class="p">}</span>
         <span class="k">return</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">SLACK_WEBHOOK</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">payload</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="LogHandler.cron_logs"><a class="viewcode-back" href="../logging_class.html#logging_class.LogHandler.cron_logs">[docs]</a>    <span class="nd">@staticmethod</span>
@@ -324,10 +369,18 @@
         <span class="c1"># Let&#39;s check if the log table exist and create if not</span>
         <span class="n">Statistics</span><span class="o">.</span><span class="n">create_stats_table</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
 
-        <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;CALL imports_today(</span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">);&quot;</span><span class="p">,</span>
-                       <span class="p">(</span><span class="n">retailer</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">stats</span><span class="p">[</span><span class="s2">&quot;Navigation_count&quot;</span><span class="p">]),</span> <span class="nb">str</span><span class="p">(</span><span class="n">stats</span><span class="p">[</span><span class="s2">&quot;Navigation_url_count&quot;</span><span class="p">]),</span>
-                       <span class="nb">str</span><span class="p">(</span><span class="n">Utils</span><span class="o">.</span><span class="n">time_format</span><span class="p">(</span><span class="n">stats</span><span class="p">[</span><span class="s2">&quot;Duration&quot;</span><span class="p">])),</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">stats</span><span class="p">[</span><span class="s2">&quot;Failed_URLS&quot;</span><span class="p">]),</span>
-                       <span class="n">stats</span><span class="p">[</span><span class="s2">&quot;Table_Name&quot;</span><span class="p">]))</span>
+        <span class="k">if</span> <span class="s2">&quot;Reviews&quot;</span> <span class="ow">in</span> <span class="n">retailer</span><span class="p">:</span>
+            <span class="n">sp</span> <span class="o">=</span> <span class="s2">&quot;imports_today_reviews&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">sp</span> <span class="o">=</span> <span class="s2">&quot;imports_today&quot;</span>
+        <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;CALL </span><span class="si">{</span><span class="n">sp</span><span class="si">}</span><span class="s2">(%s, %s, %s, %s, %s, %s);&quot;</span><span class="p">,</span>
+            <span class="p">(</span>
+                <span class="n">retailer</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">stats</span><span class="p">[</span><span class="s2">&quot;Navigation_count&quot;</span><span class="p">]),</span> <span class="nb">str</span><span class="p">(</span><span class="n">stats</span><span class="p">[</span><span class="s2">&quot;Navigation_url_count&quot;</span><span class="p">]),</span>
+                <span class="nb">str</span><span class="p">(</span><span class="n">Utils</span><span class="o">.</span><span class="n">time_format</span><span class="p">(</span><span class="n">stats</span><span class="p">[</span><span class="s2">&quot;Duration&quot;</span><span class="p">])),</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">stats</span><span class="p">[</span><span class="s2">&quot;Failed_URLS&quot;</span><span class="p">]),</span>
+                <span class="n">stats</span><span class="p">[</span><span class="s2">&quot;Table_Name&quot;</span><span class="p">]</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
 
         <span class="n">cursor</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
@@ -346,6 +399,7 @@
 <span class="sd">        :return: None</span>
 <span class="sd">        :rtype: None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="n">failed_urls</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">url</span> <span class="ow">in</span> <span class="n">urls</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">url</span><span class="p">[</span><span class="s2">&quot;success&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
@@ -436,6 +490,8 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">insert_query</span><span class="p">,</span> <span class="n">row</span><span class="p">)</span>
             <span class="n">connection</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+        <span class="k">except</span> <span class="n">UniqueViolation</span><span class="p">:</span>
+            <span class="k">pass</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="c1"># Log to DB</span>
             <span class="n">LogHandler</span><span class="o">.</span><span class="n">error_db</span><span class="p">(</span><span class="n">retailer</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">())</span>
@@ -456,8 +512,8 @@
 <span class="sd">        :return: Response object</span>
 <span class="sd">        :rtype: Object</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">constants</span><span class="o">.</span><span class="n">MAX_RETRIES</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">constants</span><span class="o">.</span><span class="n">MAX_RETRIES</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
                 <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
                     <span class="s2">&quot;GET&quot;</span><span class="p">,</span>
                     <span class="n">url</span><span class="p">,</span>
@@ -469,13 +525,26 @@
                 <span class="p">)</span>
                 <span class="k">if</span> <span class="n">r</span> <span class="ow">and</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
                     <span class="k">return</span> <span class="n">r</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="k">continue</span>
-        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="c1"># Log to DB</span>
-            <span class="n">LogHandler</span><span class="o">.</span><span class="n">error_db</span><span class="p">(</span><span class="n">retailer</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">())</span>
-            <span class="c1"># Log to file</span>
-            <span class="n">LogHandler</span><span class="o">.</span><span class="n">error_file</span><span class="p">(</span><span class="n">retailer</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">())</span></div>
+            <span class="k">except</span> <span class="n">requests</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">ProxyError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="n">constants</span><span class="o">.</span><span class="n">MAX_RETRIES</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">LogHandler</span><span class="o">.</span><span class="n">error_exception_report</span><span class="p">(</span><span class="n">retailer</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+                    <span class="n">LogHandler</span><span class="o">.</span><span class="n">error_file</span><span class="p">(</span><span class="n">retailer</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">())</span>
+                <span class="k">continue</span>
+            <span class="k">except</span> <span class="n">requests</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">Timeout</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="n">constants</span><span class="o">.</span><span class="n">MAX_RETRIES</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">LogHandler</span><span class="o">.</span><span class="n">error_exception_report</span><span class="p">(</span><span class="n">retailer</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+                    <span class="n">LogHandler</span><span class="o">.</span><span class="n">error_file</span><span class="p">(</span><span class="n">retailer</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">())</span>
+                <span class="k">continue</span>
+            <span class="k">except</span> <span class="n">requests</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">ConnectionError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="n">constants</span><span class="o">.</span><span class="n">MAX_RETRIES</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">LogHandler</span><span class="o">.</span><span class="n">error_exception_report</span><span class="p">(</span><span class="n">retailer</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+                    <span class="n">LogHandler</span><span class="o">.</span><span class="n">error_file</span><span class="p">(</span><span class="n">retailer</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">())</span>
+                <span class="k">continue</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="c1"># Log to DB</span>
+                <span class="n">LogHandler</span><span class="o">.</span><span class="n">error_db</span><span class="p">(</span><span class="n">retailer</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">())</span>
+                <span class="c1"># Log to file</span>
+                <span class="n">LogHandler</span><span class="o">.</span><span class="n">error_file</span><span class="p">(</span><span class="n">retailer</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">())</span></div>
 
 <div class="viewcode-block" id="Utils.get_product_schema"><a class="viewcode-back" href="../logging_class.html#logging_class.Utils.get_product_schema">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_product_schema</span><span class="p">(</span><span class="n">schema_products</span><span class="p">,</span> <span class="n">search_term</span><span class="p">):</span>

@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>email_stats &mdash; Brand Nudge DC 1.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Brand Nudge DC
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Brand Nudge DC</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">email_stats</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for email_stats</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">smtplib</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">email.mime.multipart</span> <span class="kn">import</span> <span class="n">MIMEMultipart</span>
+<span class="kn">from</span> <span class="nn">email.mime.text</span> <span class="kn">import</span> <span class="n">MIMEText</span>
+
+<span class="kn">import</span> <span class="nn">psutil</span>
+<span class="kn">from</span> <span class="nn">dotenv</span> <span class="kn">import</span> <span class="n">load_dotenv</span>
+
+<span class="kn">from</span> <span class="nn">logging_class</span> <span class="kn">import</span> <span class="n">Utils</span>
+
+<span class="n">conn</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">create_db_con</span><span class="p">()</span>
+
+<span class="n">load_dotenv</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="get_cron_jobs"><a class="viewcode-back" href="../index.html#email_stats.get_cron_jobs">[docs]</a><span class="k">def</span> <span class="nf">get_cron_jobs</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Retrieve running cron processes and status</span>
+<span class="sd">    :return: Cron jobs</span>
+<span class="sd">    :rtype: Dictionary</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">cron_status_dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">proc</span> <span class="ow">in</span> <span class="n">psutil</span><span class="o">.</span><span class="n">process_iter</span><span class="p">():</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s2">&quot;python3&quot;</span> <span class="ow">in</span> <span class="n">proc</span><span class="o">.</span><span class="n">name</span><span class="p">():</span>
+                <span class="n">cmd_args</span> <span class="o">=</span> <span class="n">proc</span><span class="o">.</span><span class="n">cmdline</span><span class="p">()</span>
+                <span class="n">cron_script_filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">cmd_args</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+                <span class="k">if</span> <span class="n">cron_script_filename</span> <span class="o">!=</span> <span class="s1">&#39;email_stats.py&#39;</span><span class="p">:</span>
+                    <span class="n">cron_status_dict</span><span class="p">[</span><span class="n">cron_script_filename</span><span class="p">]</span> <span class="o">=</span> <span class="n">proc</span><span class="o">.</span><span class="n">status</span><span class="p">()</span>
+        <span class="k">except</span> <span class="p">(</span><span class="n">psutil</span><span class="o">.</span><span class="n">NoSuchProcess</span><span class="p">,</span> <span class="n">psutil</span><span class="o">.</span><span class="n">AccessDenied</span><span class="p">,</span> <span class="n">psutil</span><span class="o">.</span><span class="n">ZombieProcess</span><span class="p">):</span>
+            <span class="k">pass</span>
+    <span class="k">return</span> <span class="n">cron_status_dict</span></div>
+
+
+<div class="viewcode-block" id="get_stats"><a class="viewcode-back" href="../index.html#email_stats.get_stats">[docs]</a><span class="k">def</span> <span class="nf">get_stats</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Collect completed collections statistics for the current day</span>
+<span class="sd">    :return: Statistics</span>
+<span class="sd">    :rtype: Tuple</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">connection_cursor</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+    <span class="n">connection_cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    SELECT created, retailer, itemcount, duration</span>
+<span class="s2">    FROM public.statistics</span>
+<span class="s2">    WHERE created::date = now()::date;</span>
+<span class="s2">    &quot;&quot;&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">connection_cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="get_exception_logs"><a class="viewcode-back" href="../index.html#email_stats.get_exception_logs">[docs]</a><span class="k">def</span> <span class="nf">get_exception_logs</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Collect exception logs for the current day</span>
+<span class="sd">    :return: Exception logs</span>
+<span class="sd">    :rtype: Tuple</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">connection_cursor</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+    <span class="n">connection_cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    SELECT created, name, url</span>
+<span class="s2">    FROM public.exception_logs</span>
+<span class="s2">    WHERE created::date = now()::date</span>
+<span class="s2">    ORDER BY name DESC;</span>
+<span class="s2">    &quot;&quot;&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">connection_cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="get_cron_logs"><a class="viewcode-back" href="../index.html#email_stats.get_cron_logs">[docs]</a><span class="k">def</span> <span class="nf">get_cron_logs</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Collect cron logs for the current day</span>
+<span class="sd">    :return: Exception logs</span>
+<span class="sd">    :rtype: Tuple</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">connection_cursor</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+    <span class="n">connection_cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    SELECT * FROM public.cron_logs </span>
+<span class="s2">    WHERE date::date = now()::date</span>
+<span class="s2">    LIMIT 50;</span>
+<span class="s2">    &quot;&quot;&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">connection_cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="generate_message"><a class="viewcode-back" href="../index.html#email_stats.generate_message">[docs]</a><span class="k">def</span> <span class="nf">generate_message</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate HTML for the email body</span>
+<span class="sd">    :return: Email Body</span>
+<span class="sd">    :rtype: email.mime.multipart.MIMEMultipart</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">table_html</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    &lt;!DOCTYPE html&gt;</span>
+<span class="s2">    &lt;html&gt;</span>
+<span class="s2">      &lt;head&gt;</span>
+<span class="s2">        &lt;meta charset=&quot;utf-8&quot; /&gt;</span>
+<span class="s2">        &lt;style type=&quot;text/css&quot;&gt;</span>
+<span class="s2">          table {</span>
+<span class="s2">            background: white;</span>
+<span class="s2">            border-radius:3px;</span>
+<span class="s2">            border-collapse: collapse;</span>
+<span class="s2">            height: auto;</span>
+<span class="s2">            max-width: 900px;</span>
+<span class="s2">            padding:5px;</span>
+<span class="s2">            width: 100%;</span>
+<span class="s2">            animation: float 5s infinite;</span>
+<span class="s2">          }</span>
+<span class="s2">          th {</span>
+<span class="s2">            color:#D5DDE5;;</span>
+<span class="s2">            background:#1b1e24;</span>
+<span class="s2">            border-bottom: 4px solid #9ea7af;</span>
+<span class="s2">            font-size:14px;</span>
+<span class="s2">            font-weight: 300;</span>
+<span class="s2">            text-align:left;</span>
+<span class="s2">            vertical-align:middle;</span>
+<span class="s2">          }</span>
+<span class="s2">          tr {</span>
+<span class="s2">            border-top: 1px solid #C1C3D1;</span>
+<span class="s2">            border-bottom: 1px solid #C1C3D1;</span>
+<span class="s2">            border-left: 1px solid #C1C3D1;</span>
+<span class="s2">            color:#666B85;</span>
+<span class="s2">            font-size:16px;</span>
+<span class="s2">            font-weight:normal;</span>
+<span class="s2">          }</span>
+<span class="s2">          tr:hover td {</span>
+<span class="s2">            background:#4E5066;</span>
+<span class="s2">            color:#FFFFFF;</span>
+<span class="s2">            border-top: 1px solid #22262e;</span>
+<span class="s2">          }</span>
+<span class="s2">          td {</span>
+<span class="s2">            background:#FFFFFF;</span>
+<span class="s2">            padding:10px;</span>
+<span class="s2">            text-align:left;</span>
+<span class="s2">            vertical-align:middle;</span>
+<span class="s2">            font-weight:300;</span>
+<span class="s2">            font-size:13px;</span>
+<span class="s2">            border-right: 1px solid #C1C3D1;</span>
+<span class="s2">          }</span>
+<span class="s2">          .no-data {</span>
+<span class="s2">            text-align:center;</span>
+<span class="s2">          }</span>
+<span class="s2">        &lt;/style&gt;</span>
+<span class="s2">      &lt;/head&gt;</span>
+<span class="s2">      &lt;body&gt;</span>
+<span class="s2">      &quot;&quot;&quot;</span>
+
+    <span class="n">table_html</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    &lt;p&gt;Dear Brand Nudger,&lt;p&gt;</span>
+<span class="s2">    &lt;p&gt;Please find below the daily collections report for </span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">today</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">.</span>
+<span class="s2">    &lt;/br&gt;&lt;/br&gt;</span>
+<span class="s2">    &quot;&quot;&quot;</span>
+
+    <span class="n">table_html</span> <span class="o">+=</span> <span class="s2">&quot;&quot;&quot;&lt;h3&gt;Completed Collections&lt;/h3&gt;</span>
+<span class="s2">    &lt;table&gt;</span>
+<span class="s2">      &lt;tr style=&quot;border: 1px solid #1b1e24;&quot;&gt;</span>
+<span class="s2">        &lt;th&gt;Date&lt;/th&gt;</span>
+<span class="s2">        &lt;th&gt;Retailer&lt;/th&gt;</span>
+<span class="s2">        &lt;th&gt;Import Count&lt;/th&gt;</span>
+<span class="s2">        &lt;th&gt;Duration&lt;/th&gt;</span>
+<span class="s2">      &lt;/tr&gt;</span>
+<span class="s2">    &quot;&quot;&quot;</span>
+
+    <span class="n">stats</span> <span class="o">=</span> <span class="n">get_stats</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">stats</span><span class="p">:</span>
+        <span class="n">table_html</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;&lt;tr&gt;&lt;td&gt;</span><span class="si">{</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">&lt;/td&gt;&lt;td&gt;</span><span class="si">{</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">&lt;/td&gt;&lt;td&gt;</span><span class="si">{</span><span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="si">}</span><span class="s2">&lt;/td&gt;&lt;td&gt;</span><span class="si">{</span><span class="n">x</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="si">}</span><span class="s2">&lt;/td&gt;&lt;/tr&gt;&quot;</span>
+    <span class="n">table_html</span> <span class="o">+=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        &lt;/table&gt;</span>
+<span class="s2">        &lt;br&gt;</span>
+<span class="s2">    &quot;&quot;&quot;</span>
+
+    <span class="n">cron_jobs</span> <span class="o">=</span> <span class="n">get_cron_jobs</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">cron_jobs</span><span class="p">:</span>
+        <span class="n">table_html</span> <span class="o">+=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        &lt;h3&gt;In Progress&lt;/h3&gt;</span>
+<span class="s2">        &lt;p&gt;Below collectors are still in progress. Some programs might be in a sleep mode which is normal.&lt;/p&gt;</span>
+<span class="s2">        &lt;table&gt;</span>
+<span class="s2">          &lt;tr style=&quot;border: 1px solid #1b1e24;&quot;&gt;</span>
+<span class="s2">            &lt;th&gt;Retailer&lt;/th&gt;</span>
+<span class="s2">            &lt;th&gt;Filename&lt;/th&gt;</span>
+<span class="s2">            &lt;th&gt;Status&lt;/th&gt;</span>
+<span class="s2">          &lt;/tr&gt;</span>
+<span class="s2">        &quot;&quot;&quot;</span>
+
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">cron_jobs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="o">!=</span> <span class="s2">&quot;email_stats.py&quot;</span><span class="p">:</span>
+                <span class="n">retailer</span> <span class="o">=</span> <span class="n">k</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">)</span><span class="o">.</span><span class="n">title</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;main&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.Py&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+                <span class="n">table_html</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;&lt;tr&gt;&lt;td&gt;</span><span class="si">{</span><span class="n">retailer</span><span class="si">}</span><span class="s2">&lt;/td&gt;&lt;td&gt;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">&lt;/td&gt;&lt;td&gt;</span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">&lt;/td&gt;&lt;/tr&gt;&quot;</span>
+        <span class="n">table_html</span> <span class="o">+=</span> <span class="s2">&quot;&lt;/table&gt;&lt;br&gt;&quot;</span>
+
+    <span class="n">exception_logs</span> <span class="o">=</span> <span class="n">get_exception_logs</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">exception_logs</span><span class="p">:</span>
+        <span class="n">table_html</span> <span class="o">+=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">                &lt;h3&gt;Exception Logs&lt;/h3&gt;</span>
+<span class="s2">                &lt;p&gt;Below URLs failed to connect. More information can be found in the exception logs table&lt;/p&gt;</span>
+<span class="s2">                &lt;table&gt;</span>
+<span class="s2">                  &lt;tr style=&quot;border: 1px solid #1b1e24;&quot;&gt;</span>
+<span class="s2">                    &lt;th&gt;Date&lt;/th&gt;</span>
+<span class="s2">                    &lt;th&gt;Retailer&lt;/th&gt;</span>
+<span class="s2">                    &lt;th&gt;Failed URL&lt;/th&gt;</span>
+<span class="s2">                  &lt;/tr&gt;</span>
+<span class="s2">                &quot;&quot;&quot;</span>
+
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">exception_logs</span><span class="p">:</span>
+            <span class="n">date</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">table_html</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;&lt;tr&gt;&lt;td&gt;</span><span class="si">{</span><span class="n">date</span><span class="si">}</span><span class="s2">&lt;/td&gt;&lt;td&gt;</span><span class="si">{</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">&lt;/td&gt;&lt;td&gt;</span><span class="si">{</span><span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="si">}</span><span class="s2">&lt;/td&gt;&lt;/tr&gt;&quot;</span>
+        <span class="n">table_html</span> <span class="o">+=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">            &lt;/table&gt;</span>
+<span class="s2">            &lt;br&gt;</span>
+<span class="s2">        &quot;&quot;&quot;</span>
+
+    <span class="n">cron_logs</span> <span class="o">=</span> <span class="n">get_cron_logs</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">cron_logs</span><span class="p">:</span>
+        <span class="n">table_html</span> <span class="o">+=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">                    &lt;h3&gt;Cron Logs&lt;/h3&gt;</span>
+<span class="s2">                    &lt;p&gt;Logs provided by cron. Query limited to 50 results.&lt;/p&gt;.</span>
+<span class="s2">                    &lt;table&gt;</span>
+<span class="s2">                      &lt;tr style=&quot;border: 1px solid #1b1e24;&quot;&gt;</span>
+<span class="s2">                        &lt;th&gt;Date&lt;/th&gt;</span>
+<span class="s2">                        &lt;th&gt;Message&lt;/th&gt;</span>
+<span class="s2">                      &lt;/tr&gt;</span>
+<span class="s2">                    &quot;&quot;&quot;</span>
+
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">cron_logs</span><span class="p">:</span>
+            <span class="n">date</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">table_html</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;&lt;tr&gt;&lt;td&gt;</span><span class="si">{</span><span class="n">date</span><span class="si">}</span><span class="s2">&lt;/td&gt;&lt;td&gt;</span><span class="si">{</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">&lt;/td&gt;&lt;/tr&gt;&quot;</span>
+        <span class="n">table_html</span> <span class="o">+=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">                &lt;/table&gt;</span>
+<span class="s2">                &lt;br&gt;</span>
+<span class="s2">            &quot;&quot;&quot;</span>
+
+    <span class="n">table_html</span> <span class="o">+=</span> <span class="s2">&quot;&quot;&quot;&lt;p&gt;Have a great day&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;&quot;&quot;&quot;</span>
+
+    <span class="c1"># Set up email parameters</span>
+    <span class="n">sender_email</span> <span class="o">=</span> <span class="s2">&quot;bernard@brandnudge.co.uk&quot;</span>
+    <span class="n">receiver_email</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;bvdv9075@gmail.com&quot;</span><span class="p">,</span> <span class="s2">&quot;bernard@brandnudge.co.uk&quot;</span><span class="p">]</span>
+
+    <span class="n">message</span> <span class="o">=</span> <span class="n">MIMEMultipart</span><span class="p">()</span>
+    <span class="n">message</span><span class="p">[</span><span class="s2">&quot;From&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sender_email</span>
+    <span class="n">message</span><span class="p">[</span><span class="s2">&quot;To&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">receiver_email</span><span class="p">)</span>
+    <span class="n">message</span><span class="p">[</span><span class="s2">&quot;Subject&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Brand Nudge Daily Statistics Report - </span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">today</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+
+    <span class="n">html_body</span> <span class="o">=</span> <span class="n">MIMEText</span><span class="p">(</span><span class="n">table_html</span><span class="p">,</span> <span class="s2">&quot;html&quot;</span><span class="p">)</span>
+    <span class="n">message</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span><span class="n">html_body</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">message</span></div>
+
+
+<div class="viewcode-block" id="send_mail"><a class="viewcode-back" href="../index.html#email_stats.send_mail">[docs]</a><span class="k">def</span> <span class="nf">send_mail</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Sends an email message using SMTP protocol through Gmail.</span>
+<span class="sd">    It generates the email message by calling the &quot;generate_message()&quot; function.</span>
+<span class="sd">    :return: None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">username</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;EMAIL_USERNAME&quot;</span><span class="p">)</span>
+    <span class="n">password</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;EMAIL_PASSWORD&quot;</span><span class="p">)</span>
+    <span class="n">receiver_email</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;bvdv9075@gmail.com&quot;</span><span class="p">,</span> <span class="s2">&quot;bernard@brandnudge.co.uk&quot;</span><span class="p">]</span>
+    <span class="n">message</span> <span class="o">=</span> <span class="n">generate_message</span><span class="p">()</span>
+    <span class="c1"># Connect to the SMTP server and send the email</span>
+    <span class="k">with</span> <span class="n">smtplib</span><span class="o">.</span><span class="n">SMTP</span><span class="p">(</span><span class="s2">&quot;smtp.gmail.com&quot;</span><span class="p">,</span> <span class="mi">587</span><span class="p">)</span> <span class="k">as</span> <span class="n">server</span><span class="p">:</span>
+        <span class="n">server</span><span class="o">.</span><span class="n">starttls</span><span class="p">()</span>
+        <span class="n">server</span><span class="o">.</span><span class="n">login</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">)</span>
+        <span class="n">server</span><span class="o">.</span><span class="n">sendmail</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">receiver_email</span><span class="p">,</span> <span class="n">message</span><span class="o">.</span><span class="n">as_string</span><span class="p">())</span></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">send_mail</span><span class="p">()</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Brand Nudge Ltd.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

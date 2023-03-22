@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>wilko_main &mdash; Brand Nudge DC 1.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Brand Nudge DC
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Brand Nudge DC</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">wilko_main</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for wilko_main</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;www.wilko.com product collection program.&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+
+<span class="kn">import</span> <span class="nn">lxml</span>  <span class="c1"># noqa</span>
+<span class="kn">from</span> <span class="nn">bs4</span> <span class="kn">import</span> <span class="n">BeautifulSoup</span>
+<span class="kn">from</span> <span class="nn">dotenv</span> <span class="kn">import</span> <span class="n">load_dotenv</span>
+<span class="kn">from</span> <span class="nn">fake_useragent</span> <span class="kn">import</span> <span class="n">UserAgent</span>
+
+<span class="n">load_dotenv</span><span class="p">()</span>
+
+<span class="kn">from</span> <span class="nn">logging_class</span> <span class="kn">import</span> <span class="n">LogHandler</span><span class="p">,</span> <span class="n">Statistics</span><span class="p">,</span> <span class="n">Utils</span>
+
+<span class="n">log_error</span> <span class="o">=</span> <span class="n">LogHandler</span><span class="p">()</span>
+<span class="n">statistics_class</span> <span class="o">=</span> <span class="n">Statistics</span><span class="p">()</span>
+
+<span class="c1"># Generate fake Request headers</span>
+<span class="n">ua</span> <span class="o">=</span> <span class="n">UserAgent</span><span class="p">()</span>
+<span class="n">HEADERS</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;user-agent&quot;</span><span class="p">:</span> <span class="n">ua</span><span class="o">.</span><span class="n">chrome</span><span class="p">}</span>
+<span class="n">CUSTOM_HEADERS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;User-Agent&#39;</span><span class="p">:</span> <span class="s1">&#39;Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) &#39;</span>
+                  <span class="s1">&#39;Chrome/56.0.2924.76 Safari/537.36&#39;</span><span class="p">,</span>
+    <span class="s2">&quot;Upgrade-Insecure-Requests&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;DNT&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Accept&quot;</span><span class="p">:</span> <span class="s2">&quot;text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Accept-Language&quot;</span><span class="p">:</span> <span class="s2">&quot;en-US,en;q=0.5&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Accept-Encoding&quot;</span><span class="p">:</span> <span class="s2">&quot;gzip, deflate&quot;</span>
+<span class="p">}</span>
+
+<span class="n">PROXIES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;http&quot;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;PROXIES_HTTP&quot;</span><span class="p">),</span>
+    <span class="s2">&quot;https&quot;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;PROXIES_HTTPS&quot;</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="c1"># Proxies</span>
+<span class="n">PROXIES_RES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;http&quot;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;PROXIES_HTTP_RES&quot;</span><span class="p">),</span>
+    <span class="s2">&quot;https&quot;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;PROXIES_HTTPS_RES&quot;</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="n">RETAILER</span> <span class="o">=</span> <span class="s2">&quot;Wilko&quot;</span>
+<span class="n">BASE_URL</span> <span class="o">=</span> <span class="s2">&quot;https://www.wilko.com&quot;</span>
+<span class="n">MAX_RETRIES</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="n">TABLE_NAME</span> <span class="o">=</span> <span class="s2">&quot;wilko&quot;</span>
+
+
+<div class="viewcode-block" id="get_data"><a class="viewcode-back" href="../wilko_main.html#wilko_main.get_data">[docs]</a><span class="k">def</span> <span class="nf">get_data</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Makes a request to each URL and store the collected info in the database</span>
+
+<span class="sd">    :param url: Product url</span>
+<span class="sd">    :return: True if successful and product count</span>
+<span class="sd">    :rtype: Boolean and integer</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">pagesize</span> <span class="o">=</span> <span class="mi">200</span>
+
+        <span class="n">r</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">make_request</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">url</span><span class="p">[</span><span class="s1">&#39;url&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">?pageSize=</span><span class="si">{</span><span class="n">pagesize</span><span class="si">}</span><span class="s2">&amp;sort=relevance&quot;</span><span class="p">,</span> <span class="n">HEADERS</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">RETAILER</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">r</span> <span class="ow">and</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
+            <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="s2">&quot;lxml&quot;</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">last_pagination_value_text</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;div&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;pagination-bar-results&quot;</span><span class="p">})</span><span class="o">.</span><span class="n">text</span>
+                <span class="n">number_of_items</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s1">&#39;\d+&#39;</span><span class="p">,</span> <span class="n">last_pagination_value_text</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">last_pagination_value</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">number_of_items</span><span class="p">)</span> <span class="o">/</span> <span class="n">pagesize</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">last_pagination_value</span> <span class="o">=</span> <span class="mi">1</span>
+
+            <span class="n">item_counter</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">page</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">last_pagination_value</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="n">full_url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">url</span><span class="p">[</span><span class="s1">&#39;url&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">?sort=relevance&amp;page=</span><span class="si">{</span><span class="n">page</span><span class="si">}</span><span class="s2">&amp;pageSize=</span><span class="si">{</span><span class="n">pagesize</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="n">r</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">make_request</span><span class="p">(</span><span class="n">full_url</span><span class="p">,</span> <span class="n">HEADERS</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">RETAILER</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">r</span> <span class="ow">and</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
+                    <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="s2">&quot;lxml&quot;</span><span class="p">)</span>
+
+                    <span class="n">product_grid</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;div&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;product__grid&quot;</span><span class="p">})</span>
+                    <span class="n">products</span> <span class="o">=</span> <span class="n">product_grid</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s2">&quot;div&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;product-item&quot;</span><span class="p">})</span>
+                    <span class="k">for</span> <span class="n">product</span> <span class="ow">in</span> <span class="n">products</span><span class="p">:</span>
+                        <span class="n">sku_url</span> <span class="o">=</span> <span class="n">BASE_URL</span> <span class="o">+</span> <span class="n">product</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;product-link&quot;</span><span class="p">})[</span><span class="s2">&quot;href&quot;</span><span class="p">]</span>
+                        <span class="n">r</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">make_request</span><span class="p">(</span><span class="n">sku_url</span><span class="p">,</span> <span class="n">HEADERS</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">RETAILER</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">r</span> <span class="ow">and</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
+                            <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="s2">&quot;lxml&quot;</span><span class="p">)</span>
+                            <span class="n">product_info</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;div&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;product-main-info&quot;</span><span class="p">})</span>
+
+                            <span class="n">shelf_price</span> <span class="o">=</span> <span class="n">product_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data-price-formatted-value&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)[</span><span class="mi">1</span><span class="p">:]</span>
+                            <span class="n">source_id</span> <span class="o">=</span> <span class="n">product_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data-sku&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                            <span class="n">title</span> <span class="o">=</span> <span class="n">product_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data-product-name&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                            <span class="n">in_stock</span> <span class="o">=</span> <span class="n">product_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data-stock-level-status-code&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                            <span class="k">if</span> <span class="n">in_stock</span> <span class="ow">and</span> <span class="s2">&quot;inStock&quot;</span> <span class="ow">in</span> <span class="n">in_stock</span><span class="p">:</span>
+                                <span class="n">in_stock</span> <span class="o">=</span> <span class="kc">True</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="n">in_stock</span> <span class="o">=</span> <span class="kc">False</span>
+                            <span class="k">try</span><span class="p">:</span>
+                                <span class="n">was_price</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;span&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;pdp-was-price__value&quot;</span><span class="p">})</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
+                                    <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">:]</span>
+                            <span class="k">except</span><span class="p">:</span>
+                                <span class="n">was_price</span> <span class="o">=</span> <span class="kc">None</span>
+                            <span class="k">try</span><span class="p">:</span>
+                                <span class="n">promo_data_label</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;span&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;pdp-you-save-price__label&quot;</span><span class="p">})</span><span class="o">.</span><span class="n">text</span><span class="o">.</span> \
+                                    <span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+                                <span class="n">promo_data_value</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;span&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;pdp-you-save-price__value&quot;</span><span class="p">})</span><span class="o">.</span><span class="n">text</span><span class="o">.</span> \
+                                    <span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+                                <span class="n">promo_data</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">promo_data_label</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">promo_data_value</span><span class="si">}</span><span class="s2">&quot;</span>
+                            <span class="k">except</span><span class="p">:</span>
+                                <span class="n">promo_data_label</span> <span class="o">=</span> <span class="kc">None</span>
+                                <span class="n">promo_data</span> <span class="o">=</span> <span class="p">[]</span>
+                            <span class="k">if</span> <span class="n">promo_data_label</span> <span class="ow">in</span> <span class="n">promo_data</span><span class="p">:</span>
+                                <span class="n">on_promo</span> <span class="o">=</span> <span class="kc">True</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="n">on_promo</span> <span class="o">=</span> <span class="kc">False</span>
+                            <span class="n">category_div</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;ol&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;breadcrumb&quot;</span><span class="p">})</span>
+                            <span class="n">category_urls</span> <span class="o">=</span> <span class="n">category_div</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">)</span>
+                            <span class="n">category_list</span> <span class="o">=</span> <span class="p">[]</span>
+
+                            <span class="k">for</span> <span class="n">href</span> <span class="ow">in</span> <span class="n">category_urls</span><span class="p">:</span>
+                                <span class="n">crumb</span> <span class="o">=</span> <span class="n">href</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+                                <span class="k">if</span> <span class="ow">not</span> <span class="n">crumb</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+                                    <span class="n">category_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">crumb</span><span class="p">)</span>
+                            <span class="n">category</span> <span class="o">=</span> <span class="s2">&quot;/&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">category_list</span><span class="p">)</span>
+                            <span class="n">image_url</span> <span class="o">=</span> <span class="n">BASE_URL</span> <span class="o">+</span> <span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;div&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;pdp-image-gallery__item&quot;</span><span class="p">})</span><span class="o">.</span><span class="n">find</span><span class="p">(</span>
+                                <span class="s2">&quot;img&quot;</span><span class="p">)[</span><span class="s2">&quot;src&quot;</span><span class="p">]</span>
+
+                            <span class="n">specification</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s2">&quot;div&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;specification-item&quot;</span><span class="p">})</span>
+
+                            <span class="n">brand</span> <span class="o">=</span> <span class="kc">None</span>
+                            <span class="n">ean</span> <span class="o">=</span> <span class="kc">None</span>
+
+                            <span class="k">for</span> <span class="n">spec</span> <span class="ow">in</span> <span class="n">specification</span><span class="p">:</span>
+                                <span class="n">spec_text</span> <span class="o">=</span> <span class="n">spec</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;span&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;specification-name&quot;</span><span class="p">})</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
+                                    <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                                <span class="k">if</span> <span class="n">spec_text</span> <span class="o">==</span> <span class="s2">&quot;Brand:&quot;</span><span class="p">:</span>
+                                    <span class="n">brand</span> <span class="o">=</span> <span class="n">spec</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;span&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;specification-value&quot;</span><span class="p">})</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
+                                        <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                                <span class="k">if</span> <span class="n">spec_text</span> <span class="o">==</span> <span class="s2">&quot;Bar Code:&quot;</span><span class="p">:</span>
+                                    <span class="n">ean</span> <span class="o">=</span> <span class="n">spec</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;span&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;specification-value&quot;</span><span class="p">})</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
+                                        <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+                            <span class="n">country_code</span> <span class="o">=</span> <span class="s2">&quot;UK&quot;</span>
+                            <span class="n">currency</span> <span class="o">=</span> <span class="s2">&quot;GBP&quot;</span>
+                            <span class="n">date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+                            <span class="n">card_price</span> <span class="o">=</span> <span class="kc">None</span>
+                            <span class="n">bundled</span> <span class="o">=</span> <span class="kc">None</span>
+                            <span class="n">master_sku</span> <span class="o">=</span> <span class="kc">None</span>
+
+                            <span class="n">insert_query</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">                                        INSERT INTO public.wilko(</span>
+<span class="s2">                                            date, retailer, &quot;countryCode&quot;, currency, &quot;sourceId&quot;, ean, brand, title,</span>
+<span class="s2">                                            &quot;shelfPrice&quot;, &quot;wasPrice&quot;, &quot;cardPrice&quot;, &quot;inStock&quot;, &quot;onPromo&quot;, &quot;promoData&quot;,</span>
+<span class="s2">                                            &quot;skuURL&quot;, &quot;imageURL&quot;, bundled, &quot;masterSku&quot;, category)</span>
+<span class="s2">                                            VALUES (</span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">,</span>
+<span class="s2">                                            </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">);</span>
+<span class="s2">                                        &quot;&quot;&quot;</span>
+
+                            <span class="n">row_data</span> <span class="o">=</span> <span class="p">[</span><span class="n">date</span><span class="p">,</span> <span class="n">RETAILER</span><span class="p">,</span> <span class="n">country_code</span><span class="p">,</span> <span class="n">currency</span><span class="p">,</span> <span class="n">source_id</span><span class="p">,</span> <span class="n">ean</span><span class="p">,</span>
+                                        <span class="n">brand</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">shelf_price</span><span class="p">,</span> <span class="n">was_price</span><span class="p">,</span> <span class="n">card_price</span><span class="p">,</span> <span class="n">in_stock</span><span class="p">,</span>
+                                        <span class="n">on_promo</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">promo_data</span><span class="p">),</span> <span class="n">sku_url</span><span class="p">,</span> <span class="n">image_url</span><span class="p">,</span> <span class="n">bundled</span><span class="p">,</span>
+                                        <span class="n">master_sku</span><span class="p">,</span> <span class="n">category</span><span class="p">]</span>
+                            <span class="n">item_counter</span> <span class="o">+=</span> <span class="mi">1</span>
+
+                            <span class="n">Utils</span><span class="o">.</span><span class="n">insert_to_db</span><span class="p">(</span><span class="n">insert_query</span><span class="p">,</span> <span class="n">row_data</span><span class="p">,</span> <span class="n">RETAILER</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="n">item_counter</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="c1"># Log to DB</span>
+        <span class="n">log_error</span><span class="o">.</span><span class="n">error_db</span><span class="p">(</span><span class="n">RETAILER</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">())</span>
+        <span class="c1"># Log to file</span>
+        <span class="n">log_error</span><span class="o">.</span><span class="n">error_file</span><span class="p">(</span><span class="n">RETAILER</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">())</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="parse_urls"><a class="viewcode-back" href="../wilko_main.html#wilko_main.parse_urls">[docs]</a><span class="k">def</span> <span class="nf">parse_urls</span><span class="p">(</span><span class="n">urls</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Loop through all URL&#39;s and update the main URL dict when successfully parsed.</span>
+<span class="sd">    Collects statistical data and store it and the end of the program</span>
+
+<span class="sd">    :param urls: URL dictionary</span>
+<span class="sd">    :return: None</span>
+<span class="sd">    :rtype: None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">navigation_counter</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">item_counter</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">navigation_url_count</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">for</span> <span class="n">url</span> <span class="ow">in</span> <span class="n">urls</span><span class="p">:</span>
+        <span class="n">navigation_counter</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">navigation_url_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">urls</span><span class="p">)</span>
+        <span class="k">while</span> <span class="n">url</span><span class="p">[</span><span class="s2">&quot;success&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">and</span> <span class="n">url</span><span class="p">[</span><span class="s2">&quot;attempts&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">url</span><span class="p">[</span><span class="s2">&quot;max_attempts&quot;</span><span class="p">]:</span>
+            <span class="c1"># Increment attempts counter</span>
+            <span class="n">url</span><span class="p">[</span><span class="s2">&quot;attempts&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">get_data</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">result</span><span class="p">:</span>
+                <span class="n">url</span><span class="p">[</span><span class="s2">&quot;success&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">item_counter_actual</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">item_counter_actual</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="n">item_counter</span> <span class="o">+=</span> <span class="n">item_counter_actual</span>
+
+    <span class="n">duration</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span>
+    <span class="c1"># Lets record some stats</span>
+    <span class="n">Statistics</span><span class="o">.</span><span class="n">statistics</span><span class="p">(</span><span class="n">navigation_counter</span><span class="p">,</span> <span class="n">navigation_url_count</span><span class="p">,</span> <span class="n">item_counter</span><span class="p">,</span>
+                          <span class="n">duration</span><span class="p">,</span> <span class="n">urls</span><span class="p">,</span> <span class="n">RETAILER</span><span class="p">,</span> <span class="n">TABLE_NAME</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_navigation_urls"><a class="viewcode-back" href="../wilko_main.html#wilko_main.get_navigation_urls">[docs]</a><span class="k">def</span> <span class="nf">get_navigation_urls</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get all navigation URLs from the base URL</span>
+
+<span class="sd">    :return: All navigation URLs</span>
+<span class="sd">    :rtype: Dictionary</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">categories_per_cat</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="c1"># Clearance</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Clearance&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/clearance/c/8000&#39;</span><span class="p">},</span>
+        <span class="c1"># Garden &amp; Outdoor/Garden Buildings</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Garden &amp; Outdoor/Garden Buildings/Sheds&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/garden-outdoor/garden-buildings/sheds/all-sheds/c/1756&#39;</span><span class="p">},</span>
+        <span class="c1"># Garden &amp; Outdoor/Garden Buildings</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Garden &amp; Outdoor/Garden Buildings/Greenhouses Accessories&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/garden-outdoor/garden-buildings/greenhouses-accessories/&#39;</span>
+                <span class="s1">&#39;greenhouses/c/60&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s2">&quot;Garden &amp; Outdoor/Garden Buildings/Garden Storage&quot;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/garden-outdoor/garden-storage/c/47&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Garden &amp; Outdoor/Garden Buildings/Summer Houses&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/garden-outdoor/garden-buildings/summer-houses/c/1566&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Garden &amp; Outdoor/Garden Buildings/Garden Arches, Arbours &amp; Pergolas&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/garden-outdoor/garden-buildings/garden-arches-arbours-pergolas/c/1391&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Garden &amp; Outdoor/Garden Buildings/Canopies &amp; Awnings&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/garden-outdoor/garden-buildings/canopies-awnings/c/1433&#39;</span><span class="p">},</span>
+        <span class="c1"># Garden &amp; Outdoor/Fencing, Decking &amp; Landscaping</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Garden &amp; Outdoor/Fencing, Decking &amp; Landscaping/Garden Fencing/Fence Panels&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/garden-outdoor/fencing-decking-landscaping/garden-fencing/&#39;</span>
+                <span class="s1">&#39;fence-panels/c/1742&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Garden &amp; Outdoor/Fencing, Decking &amp; Landscaping/Garden Fencing/Fence Posts&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/garden-outdoor/fencing-decking-landscaping/garden-fencing/&#39;</span>
+                <span class="s1">&#39;fence-posts/c/1743&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Garden &amp; Outdoor/Fencing, Decking &amp; Landscaping/Garden Fencing/Gravel Boards&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/garden-outdoor/fencing-decking-landscaping/garden-fencing/&#39;</span>
+                <span class="s1">&#39;gravel-boards/c/1744&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Garden &amp; Outdoor/Fencing, Decking &amp; Landscaping/Garden Fencing/Garden Gates&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/garden-outdoor/fencing-decking-landscaping/garden-fencing/&#39;</span>
+                <span class="s1">&#39;garden-gates/c/1745&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Garden &amp; Outdoor/Fencing, Decking &amp; Landscaping/Garden Fencing/Garden Screening&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/garden-outdoor/fencing-decking-landscaping/garden-screening/c/1777&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Garden &amp; Outdoor/Fencing, Decking &amp; Landscaping/Garden Fencing/&#39;</span>
+                     <span class="s1">&#39;Decorative Stones, Aggregates &amp; Chippings&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/garden-outdoor/fencing-decking-landscaping/&#39;</span>
+                <span class="s1">&#39;decorative-stones-aggregates-chippings/c/1557&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Garden &amp; Outdoor/Fencing, Decking &amp; Landscaping/Garden Fencing/Artificial Grass&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/garden-outdoor/fencing-decking-landscaping/artificial-grass/c/1366&#39;</span><span class="p">},</span>
+        <span class="c1"># Garden &amp; Outdoor/Garden Tidy</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Garden &amp; Outdoor/Garden Tidy/Garden Power Tools/All Garden Power Tools&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/garden-outdoor/garden-power-tools/all-garden-power-tools/c/101&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Garden &amp; Outdoor/Garden Tidy/Garden Hand Tools &amp; Equipment/Garden Hand Tools&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/garden-outdoor/garden-hand-tools-equipment/garden-hand-tools/c/1565&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Garden &amp; Outdoor/Garden Tidy/Garden Hand Tools &amp; Equipment/Digging Tools&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/garden-outdoor/garden-hand-tools-equipment/digging-tools/c/1747&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Garden &amp; Outdoor/Garden Tidy/Garden Hand Tools &amp; Equipment/Pruning &amp; Cutting Tools&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/garden-outdoor/garden-hand-tools-equipment/pruning-cutting-tools/c/1748&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Garden &amp; Outdoor/Garden Tidy/Garden Hand Tools &amp; Equipment/Brushes &amp; Brooms&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/cleaning-household/cleaning/brushes-brooms/c/392&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Garden &amp; Outdoor/Garden Tidy/Garden Hand Tools &amp; Equipment/Garden Rakes&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/garden-outdoor/garden-hand-tools-equipment/garden-rakes/c/1199&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Garden &amp; Outdoor/Garden Tidy/Garden Hand Tools &amp; Equipment/Garden Bags&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/garden-outdoor/garden-hand-tools-equipment/garden-bags/c/103&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Garden &amp; Outdoor/Garden Tidy/Garden Hand Tools &amp; Equipment/Wheelbarrows&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/garden-outdoor/garden-hand-tools-equipment/wheelbarrows/c/1200&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Garden &amp; Outdoor/Garden Tidy/Garden Hand Tools &amp; Equipment/Gardening Clothing&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/garden-outdoor/garden-hand-tools-equipment/gardening-clothing/c/108&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Garden &amp; Outdoor/Garden Tidy/Garden Hand Tools &amp; Equipment/Wheelbarrows&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/garden-outdoor/garden-hand-tools-equipment/wheelbarrows/c/1200&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Garden &amp; Outdoor/Garden Tidy/Garden Hand Tools &amp; Equipment/Wheelbarrows&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/garden-outdoor/garden-hand-tools-equipment/wheelbarrows/c/1200&#39;</span><span class="p">},</span>
+        <span class="c1"># Garden &amp; Outdoor/Plant Care</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Garden &amp; Outdoor/Plant Care/Garden Canes &amp; Plant Support&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/garden-outdoor/plant-care/garden-canes-plant-support/c/89&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Garden &amp; Outdoor/Plant Care/Plant Pots &amp; Planters/Plant Pots&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/garden-outdoor/plant-care/plant-pots-planters/plant-pots/c/1360&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Garden &amp; Outdoor/Plant Care/Plant Pots &amp; Planters/Hanging Baskets&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/garden-outdoor/plant-care/plant-pots-planters/hanging-baskets/c/1193&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Garden &amp; Outdoor/Plant Care/Plant Pots &amp; Planters/Raised Beds&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/garden-outdoor/fencing-decking-landscaping/raised-beds/c/1396&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Garden &amp; Outdoor/Plant Care/Plant Pots &amp; Planters/Potting Benches&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/garden-outdoor/plant-care/plant-pots-planters/potting-benches/c/1846&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Garden &amp; Outdoor/Plant Care/Plant Pots &amp; Planters/Garden Planters&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/garden-outdoor/plant-care/plant-pots-planters/garden-planters/c/5361&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Garden &amp; Outdoor/Plant Care/Plant Pots &amp; Planters/Plant Stands&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/garden-outdoor/plant-care/plant-pots-planters/plant-stands/c/1998&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Garden &amp; Outdoor/Plant Care/Plant Pots &amp; Planters/Decorative Plant Pots&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/garden-outdoor/garden-decorations/decorative-plant-pots/c/41&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Garden &amp; Outdoor/Plant Care/Plant Food &amp; Fertilisers&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/garden-outdoor/plant-care/plant-food-fertilisers/c/1281&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Garden &amp; Outdoor/Plant Care/Compost &amp; Soil&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/garden-outdoor/plant-care/compost-soil/c/82&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Garden &amp; Outdoor/Plant Care/Pest Control&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/garden-outdoor/pest-control/c/1007&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Garden &amp; Outdoor/Plant Care/Seed Trays &amp; Propagators&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/garden-outdoor/plants-seeds-bulbs/seed-trays-propagators/c/86&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Garden &amp; Outdoor/Plant Care/Pruning &amp; Cutting Tools&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/garden-outdoor/garden-hand-tools-equipment/pruning-cutting-tools/c/1748&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Garden &amp; Outdoor/Plant Care/Garden Sprayers&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/garden-outdoor/lawn-care/watering/garden-sprayers/c/1746&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Garden &amp; Outdoor/Plant Care/Hand Trowels&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/garden-outdoor/garden-hand-tools-equipment/garden-hand-tools/&#39;</span>
+                <span class="s1">&#39;hand-trowels/c/1994&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Garden &amp; Outdoor/Plant Care/Watering Cans&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/garden-outdoor/lawn-care/watering/watering-cans/c/99&#39;</span><span class="p">},</span>
+        <span class="c1"># Garden &amp; Outdoor/Lawn Care</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Garden &amp; Outdoor/Lawn Care/Grass Seed&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/garden-outdoor/lawn-care/grass-seed/c/72&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Garden &amp; Outdoor/Lawn Care/Lawn Feed&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/garden-outdoor/lawn-care/lawn-feed/c/1666&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Garden &amp; Outdoor/Lawn Care/Weed Killer&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/garden-outdoor/lawn-care/weed-killer/c/69&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Garden &amp; Outdoor/Lawn Care/Lawn Repair&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/garden-outdoor/lawn-care/lawn-repair/c/1106&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Garden &amp; Outdoor/Lawn Care/Artificial Grass&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/garden-outdoor/fencing-decking-landscaping/artificial-grass/c/1366&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Garden &amp; Outdoor/Lawn Care/Garden Sprinklers&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/garden-outdoor/lawn-care/watering/garden-sprinklers/c/98&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Garden &amp; Outdoor/Lawn Care/Hose Pipes&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/garden-outdoor/lawn-care/watering/hose-pipes/c/96&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Garden &amp; Outdoor/Lawn Care/Lawn Spreaders&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/garden-outdoor/lawn-care/lawn-spreaders/c/1767&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Garden &amp; Outdoor/Lawn Care/Lawn Mowers&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/garden-outdoor/garden-power-tools/lawn-mowers/c/91&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Garden &amp; Outdoor/Lawn Care/Garden Vacuums &amp; Leaf Blowers&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/garden-outdoor/garden-power-tools/garden-vacuums-leaf-blowers/c/90&#39;</span><span class="p">},</span>
+        <span class="c1"># Garden &amp; Outdoor/Plants, Seeds &amp; Bulbs</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Garden &amp; Outdoor/Plants, Seeds &amp; Bulbs/Flower Seeds &amp; Bulbs&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/garden-outdoor/plants-seeds-bulbs/seeds-bulbs/flower-seeds-bulbs/c/75&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Garden &amp; Outdoor/Plants, Seeds &amp; Bulbs/Vegetable Seeds &amp; Bulbs&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/garden-outdoor/plants-seeds-bulbs/seeds-bulbs/&#39;</span>
+                <span class="s1">&#39;vegetable-seeds-bulbs/c/76&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Garden &amp; Outdoor/Plants, Seeds &amp; Bulbs/Seed Trays &amp; Propagators&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/garden-outdoor/plants-seeds-bulbs/seed-trays-propagators/c/86&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Garden &amp; Outdoor/Plants, Seeds &amp; Bulbs/Plant Pots &amp; Planters&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/garden-outdoor/plant-care/plant-pots-planters/c/1341&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Garden &amp; Outdoor/Plants, Seeds &amp; Bulbs/Seeds &amp; Bulbs&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/garden-outdoor/plants-seeds-bulbs/seeds-bulbs/c/73&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Garden &amp; Outdoor/Plants, Seeds &amp; Bulbs/Garden Canes &amp; Plant Support&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/garden-outdoor/plant-care/garden-canes-plant-support/c/89&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Garden &amp; Outdoor/Plants, Seeds &amp; Bulbs/Fruit Seeds&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/garden-outdoor/plants-seeds-bulbs/seeds-bulbs/fruit-seeds/c/1394&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Garden &amp; Outdoor/Plants, Seeds &amp; Bulbs/Herb Seeds&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/garden-outdoor/plants-seeds-bulbs/seeds-bulbs/herb-seeds/c/80&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Garden &amp; Outdoor/Plants, Seeds &amp; Bulbs/Salad Seeds&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/garden-outdoor/plants-seeds-bulbs/seeds-bulbs/salad-seeds/c/1768&#39;</span><span class="p">},</span>
+        <span class="c1"># Garden &amp; Outdoor/Exterior Paint</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Garden &amp; Outdoor/Exterior Paint/Masonry Paint&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/paint/exterior-paint/masonry-paint/c/477&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Garden &amp; Outdoor/Exterior Paint/Garden Furniture Paint&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/paint/exterior-paint/garden-furniture-paint/c/478&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Garden &amp; Outdoor/Exterior Paint/Fence Paint&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/paint/exterior-paint/fence-paint/c/479&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Garden &amp; Outdoor/Exterior Paint/Exterior Wood Paint&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/paint/exterior-paint/exterior-wood-paint/c/1409&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Garden &amp; Outdoor/Exterior Paint/Decking Paint &amp; Treatments&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/paint/exterior-paint/decking-paint-treatments/c/480&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Garden &amp; Outdoor/Exterior Paint/Metal Paint&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/paint/exterior-paint/metal-paint/c/482&#39;</span><span class="p">},</span>
+        <span class="c1"># Decorating &amp; DIY/Wallpaper</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Wallpaper/All Wallpaper&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/wallpaper/all-wallpaper/c/1390&#39;</span><span class="p">},</span>
+        <span class="c1"># Decorating &amp; DIY/Paint</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Paint/Interior Paint/Walls &amp; Ceilings Paint&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/paint/interior-paint/walls-ceilings-paint/c/467&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Paint/Interior Paint/Interior Wood Paint&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/paint/interior-paint/interior-wood-paint/c/1405&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Paint/Interior Paint/Kitchen Paint&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/paint/interior-paint/kitchen-paint/c/469&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Paint/Interior Paint/Bathroom Paint&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/paint/interior-paint/bathroom-paint/c/470&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Paint/Interior Paint/Feature Wall Paint&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/paint/interior-paint/feature-wall-paint/c/471&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Paint/Interior Paint/Skirting Board Paint&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/paint/interior-paint/skirting-board-paint/c/1300&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Paint/Interior Paint/Furniture Paint&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/paint/interior-paint/furniture-paint/c/472&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Paint/Interior Paint/Blackboard Paint&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/paint/interior-paint/blackboard-paint/c/490&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Paint/Interior Paint/Radiator Paint&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/paint/interior-paint/radiator-paint/c/484&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Paint/Interior Paint/Craft Paint&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/paint/interior-paint/craft-paint/c/1201&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Paint/Renovation Paint&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/paint/renovation-paint/c/487&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Paint/Spray Paint&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/paint/spray-paint/c/493&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Paint/Primers &amp; Undercoats&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/paint/primers-undercoats/c/475&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Paint/Paint Tester Pots&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/paint/paint-tester-pots/c/494&#39;</span><span class="p">},</span>
+        <span class="c1"># Decorating &amp; DIY/Electrical</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Electrical/Extension Leads &amp; Cable Reels&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/electrical/extension-leads-cable-reels/c/605&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Electrical/Batteries &amp; Chargers&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/electrical/batteries-chargers/c/599&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Electrical/Plugs, Adaptors &amp; Fuses&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/electrical/electrical-tools-supplies/&#39;</span>
+                <span class="s1">&#39;plugs-adaptors-fuses/c/622&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Electrical/Smart Home Technology&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/electrical/smart-home-technology/c/1398&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Electrical/Switches &amp; Sockets&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/electrical/switches-sockets/c/602&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Electrical/Electrical Tools &amp; Supplies&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/electrical/electrical-tools-supplies/c/612&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Electrical/Door Bells, Alarms &amp; Sensors&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/electrical/door-bells-alarms-sensors/c/609&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Electrical/Cables, TV Aerials &amp; Accessories&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/electrical/cables-tv-aerials-accessories/c/606&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Electrical/Torches&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/electrical/torches/c/596&#39;</span><span class="p">},</span>
+        <span class="c1"># Decorating &amp; DIY/Tools</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Tools/Power Tools/Drills&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/tools/power-tools/drills/c/563&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Tools/Power Tools/Saws&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/tools/power-tools/saws/c/564&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Tools/Power Tools/Sanders&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/tools/power-tools/sanders/c/565&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Tools/Power Tools/Angle Grinders&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/tools/power-tools/angle-grinders/c/1785&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Tools/Power Tools/Multi Tools&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/tools/power-tools/multi-tools/c/1786&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Tools/Power Tools/Combi Kits&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/tools/power-tools/combi-kits/c/1788&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Tools/Power Tool Accessories/Drill Bits&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/tools/power-tool-accessories/drill-bits/c/569&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Tools/Power Tool Accessories/Saw Blades&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/tools/power-tool-accessories/saw-blades/c/570&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Tools/Power Tool Accessories/Sanding Sheets &amp; Wheels&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/tools/power-tool-accessories/sanding-sheets-wheels/c/572&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Tools/Power Tool Accessories/Angle Grinder Discs&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/tools/power-tool-accessories/angle-grinder-discs/c/571&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Tools/Power Tool Accessories/Solder&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/tools/power-tool-accessories/solder/c/1801&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Tools/Power Tool Accessories/Staples&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/tools/power-tool-accessories/staples/c/1802&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Tools/Hand Tools/Screwdrivers&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/tools/hand-tools/screwdrivers/c/541&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Tools/Hand Tools/Spanners &amp; Wrenches&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/tools/hand-tools/spanners-wrenches/c/543&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Tools/Hand Tools/Tape Measures, Rulers &amp; Spirit Levels&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/tools/hand-tools/&#39;</span>
+                <span class="s1">&#39;tape-measures-rulers-spirit-levels/c/550&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Tools/Hand Tools/Clamps &amp; Vices&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/tools/hand-tools/clamps-vices/c/553&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Tools/Hand Tools/Planes, Chisels &amp; Files&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/tools/hand-tools/planes-chisels-files/c/557&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Tools/Hand Tools/Hammers &amp; Mallets&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/tools/hand-tools/hammers-mallets/c/534&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Tools/Hand Tools/Pliers &amp; Grippers&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/tools/hand-tools/pliers-grippers/c/547&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Tools/Hand Tools/Saws &amp; Cutters&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/tools/hand-tools/saws-cutters/c/1826&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Tools/Hand Tools/Tool Kits&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/tools/hand-tools/tool-kits/c/561&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Tools/Tool Boxes, Bags &amp; Organisers&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/tools/tool-boxes-bags-organisers/c/642&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Tools/Ladders&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/tools/ladders/c/638&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Tools/Workbenches&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/tools/workbenches/c/643&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Tools/Safety Clothing &amp; Accessories&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/tools/safety-clothing-accessories/c/646&#39;</span><span class="p">},</span>
+        <span class="c1"># Decorating &amp; DIY/Decorating Tools &amp; Accessories</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Decorating Tools &amp; Accessories/Paint Brushes&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/decorating-tools-accessories/&#39;</span>
+                <span class="s1">&#39;paint-brushes-rollers/paint-brushes/c/504&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Decorating Tools &amp; Accessories/Paint Rollers, Sleeves &amp; Poles&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/decorating-tools-accessories/paint-brushes-&#39;</span>
+                <span class="s1">&#39;rollers/paint-rollers-sleeves-poles/c/505&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Decorating Tools &amp; Accessories/Sealants &amp; Adhesives/Glues &amp; Adhesives&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/sealants-adhesives/glues-adhesives/c/516&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Decorating Tools &amp; Accessories/Sealants &amp; Adhesives/Tape&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/decorating-tools-accessories/tape/c/517&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Decorating Tools &amp; Accessories/Sealants &amp; Adhesives/Fillers&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/sealants-adhesives/fillers/c/511&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Decorating Tools &amp; Accessories/Sealants &amp; Adhesives/Sealants&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/sealants-adhesives/sealants/c/515&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Decorating Tools &amp; Accessories/Sealants &amp; Adhesives/Grout&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/sealants-adhesives/grout/c/1941&#39;</span><span class="p">},</span>
+        <span class="c1"># Decorating &amp; DIY/Ironmongery &amp; Home Security</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Ironmongery &amp; Home Security/Door Furniture/Door Handles&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/ironmongery-home-security/&#39;</span>
+                <span class="s1">&#39;door-furniture/door-handles/c/1210&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Ironmongery &amp; Home Security/Door Furniture/Door Knobs&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/ironmongery-home-security/&#39;</span>
+                <span class="s1">&#39;door-furniture/door-knobs/c/1822&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Ironmongery &amp; Home Security/Door Furniture/Door Stops&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/ironmongery-home-security/door-furniture/&#39;</span>
+                <span class="s1">&#39;door-stops/c/1207&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Ironmongery &amp; Home Security/Door Furniture/Door Locks&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/home-security/door-locks-latches/door-locks/c/435&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Ironmongery &amp; Home Security/Door Furniture/Door Latches &amp; Catches&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/home-security/door-locks-latches/door-latches-catches/c/436&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Ironmongery &amp; Home Security/Door Furniture/Hinges&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/ironmongery-home-security/door-furniture/hinges/c/587&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Ironmongery &amp; Home Security/Door Furniture/Gate Furniture&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/garden-outdoor/garden-security-maintenance/gate-furniture/c/112&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Ironmongery &amp; Home Security/Door Furniture/Door Bolts&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/ironmongery-home-security/door-furniture/&#39;</span>
+                <span class="s1">&#39;door-bolts/c/1212&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Ironmongery &amp; Home Security/Door Furniture/Door Chains&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/ironmongery-home-security/door-furniture/&#39;</span>
+                <span class="s1">&#39;door-chains/c/1823&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Ironmongery &amp; Home Security/Door Furniture/Post Box&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/ironmongery-home-security/door-furniture/post-box/c/1277&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Ironmongery &amp; Home Security/Home Security/&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/home-security/c/429&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Ironmongery &amp; Home Security/Screws, Nails &amp; Fixings/Hooks&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/screws-nails-fixings/hooks/c/635&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Ironmongery &amp; Home Security/Screws, Nails &amp; Fixings/Screws&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/screws-nails-fixings/screws/c/574&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Ironmongery &amp; Home Security/Screws, Nails &amp; Fixings/Plugs &amp; Fixings&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/screws-nails-fixings/plugs-fixings/c/580&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Ironmongery &amp; Home Security/Screws, Nails &amp; Fixings/Nails &amp; Tacks&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/screws-nails-fixings/nails-tacks/c/575&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Ironmongery &amp; Home Security/Screws, Nails &amp; Fixings/Nuts, Bolts &amp; Washers&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/screws-nails-fixings/nuts-bolts-washers/c/576&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Ironmongery &amp; Home Security/Screws, Nails &amp; Fixings/Picture &amp; Mirror Hanging&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/screws-nails-fixings/picture-mirror-hanging/c/1816&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Ironmongery &amp; Home Security/Screws, Nails &amp; Fixings/Ropes &amp; Chains&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/screws-nails-fixings/ropes-chains/c/588&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Ironmongery &amp; Home Security/Screws, Nails &amp; Fixings/Furniture Fittings&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/screws-nails-fixings/furniture-fittings/c/1817&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Ironmongery &amp; Home Security/Screws, Nails &amp; Fixings/Staples&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/tools/power-tool-accessories/staples/c/1802&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Ironmongery &amp; Home Security/Flood Lights&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/garden-outdoor/outdoor-lights/flood-lights/c/118&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Ironmongery &amp; Home Security/Brackets&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/ironmongery-home-security/brackets/c/583&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Ironmongery &amp; Home Security/Hinges&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/ironmongery-home-security/door-furniture/hinges/c/587&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Ironmongery &amp; Home Security/Draught Excluders&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/ironmongery-home-security/draught-excluders/c/630&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Ironmongery &amp; Home Security/Mending &amp; Corner Plates&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/ironmongery-home-security/mending-corner-plates/c/1821&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Ironmongery &amp; Home Security/Plaques &amp; Signs&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/ironmongery-home-security/plaques-signs/c/593&#39;</span><span class="p">},</span>
+        <span class="c1"># Decorating &amp; DIY/Woodcare</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Woodcare/Exterior Wood Stain&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/woodcare/exterior-wood-stain/c/1410&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Woodcare/Exterior Wood Varnish&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/woodcare/exterior-wood-varnish/c/1411&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Woodcare/Exterior Wood Treatments&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/woodcare/exterior-wood-treatments/c/1412&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Woodcare/Interior Wood Stain&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/woodcare/interior-wood-stain/c/1406&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Woodcare/Interior Wood Varnish&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/woodcare/interior-wood-varnish/c/1407&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Woodcare/Interior Wood Treatments&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/woodcare/interior-wood-treatments/c/1408&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Woodcare/Fence Paint&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/paint/exterior-paint/fence-paint/c/479&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Woodcare/Garden Furniture Paint&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/paint/exterior-paint/garden-furniture-paint/c/478&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Woodcare/Decking Paint &amp; Treatments&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/paint/exterior-paint/decking-paint-treatments/c/480&#39;</span><span class="p">},</span>
+        <span class="c1"># Decorating &amp; DIY/Car Care</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Car Care/Car Maintenance&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/car-care/car-maintenance/c/905&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Car Care/Car Air Fresheners&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/car-care/car-air-fresheners/c/920&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Car Care/Car Accessories&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/car-care/car-accessories/c/919&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Car Care/Car Cleaning&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/car-care/car-cleaning/c/900&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Car Care/Winter Car Care&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/car-care/winter-car-care/c/5193&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Decorating &amp; DIY/Car Care/Pressure Washers&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/garden-outdoor/garden-power-tools/pressure-washers/c/1479&#39;</span><span class="p">},</span>
+        <span class="c1"># Home/</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Throws &amp; Blankets&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/home-furnishings/throws-blankets/c/183&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Cushions&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/home-furnishings/cushions/c/182&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Rugs&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/home-furnishings/rugs/c/197&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Curtains&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/home-furnishings/curtains/c/184&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Curtain Poles, Rails &amp; Fixings&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/home-furnishings/curtain-poles-rails-fixings/c/188&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Blinds&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/home-furnishings/blinds/c/193&#39;</span><span class="p">},</span>
+        <span class="c1"># Home/Bedding</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Bedding/Duvet Covers &amp; Sets&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/home-furnishings/bedding/duvet-covers-sets/c/177&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Bedding/Bed Sheets&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/home-furnishings/bedding/bed-sheets/c/178&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Bedding/Duvets&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/home-furnishings/bedding/duvets/c/174&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Bedding/Pillows&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/home-furnishings/bedding/pillows/c/175&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Bedding/Pillow Cases&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/home-furnishings/bedding/pillow-cases/c/179&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Bedding/Valances&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/home-furnishings/bedding/valances/c/180&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Bedding/Throws &amp; Blankets&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/home-furnishings/throws-blankets/c/183&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Bedding/Cushions&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/home-furnishings/cushions/c/182&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Bedding/Mattress Protectors &amp; Toppers&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/home-furnishings/bedding/mattress-protectors-toppers/c/176&#39;</span><span class="p">},</span>
+        <span class="c1"># Home/Lighting</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Lighting/Ceiling Lights&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/lighting/ceiling-lights/c/136&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Lighting/Lamp Shades&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/lighting/lamp-shades/c/140&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Lighting/Table Lamps&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/lighting/table-lamps/c/144&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Lighting/Floor Lamps&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/lighting/floor-lamps/c/141&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Lighting/Desk Lamps&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/lighting/desk-lamps/c/143&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Lighting/Pendant Lights&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/lighting/ceiling-lights/pendant-lights/c/137&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Lighting/Light Bulbs&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/lighting/light-bulbs/c/145&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Lighting/Chandeliers&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/lighting/ceiling-lights/chandeliers/c/138&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Lighting/Outdoor Lights/Outdoor Wall Lights&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/garden-outdoor/outdoor-lights/outdoor-wall-lights/c/16&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Lighting/Outdoor Lights/Solar Lights&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/garden-outdoor/outdoor-lights/solar-lights/c/1738&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Lighting/Outdoor Lights/Post Lights&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/garden-outdoor/outdoor-lights/post-lights/c/18&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Lighting/Outdoor Lights/String Lights&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/garden-outdoor/outdoor-lights/string-lights/c/20&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Lighting/Outdoor Lights/Flood Lights&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/garden-outdoor/outdoor-lights/flood-lights/c/118&#39;</span><span class="p">},</span>
+        <span class="c1"># Home</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Cushions&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/home-furnishings/cushions/c/182&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Mirrors&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/home-accessories/mirrors/c/201&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Curtains&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/home-furnishings/curtains/c/184&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Electric Heaters&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/heating-cooling/electric-heaters/c/426&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Photo Frames&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/home-accessories/photo-frames-photo-albums/photo-frames/c/208&#39;</span><span class="p">},</span>
+        <span class="c1"># Home/Bathroom</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Bathroom/Towels&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/bathroom/towels-bath-mats/towels/c/348&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Bathroom/Bath &amp; Shower Mats&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/bathroom/towels-bath-mats/bath-shower-mats/c/349&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Bathroom/Bathroom Accessories&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/bathroom/bathroom-accessories/c/362&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Bathroom/Bathroom Storage&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/storage/bathroom-storage/c/1437&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Bathroom/Bathroom Bins&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/cleaning-household/bins-bin-liners/bins/bathroom-bins/c/368&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Bathroom/Toilet Brushes&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/bathroom/bathroom-accessories/toilet-brushes/c/363&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Bathroom/Bathroom Mirrors&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/bathroom/bathroom-accessories/bathroom-mirrors/c/5092&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Bathroom/Toilet Seats&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/bathroom/toilet-seats/c/354&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Bathroom/Laundry Baskets &amp; Bags&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/cleaning-household/laundry-ironing/laundry-baskets-bags/c/378&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Bathroom/Shower Curtains &amp; Poles&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/bathroom/shower-accessories/shower-curtains-poles/c/357&#39;</span><span class="p">},</span>
+        <span class="c1"># Home/Home Accessories</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Home Accessories/Ornaments&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/home-accessories/ornaments/c/227&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Home Accessories/Artificial Flowers &amp; Plants&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/home-accessories/artificial-flowers-plants/c/1244&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Home Accessories/Vases&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/home-accessories/vases/c/226&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Home Accessories/Photo Frames&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/home-accessories/photo-frames-photo-albums/photo-frames/c/208&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Home Accessories/Clocks&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/home-accessories/clocks/c/214&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Home Accessories/Mirrors&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/home-accessories/mirrors/c/201&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Home Accessories/Candles &amp; Home Fragrance/Candles&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/home-accessories/candles-home-fragrance/candles/c/218&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Home Accessories/Candles &amp; Home Fragrance/Candle Holders &amp; Lanterns&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/home-accessories/candles-home-fragrance/&#39;</span>
+                <span class="s1">&#39;candle-holders-lanterns/c/222&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Home Accessories/Candles &amp; Home Fragrance/Diffusers&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/home-accessories/candles-home-fragrance/diffusers/c/219&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Home Accessories/Candles &amp; Home Fragrance/Potpourri&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/home-accessories/candles-home-fragrance/potpourri/c/221&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Home Accessories/Candles &amp; Home Fragrance/Seasonal Scents&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/cleaning-household/air-fresheners/seasonal-scents/c/1659&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Home Accessories/Candles &amp; Home Fragrance/Room Sprays&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/cleaning-household/air-fresheners/room-sprays/c/417&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Home Accessories/Wall Art &amp; Wall Plaques&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/home-accessories/wall-art-wall-plaques/wall-art/c/212&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Home Accessories/Candles &amp; Home Fragrance/Candle Holders &amp; Lanterns&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/home-accessories/candles-home-fragrance/&#39;</span>
+                <span class="s1">&#39;candle-holders-lanterns/c/222&#39;</span><span class="p">},</span>
+        <span class="c1"># Storage</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Storage/Ottomans Storage&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/storage/ottomans-storage/c/316&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Storage/Luggage&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/travel-motoring/travel/luggage/c/923&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Storage/Storage Drawers&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/storage/storage-drawers/c/448&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Storage/Storage Boxes&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/storage/storage-boxes/c/445&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Storage/Storage Hampers &amp; Baskets&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/storage/storage-hampers-baskets/c/446&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Storage/Kitchen Trolleys&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/kitchen-dining/kitchen-trolleys/c/1255&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Storage/Kitchen Organisers&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/storage/kitchen-organisers/c/1268&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Storage/Food Storage&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/kitchen-dining/food-storage/c/302&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Storage/Office Storage&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/storage/office-storage/c/453&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Storage/Garden Storage&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/garden-outdoor/garden-storage/c/47&#39;</span><span class="p">},</span>
+        <span class="c1"># Kitchen &amp; Dining</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Kitchen &amp; Dining/Tableware&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/kitchen-dining/tableware/c/288&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Kitchen &amp; Dining/Small Kitchen Appliances&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/kitchen-dining/small-kitchen-appliances/c/251&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Kitchen &amp; Dining/Cookware&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/kitchen-dining/cookware/c/238&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Kitchen &amp; Dining/Kitchen Linen&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/kitchen-dining/kitchen-linen/c/268&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Kitchen &amp; Dining/Food Storage&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/kitchen-dining/food-storage/c/302&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Kitchen &amp; Dining/Kitchen Organisers&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/storage/kitchen-organisers/c/1268&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Kitchen &amp; Dining/Cake Baking &amp; Decorating&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/kitchen-dining/cake-baking-decorating/c/246&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Kitchen &amp; Dining/Mugs &amp; Cups&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/kitchen-dining/tableware/mugs-cups/c/289&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Kitchen &amp; Dining/Food Preparation&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/kitchen-dining/food-preparation/c/229&#39;</span><span class="p">},</span>
+        <span class="c1"># Cleaning &amp; Household/Laundry &amp; Ironing</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Cleaning &amp; Household/Laundry &amp; Ironing/Laundry Detergents&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/cleaning-household/laundry-ironing/detergents-&#39;</span>
+                <span class="s1">&#39;conditioners-stain-removers/laundry-detergents/c/380&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Cleaning &amp; Household/Laundry &amp; Ironing/Fabric Conditioners&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/cleaning-household/laundry-ironing/detergents-conditioners-&#39;</span>
+                <span class="s1">&#39;stain-removers/fabric-conditioners/c/381&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Cleaning &amp; Household/Laundry &amp; Ironing/Whiteners &amp; Stain Removers&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/cleaning-household/laundry-ironing/detergents-conditioners-&#39;</span>
+                <span class="s1">&#39;stain-removers/whiteners-stain-removers/c/382&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Cleaning &amp; Household/Laundry &amp; Ironing/Fabric Fresheners&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/cleaning-household/laundry-ironing/detergents-conditioners-&#39;</span>
+                <span class="s1">&#39;stain-removers/scent-boosters-fabric-fresheners/fabric-fresheners/c/1904&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Cleaning &amp; Household/Laundry &amp; Ironing/Scent Boosters&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/cleaning-household/laundry-ironing/detergents-&#39;</span>
+                <span class="s1">&#39;conditioners-stain-removers/scent-boosters-fabric-fresheners/scent-boosters/c/1905&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Cleaning &amp; Household/Laundry &amp; Ironing/Non Bio &amp; Sensitive Detergents&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/cleaning-household/laundry-ironing/detergents-conditioners-&#39;</span>
+                <span class="s1">&#39;stain-removers/laundry-detergents/non-bio-sensitive-detergents/c/1961&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Cleaning &amp; Household/Laundry &amp; Ironing/Clothes Airers &amp; Dryers&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/cleaning-household/laundry-ironing/clothes-airers-dryers/c/374&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Cleaning &amp; Household/Laundry &amp; Ironing/Irons&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/cleaning-household/laundry-ironing/irons/c/373&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Cleaning &amp; Household/Laundry &amp; Ironing/Ironing Boards &amp; Covers&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/cleaning-household/laundry-ironing/ironing-boards-covers/c/372&#39;</span><span class="p">},</span>
+        <span class="c1"># Cleaning &amp; Household/Cleaning</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Cleaning &amp; Household/Cleaning/Vacuum Cleaners&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/cleaning-household/vacuum-cleaners/c/388&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Cleaning &amp; Household/Cleaning/Mops, Mop Heads &amp; Refills&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/cleaning-household/cleaning/floorcare/mops-buckets/&#39;</span>
+                <span class="s1">&#39;mops-mop-heads-refills/c/393&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Cleaning &amp; Household/Cleaning/Dusters&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/cleaning-household/cleaning/dusters/c/396&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Cleaning &amp; Household/Cleaning/Dishwasher &amp; Washing Up&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/cleaning-household/dishwasher-washing-up/c/1401&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Cleaning &amp; Household/Cleaning/Multi-purpose Cleaners&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/cleaning-household/cleaning/multi-purpose-cleaners/c/406&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Cleaning &amp; Household/Cleaning/Carpet &amp; Floor Cleaners&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/cleaning-household/cleaning/floorcare/&#39;</span>
+                <span class="s1">&#39;carpet-floor-cleaners/c/1928&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Cleaning &amp; Household/Cleaning/Brushes &amp; Brooms&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/cleaning-household/cleaning/brushes-brooms/c/392&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Cleaning &amp; Household/Cleaning/Bleach &amp; Disinfectant&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/cleaning-household/cleaning/bleach-disinfectant/c/1228&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Cleaning &amp; Household/Cleaning/Kitchen &amp; Oven Cleaners&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/cleaning-household/cleaning/kitchen-oven-cleaners/c/407&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Cleaning &amp; Household/Cleaning/Bathroom Cleaners&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/cleaning-household/cleaning/bathroom-toilet-cleaners&#39;</span>
+                <span class="s1">&#39;/bathroom-cleaners/c/1924&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Cleaning &amp; Household/Cleaning/Toilet Cleaners&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/cleaning-household/cleaning/bathroom-toilet-cleaners/&#39;</span>
+                <span class="s1">&#39;toilet-cleaners/c/1938&#39;</span><span class="p">},</span>
+        <span class="c1"># Cleaning &amp; Household/Cleaning</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Cleaning &amp; Household/Air Fresheners/Plug-In Air Fresheners&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/cleaning-household/air-fresheners/plug-in-air-fresheners/c/1658&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Cleaning &amp; Household/Air Fresheners/Automatic Air Fresheners&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/cleaning-household/air-fresheners/automatic-air-fresheners/c/1657&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Cleaning &amp; Household/Air Fresheners/Scented Candles&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/home-accessories/candles-home-fragrance/candles/&#39;</span>
+                <span class="s1">&#39;scented-candles/c/415&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Cleaning &amp; Household/Air Fresheners/Seasonal Scents&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/cleaning-household/air-fresheners/seasonal-scents/c/1659&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Cleaning &amp; Household/Air Fresheners/Gel Air Fresheners&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/cleaning-household/air-fresheners/gel-air-fresheners/c/1229&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Cleaning &amp; Household/Air Fresheners/Air Freshener Refills&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/cleaning-household/air-fresheners/air-freshener-refills/c/1230&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Cleaning &amp; Household/Air Fresheners/Room Sprays&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/cleaning-household/air-fresheners/room-sprays/c/417&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Cleaning &amp; Household/Air Fresheners/Diffusers&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/home-accessories/candles-home-fragrance/diffusers/c/219&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Cleaning &amp; Household/Air Fresheners/Car Air Fresheners&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/decorating-diy/car-care/car-air-fresheners/c/920&#39;</span><span class="p">},</span>
+        <span class="c1"># Cleaning &amp; Household/Vacuum Cleaners</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Cleaning &amp; Household/Vacuum Cleaners&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/cleaning-household/vacuum-cleaners/c/388&#39;</span><span class="p">},</span>
+        <span class="c1"># Cleaning &amp; Household/Mops &amp; Buckets</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Home/Cleaning &amp; Household/Mops &amp; Buckets&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/home/cleaning-household/cleaning/floorcare/mops-buckets/c/1927&#39;</span><span class="p">},</span>
+        <span class="c1"># Pets/Dog</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Pets/Dog/Dog Food&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/pets/dog/dog-food/c/1064&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Pets/Dog/Dog Treats&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/pets/dog/dog-treats/c/1065&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Pets/Dog/Dog Grooming&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/pets/dog/dog-grooming/c/1074&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Pets/Dog/Puppy&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/pets/dog/puppy/c/1572&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Pets/Dog/Dog Beds&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/pets/dog/dog-beds/c/1069&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Pets/Dog/Dog Coats &amp; Clothing&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/pets/dog/dog-coats-clothing/c/1456&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Pets/Dog/Dog Collars, Leads &amp; Harnesses&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/pets/dog/dog-collars-leads-harnesses/c/1071&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Pets/Dog/Dog Toys&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/pets/dog/dog-toys/c/1072&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Pets/Dog/Dog Strollers&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/pets/dog/dog-crates-carriers/dog-strollers/c/1070&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Pets/Dog/Dog Healthcare&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/pets/dog/dog-healthcare/c/1075&#39;</span><span class="p">},</span>
+        <span class="c1"># Pets/Cat</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Pets/Cat/Cat Food&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/pets/cat/cat-food/c/1078&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Pets/Cat/Cat Treats&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/pets/cat/cat-treats/c/1079&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Pets/Cat/Cat Litter&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/pets/cat/cat-litter/c/1087&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Pets/Cat/Cat Toys &amp; Scratching Posts&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/pets/cat/cat-toys-scratching-posts/c/1092&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Pets/Cat/Cat Beds &amp; Carriers&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/pets/cat/cat-beds-carriers/c/1084&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Pets/Cat/Cat Healthcare&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/pets/cat/cat-healthcare/c/1096&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Pets/Cat/Kitten&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/pets/cat/kitten/c/1573&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Pets/Cat/Pet Calming Remedy&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/pets/pet-calming-remedy/c/5343&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Pets/Cat/Cat Grooming &amp; Collars&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/pets/cat/cat-grooming-collars/c/1091&#39;</span><span class="p">},</span>
+        <span class="c1"># Pets/Small Pet</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Pets/Small Pet&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/pets/small-pet/c/1097&#39;</span><span class="p">},</span>
+        <span class="c1"># Pets/Wildlife</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Pets/Wildlife/Wild Bird&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/garden-outdoor/wildlife/wild-bird/c/120&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Pets/Wildlife/Wild Bird Food&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/garden-outdoor/wildlife/wild-bird/wild-bird-food/c/121&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Pets/Wildlife/Wild Bird Feeders&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/garden-outdoor/wildlife/wild-bird/wild-bird-feeders/c/122&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Pets/Wildlife/Wild Bird Food Packs&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/garden-outdoor/wildlife/wild-bird/wild-bird-food/wild-&#39;</span>
+                <span class="s1">&#39;bird-food-packs/c/5252&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Pets/Wildlife/Bird Houses &amp; Tables&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/garden-outdoor/wildlife/wild-bird/bird-houses-tables/c/124&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Pets/Wildlife/Chickens&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/garden-outdoor/wildlife/chickens/c/127&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Pets/Wildlife/Hedgehog Food&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/garden-outdoor/wildlife/hedgehog-food/c/1541&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Pets/Wildlife/Pond Fish&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/garden-outdoor/wildlife/pond-fish/c/130&#39;</span><span class="p">},</span>
+        <span class="c1"># Pets/Fish</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Pets/Fish&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/pets/fish/c/1113&#39;</span><span class="p">},</span>
+        <span class="c1"># Pets/Reptiles Food &amp; Supplies</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Pets/Reptiles Food &amp; Supplies&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/pets/reptiles-food-supplies/c/1118&#39;</span><span class="p">},</span>
+        <span class="c1"># Pets/Pet Flea &amp; Worming Control</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Pets/Pet Flea &amp; Worming Control&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/pets/pet-flea-worming-control/c/5078&#39;</span><span class="p">},</span>
+        <span class="c1"># Pets/Pet Calming Remedy</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Pets/Pet Calming Remedy&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/pets/pet-calming-remedy/c/5343&#39;</span><span class="p">},</span>
+        <span class="c1"># Stationery &amp; Office</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Stationery &amp; Office/Desk Storage &amp; Filing&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/stationery-office/desk-storage-filing/c/1177&#39;</span><span class="p">},</span>
+        <span class="c1"># Stationery &amp; Office/Pens, Pencils &amp; Highlighters</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Stationery &amp; Office/Pens, Pencils &amp; Highlighters/Pens&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/stationery-office/pens-pencils-highlighters/pens/c/941&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Stationery &amp; Office/Pens, Pencils &amp; Highlighters/Pencils&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/stationery-office/pens-pencils-highlighters/pencils/c/942&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Stationery &amp; Office/Pens, Pencils &amp; Highlighters/Pencil Cases&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/stationery-office/pens-pencils-highlighters/pencil-cases/c/949&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Stationery &amp; Office/Pens, Pencils &amp; Highlighters/Colouring Pens&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/stationery-office/pens-pencils-highlighters/colouring-pens/c/944&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Stationery &amp; Office/Pens, Pencils &amp; Highlighters/Colouring Pencils&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/stationery-office/pens-pencils-highlighters/colouring-pencils/c/945&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Stationery &amp; Office/Pens, Pencils &amp; Highlighters/Marker Pens&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/stationery-office/pens-pencils-highlighters/marker-pens/c/947&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Stationery &amp; Office/Pens, Pencils &amp; Highlighters/Highlighters&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/stationery-office/pens-pencils-highlighters/highlighters/c/948&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Stationery &amp; Office/Pens, Pencils &amp; Highlighters/Crayons&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/stationery-office/kids-stationery/crayons/c/946&#39;</span><span class="p">},</span>
+        <span class="c1"># Stationery &amp; Office</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Stationery &amp; Office/Calendars, Diaries, Planners &amp; Organisers&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/stationery-office/calendars-diaries-planners-organisers/c/953&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Stationery &amp; Office/Printing &amp; Laminating&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/stationery-office/printing-laminating/c/986&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Stationery &amp; Office/Home Office&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/stationery-office/home-office/c/1044&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Stationery &amp; Office/Desk Accessories&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/stationery-office/desk-accessories/c/969&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Stationery &amp; Office/Computer, Mobile &amp; Tablet&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/stationery-office/computer-mobile-tablet/c/991&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Stationery &amp; Office/Arts &amp; Crafts&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/stationery-office/arts-crafts/c/926&#39;</span><span class="p">},</span>
+        <span class="c1"># Toys</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Toys/Role Play Toys&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/toys/fancy-dress-role-play/role-play-toys/c/863&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Toys/Figures &amp; Dolls&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/toys/figures-dolls/c/1472&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Toys/Pre-School &amp; Learning Toys&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/toys/pre-school-learning-toys/c/854&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Toys/Toy Cars &amp; Vehicles&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/toys/toy-cars-vehicles/c/850&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Toys/Family Games&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/toys/family-games/c/864&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Toys/Bikes &amp; Wheeled Toys&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/toys/bikes-wheeled-toys/c/888&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Toys/Childrens Scooters &amp; Skateboards&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/toys/bikes-wheeled-toys/childrens-scooters-skateboards/c/1473&#39;</span><span class="p">},</span>
+        <span class="c1"># Toys/Outdoor Play &amp; Toys</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Toys/Outdoor Play &amp; Toys/Play Houses &amp; Play Tents&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/toys/outdoor-play-toys/play-houses-play-tents/c/1467&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Toys/Outdoor Play &amp; Toys/Slides&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/toys/outdoor-play-toys/slides/c/1704&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Toys/Outdoor Play &amp; Toys/Swings&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/toys/outdoor-play-toys/swings/c/1299&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Toys/Outdoor Play &amp; Toys/Paddling Pools &amp; Water Toys&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/toys/outdoor-play-toys/paddling-pools-water-toys/c/869&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Toys/Outdoor Play &amp; Toys/Sandpits&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/toys/outdoor-play-toys/sandpits/c/1824&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Toys/Outdoor Play &amp; Toys/Sports Toys, Equipment &amp; Games&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/toys/outdoor-play-toys/sports-toys-equipment-games/c/873&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Toys/Outdoor Play &amp; Toys/Trikes &amp; Ride Ons&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/toys/bikes-wheeled-toys/trikes-ride-ons/c/1463&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Toys/Outdoor Play &amp; Toys/Trampolines&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/toys/outdoor-play-toys/trampolines/c/876&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Toys/Outdoor Play &amp; Toys/Children Bikes&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/toys/bikes-wheeled-toys/children-bikes/c/1400&#39;</span><span class="p">},</span>
+        <span class="c1"># Health &amp; Beauty/Hair Care &amp; Styling</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Health &amp; Beauty/Hair Care &amp; Styling/All Hair Care &amp; Styling&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/all-hair-care-styling/c/1153&#39;</span><span class="p">},</span>
+        <span class="c1"># Health &amp; Beauty/All Dental Care</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Health &amp; Beauty/All Dental Care&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/health-beauty/dental-care/all-dental-care/c/1150&#39;</span><span class="p">},</span>
+        <span class="c1"># Health &amp; Beauty/Toiletries</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Health &amp; Beauty/Toiletries/Shower Gel &amp; Body Wash&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/health-beauty/toiletries/shower-gel-body-wash/c/744&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Health &amp; Beauty/Toiletries/Shampoo &amp; Conditioner&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/health-beauty/hair-care-styling/shampoo-conditioner/c/1432&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Health &amp; Beauty/Toiletries/Deodorant &amp; Antiperspirant&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/health-beauty/toiletries/deodorant-antiperspirant/c/17&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Health &amp; Beauty/Toiletries/Soap &amp; Hand Sanitiser&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/health-beauty/toiletries/soap-hand-sanitiser/c/757&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Health &amp; Beauty/Toiletries/Razors &amp; Hair Removal&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/health-beauty/toiletries/razors-hair-removal/c/739&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Health &amp; Beauty/Toiletries/Sanitary &amp; Bladder Control&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/health-beauty/toiletries/sanitary-bladder-control/c/759&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Health &amp; Beauty/Toiletries/All Mens Toiletries&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/health-beauty/mens/all-mens-toiletries/c/1588&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Health &amp; Beauty/Toiletries/Sun Cream &amp; After Sun&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/health-beauty/toiletries/sun-cream-after-sun/c/1164&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Health &amp; Beauty/Toiletries/Self Tanning&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/health-beauty/skincare/self-tanning/c/809&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Health &amp; Beauty/Toiletries/Travel Size Toiletries&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/health-beauty/toiletries/travel-size-toiletries/c/1263&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Health &amp; Beauty/Skincare/&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/health-beauty/all-skincare/c/1151&#39;</span><span class="p">},</span>
+        <span class="c1"># Health &amp; Beauty/Health &amp; Wellbeing</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Health &amp; Beauty/Health &amp; Wellbeing/Womens Healthcare&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/health-beauty/health-wellbeing/womens-healthcare/c/1158&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Health &amp; Beauty/Health &amp; Wellbeing/Mens Healthcare&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/health-beauty/mens/mens-healthcare/c/1731&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Health &amp; Beauty/Health &amp; Wellbeing/Baby Healthcare&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/health-beauty/baby-pregnancy/baby-healthcare/c/677&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Health &amp; Beauty/Health &amp; Wellbeing/Sanitary &amp; Bladder Control&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/health-beauty/toiletries/sanitary-bladder-control/c/759&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Health &amp; Beauty/Health &amp; Wellbeing/Family Planning&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/health-beauty/baby-pregnancy/family-planning/c/719&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Health &amp; Beauty/Health &amp; Wellbeing/Condoms &amp; Sexual Health&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/health-beauty/health-wellbeing/condoms-sexual-health/c/704&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Health &amp; Beauty/Health &amp; Wellbeing/Coughs, Colds &amp; Flu&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/health-beauty/health-wellbeing/coughs-colds-flu/c/689&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Health &amp; Beauty/Health &amp; Wellbeing/Vitamins &amp; Supplements&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/health-beauty/health-wellbeing/vitamins-supplements/c/686&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Health &amp; Beauty/Health &amp; Wellbeing/Pain Relief&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/health-beauty/health-wellbeing/pain-relief/c/693&#39;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s1">&#39;category&#39;</span><span class="p">:</span> <span class="s1">&#39;Health &amp; Beauty/Health &amp; Wellbeing/Allergies &amp; Hayfever&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://www.wilko.com/en-uk/health-beauty/health-wellbeing/allergies-hayfever/c/700&#39;</span><span class="p">},</span>
+    <span class="p">]</span>
+
+    <span class="n">item_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">categories_per_cat</span><span class="p">:</span>
+        <span class="n">url_list_item</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;url&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;category&quot;</span><span class="p">:</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;category&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;attempts&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="s2">&quot;max_attempts&quot;</span><span class="p">:</span> <span class="n">MAX_RETRIES</span><span class="p">,</span>
+            <span class="s2">&quot;success&quot;</span><span class="p">:</span> <span class="kc">False</span>
+        <span class="p">}</span>
+        <span class="n">item_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">url_list_item</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">item_list</span></div>
+
+
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../wilko_main.html#wilko_main.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Initiate collection&quot;&quot;&quot;</span>
+    <span class="n">navigation_urls</span> <span class="o">=</span> <span class="n">get_navigation_urls</span><span class="p">()</span>
+    <span class="n">parse_urls</span><span class="p">(</span><span class="n">navigation_urls</span><span class="p">)</span></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Brand Nudge Ltd.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

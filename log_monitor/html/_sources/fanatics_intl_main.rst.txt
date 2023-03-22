@@ -1,0 +1,7 @@
+fanatics\_intl\_main module
+===========================
+
+.. automodule:: fanatics_intl_main
+   :members:
+   :undoc-members:
+   :show-inheritance:

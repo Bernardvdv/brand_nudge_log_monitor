@@ -1,0 +1,7 @@
+fuelforfans\_main module
+========================
+
+.. automodule:: fuelforfans_main
+   :members:
+   :undoc-members:
+   :show-inheritance:

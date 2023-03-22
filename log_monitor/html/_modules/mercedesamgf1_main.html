@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>mercedesamgf1_main &mdash; Brand Nudge DC 1.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Brand Nudge DC
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Brand Nudge DC</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">mercedesamgf1_main</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for mercedesamgf1_main</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;shop.mercedesamgf1.com product collection program.&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+
+<span class="kn">import</span> <span class="nn">lxml</span>  <span class="c1"># noqa</span>
+<span class="kn">from</span> <span class="nn">dotenv</span> <span class="kn">import</span> <span class="n">load_dotenv</span>
+<span class="kn">from</span> <span class="nn">fake_useragent</span> <span class="kn">import</span> <span class="n">UserAgent</span>
+
+<span class="n">load_dotenv</span><span class="p">()</span>
+<span class="kn">import</span> <span class="nn">constants</span>
+<span class="kn">from</span> <span class="nn">logging_class</span> <span class="kn">import</span> <span class="n">LogHandler</span><span class="p">,</span> <span class="n">Statistics</span><span class="p">,</span> <span class="n">Utils</span>
+
+<span class="n">log_error</span> <span class="o">=</span> <span class="n">LogHandler</span><span class="p">()</span>
+<span class="n">statistics_class</span> <span class="o">=</span> <span class="n">Statistics</span><span class="p">()</span>
+
+<span class="c1"># Generate fake Request headers</span>
+<span class="n">ua</span> <span class="o">=</span> <span class="n">UserAgent</span><span class="p">()</span>
+<span class="n">HEADERS</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;user-agent&quot;</span><span class="p">:</span> <span class="n">ua</span><span class="o">.</span><span class="n">chrome</span><span class="p">}</span>
+
+<span class="c1"># Proxies</span>
+<span class="n">PROXIES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;http&quot;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;PROXIES_HTTP&quot;</span><span class="p">),</span>
+    <span class="s2">&quot;https&quot;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;PROXIES_HTTPS&quot;</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="n">PROXIES_RES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;http&quot;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;PROXIES_HTTP_RES&quot;</span><span class="p">),</span>
+    <span class="s2">&quot;https&quot;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;PROXIES_HTTPS_RES&quot;</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="n">RETAILER</span> <span class="o">=</span> <span class="s2">&quot;Mercedesamgf1&quot;</span>
+<span class="n">BASE_URL</span> <span class="o">=</span> <span class="s2">&quot;https://shop.mercedesamgf1.com/&quot;</span>
+<span class="n">MAX_RETRIES</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="n">TABLE_NAME</span> <span class="o">=</span> <span class="s2">&quot;mercedesamgf1&quot;</span>
+
+
+<div class="viewcode-block" id="get_data"><a class="viewcode-back" href="../mercedesamgf1_main.html#mercedesamgf1_main.get_data">[docs]</a><span class="k">def</span> <span class="nf">get_data</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Makes a request to each URL and store the collected info in the database</span>
+
+<span class="sd">    :param url: Product url</span>
+<span class="sd">    :return: True if successful and product count</span>
+<span class="sd">    :rtype: Boolean and integer</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">category_main</span> <span class="o">=</span> <span class="n">url</span><span class="p">[</span><span class="s2">&quot;category&quot;</span><span class="p">]</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">page</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">while</span> <span class="n">results</span><span class="p">:</span>
+            <span class="n">full_url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">url</span><span class="p">[</span><span class="s1">&#39;url&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&amp;page=</span><span class="si">{</span><span class="n">page</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">make_request</span><span class="p">(</span><span class="n">full_url</span><span class="p">,</span> <span class="n">HEADERS</span><span class="p">,</span> <span class="n">PROXIES</span><span class="p">,</span> <span class="n">RETAILER</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">r</span> <span class="ow">and</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
+                <span class="n">product_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">)[</span><span class="s1">&#39;products&#39;</span><span class="p">]</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">product_data</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">break</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">page</span> <span class="o">+=</span> <span class="mi">1</span>
+
+                    <span class="k">for</span> <span class="n">product</span> <span class="ow">in</span> <span class="n">product_data</span><span class="p">:</span>
+                        <span class="n">item_counter</span> <span class="o">=</span> <span class="mi">0</span>
+                        <span class="n">title</span> <span class="o">=</span> <span class="n">product</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;title&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                        <span class="n">brand</span> <span class="o">=</span> <span class="n">product</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;vendor&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                        <span class="n">image_url</span> <span class="o">=</span> <span class="n">product</span><span class="p">[</span><span class="s2">&quot;images&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;src&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                        <span class="n">description</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">remove_html_tags</span><span class="p">(</span><span class="n">product</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;body_html&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+                        <span class="n">product_type</span> <span class="o">=</span> <span class="n">product</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;product_type&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+                        <span class="k">for</span> <span class="n">variant</span> <span class="ow">in</span> <span class="n">product</span><span class="p">[</span><span class="s2">&quot;variants&quot;</span><span class="p">]:</span>
+                            <span class="n">product_id</span> <span class="o">=</span> <span class="n">variant</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                            <span class="n">variant_title</span> <span class="o">=</span> <span class="n">variant</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;title&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                            <span class="n">source_id</span> <span class="o">=</span> <span class="n">variant</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sku&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                            <span class="n">in_stock</span> <span class="o">=</span> <span class="n">variant</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;available&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                            <span class="n">shelf_price</span> <span class="o">=</span> <span class="n">variant</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;price&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                            <span class="n">ean</span> <span class="o">=</span> <span class="n">variant</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;product_id&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+                            <span class="n">country_code</span> <span class="o">=</span> <span class="n">url</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;country_code&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                            <span class="n">currency</span> <span class="o">=</span> <span class="n">url</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;currency&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                            <span class="n">date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+                            <span class="n">was_price</span> <span class="o">=</span> <span class="kc">None</span>
+                            <span class="n">card_price</span> <span class="o">=</span> <span class="kc">None</span>
+                            <span class="n">on_promo</span> <span class="o">=</span> <span class="kc">None</span>
+                            <span class="n">promo_data</span> <span class="o">=</span> <span class="p">[]</span>
+                            <span class="n">sku_url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">BASE_URL</span><span class="si">}</span><span class="s2">/products/</span><span class="si">{</span><span class="n">product</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;handle&#39;</span><span class="p">,</span><span class="w"> </span><span class="kc">None</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+                            <span class="n">bundled</span> <span class="o">=</span> <span class="kc">None</span>
+                            <span class="n">master_sku</span> <span class="o">=</span> <span class="kc">None</span>
+                            <span class="n">category</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">category_main</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">product</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;product_type&#39;</span><span class="p">,</span><span class="w"> </span><span class="kc">None</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+                            <span class="n">country</span> <span class="o">=</span> <span class="n">url</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;country&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+                            <span class="n">row_data</span> <span class="o">=</span> <span class="p">[</span><span class="n">date</span><span class="p">,</span> <span class="n">RETAILER</span><span class="p">,</span> <span class="n">country_code</span><span class="p">,</span> <span class="n">currency</span><span class="p">,</span> <span class="n">source_id</span><span class="p">,</span> <span class="n">ean</span><span class="p">,</span> <span class="n">brand</span><span class="p">,</span>
+                                        <span class="n">title</span><span class="p">,</span> <span class="n">shelf_price</span><span class="p">,</span> <span class="n">was_price</span><span class="p">,</span> <span class="n">card_price</span><span class="p">,</span> <span class="n">in_stock</span><span class="p">,</span> <span class="n">on_promo</span><span class="p">,</span>
+                                        <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">promo_data</span><span class="p">),</span> <span class="n">sku_url</span><span class="p">,</span> <span class="n">image_url</span><span class="p">,</span> <span class="n">bundled</span><span class="p">,</span> <span class="n">master_sku</span><span class="p">,</span>
+                                        <span class="n">category</span><span class="p">,</span> <span class="n">variant_title</span><span class="p">,</span> <span class="n">product_id</span><span class="p">,</span> <span class="n">product_type</span><span class="p">,</span> <span class="n">description</span><span class="p">,</span> <span class="n">country</span><span class="p">]</span>
+
+                            <span class="n">item_counter</span> <span class="o">+=</span> <span class="mi">1</span>
+
+                            <span class="n">insert_query</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">                            INSERT INTO public.mercedesamgf1(</span>
+<span class="s2">                            date, retailer, &quot;countryCode&quot;, currency, &quot;sourceId&quot;, ean, brand, title, &quot;shelfPrice&quot;,</span>
+<span class="s2">                            &quot;wasPrice&quot;, &quot;cardPrice&quot;, &quot;inStock&quot;, &quot;onPromo&quot;, &quot;promoData&quot;, &quot;skuURL&quot;, &quot;imageURL&quot;, bundled,</span>
+<span class="s2">                            &quot;masterSku&quot;, category, &quot;variantTitle&quot;, &quot;productId&quot;, &quot;productType&quot;, description, country)</span>
+<span class="s2">                            VALUES (</span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">,</span>
+<span class="s2">                            </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">);</span>
+<span class="s2">                            &quot;&quot;&quot;</span>
+
+                            <span class="n">Utils</span><span class="o">.</span><span class="n">insert_to_db</span><span class="p">(</span><span class="n">insert_query</span><span class="p">,</span> <span class="n">row_data</span><span class="p">,</span> <span class="n">RETAILER</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="n">item_counter</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="c1"># Log to DB</span>
+        <span class="n">log_error</span><span class="o">.</span><span class="n">error_db</span><span class="p">(</span><span class="n">RETAILER</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">())</span>
+        <span class="c1"># Log to file</span>
+        <span class="n">log_error</span><span class="o">.</span><span class="n">error_file</span><span class="p">(</span><span class="n">RETAILER</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">())</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="parse_urls"><a class="viewcode-back" href="../mercedesamgf1_main.html#mercedesamgf1_main.parse_urls">[docs]</a><span class="k">def</span> <span class="nf">parse_urls</span><span class="p">(</span><span class="n">urls</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Loop through all URL&#39;s and update the main URL dict when successfully parsed.</span>
+<span class="sd">    Collects statistical data and store it and the end of the program</span>
+
+<span class="sd">    :param urls: URL dictionary</span>
+<span class="sd">    :return: None</span>
+<span class="sd">    :rtype: None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">navigation_counter</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">item_counter</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">url</span> <span class="ow">in</span> <span class="n">urls</span><span class="p">:</span>
+        <span class="n">navigation_counter</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">navigation_url_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">urls</span><span class="p">)</span>
+        <span class="k">while</span> <span class="n">url</span><span class="p">[</span><span class="s2">&quot;success&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">and</span> <span class="n">url</span><span class="p">[</span><span class="s2">&quot;attempts&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">url</span><span class="p">[</span><span class="s2">&quot;max_attempts&quot;</span><span class="p">]:</span>
+            <span class="c1"># Increment attempts counter</span>
+            <span class="n">url</span><span class="p">[</span><span class="s2">&quot;attempts&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">get_data</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">result</span><span class="p">:</span>
+                <span class="n">url</span><span class="p">[</span><span class="s2">&quot;success&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">item_counter_actual</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">item_counter_actual</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="n">item_counter</span> <span class="o">+=</span> <span class="n">item_counter_actual</span>
+
+    <span class="n">duration</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span>
+    <span class="c1"># Lets record some stats</span>
+    <span class="n">Statistics</span><span class="o">.</span><span class="n">statistics</span><span class="p">(</span><span class="n">navigation_counter</span><span class="p">,</span>
+                          <span class="n">navigation_url_count</span><span class="p">,</span>
+                          <span class="n">item_counter</span><span class="p">,</span>
+                          <span class="n">duration</span><span class="p">,</span>
+                          <span class="n">urls</span><span class="p">,</span>
+                          <span class="n">RETAILER</span><span class="p">,</span>
+                          <span class="n">TABLE_NAME</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_navigation_urls"><a class="viewcode-back" href="../mercedesamgf1_main.html#mercedesamgf1_main.get_navigation_urls">[docs]</a><span class="k">def</span> <span class="nf">get_navigation_urls</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">   Get all navigation URLs from the base URL</span>
+
+<span class="sd">   :return: All navigation URLs</span>
+<span class="sd">   :rtype: Dictionary</span>
+<span class="sd">   &quot;&quot;&quot;</span>
+
+    <span class="n">urls</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">{</span><span class="s2">&quot;category&quot;</span><span class="p">:</span> <span class="s2">&quot;Teamwear&quot;</span><span class="p">,</span>
+         <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;https://shop-int.mercedesamgf1.com/collections/teamwear/products.json&quot;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;category&quot;</span><span class="p">:</span> <span class="s2">&quot;Fanwear&quot;</span><span class="p">,</span>
+         <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;https://shop-int.mercedesamgf1.com/collections/fanwear/products.json&quot;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;category&quot;</span><span class="p">:</span> <span class="s2">&quot;Lewis Hamilton&quot;</span><span class="p">,</span>
+         <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;https://shop-int.mercedesamgf1.com/collections/lewis-hamilton/products.json&quot;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;category&quot;</span><span class="p">:</span> <span class="s2">&quot;George Russell&quot;</span><span class="p">,</span>
+         <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;https://shop-int.mercedesamgf1.com/collections/george-russell/products.json&quot;</span><span class="p">}</span>
+    <span class="p">]</span>
+
+    <span class="n">item_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">urls</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">country_code</span><span class="p">,</span> <span class="n">country_info</span> <span class="ow">in</span> <span class="n">constants</span><span class="o">.</span><span class="n">countries</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">country_url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">item</span><span class="p">[</span><span class="s1">&#39;url&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">?country=</span><span class="si">{</span><span class="n">country_code</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">url_list_item</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="n">country_url</span><span class="p">,</span>
+                <span class="s2">&quot;category&quot;</span><span class="p">:</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;category&quot;</span><span class="p">],</span>
+                <span class="s2">&quot;attempts&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                <span class="s2">&quot;max_attempts&quot;</span><span class="p">:</span> <span class="n">MAX_RETRIES</span><span class="p">,</span>
+                <span class="s2">&quot;success&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                <span class="s2">&quot;country_code&quot;</span><span class="p">:</span> <span class="n">country_code</span><span class="p">,</span>
+                <span class="s2">&quot;country&quot;</span><span class="p">:</span> <span class="n">country_info</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">],</span>
+                <span class="s2">&quot;currency&quot;</span><span class="p">:</span> <span class="n">country_info</span><span class="p">[</span><span class="s2">&quot;currency&quot;</span><span class="p">]</span>
+            <span class="p">}</span>
+            <span class="n">item_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">url_list_item</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">item_list</span></div>
+
+
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../mercedesamgf1_main.html#mercedesamgf1_main.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Initiate collection&quot;&quot;&quot;</span>
+    <span class="n">navigation_urls</span> <span class="o">=</span> <span class="n">get_navigation_urls</span><span class="p">()</span>
+    <span class="n">parse_urls</span><span class="p">(</span><span class="n">navigation_urls</span><span class="p">)</span></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Brand Nudge Ltd.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

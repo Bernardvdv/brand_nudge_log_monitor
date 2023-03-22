@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>fuelforfans_main &mdash; Brand Nudge DC 1.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Brand Nudge DC
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Brand Nudge DC</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">fuelforfans_main</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for fuelforfans_main</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;www.fuelforfans.com product collection program.&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+
+<span class="kn">import</span> <span class="nn">lxml</span>  <span class="c1"># noqa</span>
+<span class="kn">from</span> <span class="nn">bs4</span> <span class="kn">import</span> <span class="n">BeautifulSoup</span>
+<span class="kn">from</span> <span class="nn">dotenv</span> <span class="kn">import</span> <span class="n">load_dotenv</span>
+<span class="kn">from</span> <span class="nn">fake_useragent</span> <span class="kn">import</span> <span class="n">UserAgent</span>
+<span class="kn">from</span> <span class="nn">selenium</span> <span class="kn">import</span> <span class="n">webdriver</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.chrome.options</span> <span class="kn">import</span> <span class="n">Options</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.common.by</span> <span class="kn">import</span> <span class="n">By</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.common.proxy</span> <span class="kn">import</span> <span class="n">Proxy</span><span class="p">,</span> <span class="n">ProxyType</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.support</span> <span class="kn">import</span> <span class="n">expected_conditions</span> <span class="k">as</span> <span class="n">EC</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.support.ui</span> <span class="kn">import</span> <span class="n">WebDriverWait</span>
+
+<span class="n">load_dotenv</span><span class="p">()</span>
+
+<span class="kn">from</span> <span class="nn">logging_class</span> <span class="kn">import</span> <span class="n">LogHandler</span><span class="p">,</span> <span class="n">Statistics</span><span class="p">,</span> <span class="n">Utils</span>
+
+<span class="n">log_error</span> <span class="o">=</span> <span class="n">LogHandler</span><span class="p">()</span>
+<span class="n">statistics_class</span> <span class="o">=</span> <span class="n">Statistics</span><span class="p">()</span>
+
+<span class="c1"># Generate fake Request headers</span>
+<span class="n">ua</span> <span class="o">=</span> <span class="n">UserAgent</span><span class="p">()</span>
+<span class="n">HEADERS</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;user-agent&quot;</span><span class="p">:</span> <span class="n">ua</span><span class="o">.</span><span class="n">chrome</span><span class="p">}</span>
+
+<span class="c1"># Proxies</span>
+<span class="n">PROXIES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;http&quot;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;PROXIES_HTTP&quot;</span><span class="p">),</span>
+    <span class="s2">&quot;https&quot;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;PROXIES_HTTPS&quot;</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="n">PROXIES_RES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;http&quot;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;PROXIES_HTTP_RES&quot;</span><span class="p">),</span>
+    <span class="s2">&quot;https&quot;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;PROXIES_HTTPS_RES&quot;</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="n">RETAILER</span> <span class="o">=</span> <span class="s2">&quot;Fuel For Fans&quot;</span>
+<span class="n">BASE_URL</span> <span class="o">=</span> <span class="s2">&quot;https://www.fuelforfans.com&quot;</span>
+<span class="n">MAX_RETRIES</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="n">TABLE_NAME</span> <span class="o">=</span> <span class="s2">&quot;fuelforfans&quot;</span>
+
+
+<div class="viewcode-block" id="get_data"><a class="viewcode-back" href="../index.html#fuelforfans_main.get_data">[docs]</a><span class="k">def</span> <span class="nf">get_data</span><span class="p">(</span><span class="n">urls</span><span class="p">,</span> <span class="n">country_code</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Makes a request to each URL and store the collected info in the database</span>
+
+<span class="sd">    :param urls: Product url</span>
+<span class="sd">    :param country_code: Country Code</span>
+<span class="sd">    :return: True if successful and product count</span>
+<span class="sd">    :rtype: Boolean and integer</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">insert_query</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        INSERT INTO public.fuelforfans(</span>
+<span class="s2">            date, retailer, &quot;countryCode&quot;, currency, &quot;sourceId&quot;, ean, brand, title, &quot;shelfPrice&quot;, &quot;wasPrice&quot;,</span>
+<span class="s2">            &quot;cardPrice&quot;, &quot;inStock&quot;, &quot;onPromo&quot;, &quot;promoData&quot;, &quot;skuURL&quot;, &quot;imageURL&quot;, bundled, &quot;masterSku&quot;,</span>
+<span class="s2">            description, category, &quot;priceValidUntil&quot;)</span>
+<span class="s2">            VALUES (</span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">);</span>
+<span class="s2">            &quot;&quot;&quot;</span>
+
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">urls</span><span class="p">:</span>
+            <span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">full_url</span> <span class="o">=</span> <span class="n">BASE_URL</span> <span class="o">+</span> <span class="n">item</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">make_request</span><span class="p">(</span><span class="n">full_url</span><span class="p">,</span> <span class="n">HEADERS</span><span class="p">,</span> <span class="n">PROXIES</span><span class="p">,</span> <span class="n">RETAILER</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">r</span> <span class="ow">and</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
+                <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="s2">&quot;lxml&quot;</span><span class="p">)</span>
+                <span class="n">schema_products</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s2">&quot;script&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;application/ld+json&#39;</span><span class="p">)</span>
+                <span class="c1"># Because I keep forgetting, this is to find the product schema</span>
+                <span class="n">product_schema</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">get_product_schema</span><span class="p">(</span><span class="n">schema_products</span><span class="p">,</span> <span class="s2">&quot;sku&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">product_schema</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">product_list</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">product_schema</span><span class="p">)</span>
+                    <span class="k">except</span><span class="p">:</span>
+                        <span class="n">product_list</span> <span class="o">=</span> <span class="kc">None</span>
+
+                    <span class="k">if</span> <span class="n">product_list</span><span class="p">:</span>
+                        <span class="n">source_id</span> <span class="o">=</span> <span class="n">product_list</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sku&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                        <span class="n">title</span> <span class="o">=</span> <span class="n">product_list</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                        <span class="n">ean</span> <span class="o">=</span> <span class="n">product_list</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mpn&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                        <span class="n">image_url</span> <span class="o">=</span> <span class="n">product_list</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;image&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                        <span class="n">description</span> <span class="o">=</span> <span class="n">product_list</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;description&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                        <span class="n">category_div</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;ol&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;breadcrumb&quot;</span><span class="p">})</span>
+                        <span class="n">category_urls</span> <span class="o">=</span> <span class="n">category_div</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">)</span>
+                        <span class="n">category_list</span> <span class="o">=</span> <span class="p">[]</span>
+
+                        <span class="k">for</span> <span class="n">href</span> <span class="ow">in</span> <span class="n">category_urls</span><span class="p">:</span>
+                            <span class="n">href_text</span> <span class="o">=</span> <span class="n">href</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+                            <span class="k">if</span> <span class="s2">&quot;Home&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">href_text</span><span class="p">:</span>
+                                <span class="n">category_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">href_text</span><span class="p">)</span>
+                        <span class="n">category</span> <span class="o">=</span> <span class="s2">&quot;/&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">category_list</span><span class="p">)</span>
+
+                        <span class="n">in_stock_schema</span> <span class="o">=</span> <span class="n">product_list</span><span class="p">[</span><span class="s2">&quot;offers&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;availability&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="s2">&quot;InStock&quot;</span> <span class="ow">in</span> <span class="n">in_stock_schema</span><span class="p">:</span>
+                            <span class="n">in_stock</span> <span class="o">=</span> <span class="kc">True</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">in_stock</span> <span class="o">=</span> <span class="kc">False</span>
+
+                        <span class="n">currency</span> <span class="o">=</span> <span class="n">product_list</span><span class="p">[</span><span class="s2">&quot;offers&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;priceCurrency&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                        <span class="n">sku_url</span> <span class="o">=</span> <span class="n">product_list</span><span class="p">[</span><span class="s2">&quot;offers&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;url&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                        <span class="n">price_valid_until</span> <span class="o">=</span> <span class="n">product_list</span><span class="p">[</span><span class="s2">&quot;offers&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;priceValidUntil&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                        <span class="n">shelf_price</span> <span class="o">=</span> <span class="n">product_list</span><span class="p">[</span><span class="s2">&quot;offers&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;price&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="n">was_price</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;del&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;strike-through&quot;</span><span class="p">})[</span><span class="s2">&quot;content&quot;</span><span class="p">]</span>
+                        <span class="k">except</span><span class="p">:</span>
+                            <span class="n">was_price</span> <span class="o">=</span> <span class="kc">None</span>
+
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="n">promo_data</span> <span class="o">=</span> <span class="p">[</span><span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;div&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;callout&quot;</span><span class="p">})</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)]</span>
+                            <span class="k">if</span> <span class="n">promo_data</span><span class="p">:</span>
+                                <span class="n">on_promo</span> <span class="o">=</span> <span class="kc">True</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="n">on_promo</span> <span class="o">=</span> <span class="kc">False</span>
+                        <span class="k">except</span><span class="p">:</span>
+                            <span class="n">promo_data</span> <span class="o">=</span> <span class="p">[]</span>
+                            <span class="n">on_promo</span> <span class="o">=</span> <span class="kc">False</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="n">brand</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;div&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;product-brand&quot;</span><span class="p">})</span><span class="o">.</span><span class="n">text</span>
+                        <span class="k">except</span><span class="p">:</span>
+                            <span class="n">brand</span> <span class="o">=</span> <span class="kc">None</span>
+
+                        <span class="n">date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+                        <span class="n">card_price</span> <span class="o">=</span> <span class="kc">None</span>
+                        <span class="n">bundled</span> <span class="o">=</span> <span class="kc">None</span>
+                        <span class="n">master_sku</span> <span class="o">=</span> <span class="kc">None</span>
+
+                        <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
+
+                        <span class="n">row_data</span> <span class="o">=</span> <span class="p">[</span><span class="n">date</span><span class="p">,</span> <span class="n">RETAILER</span><span class="p">,</span> <span class="n">country_code</span><span class="p">,</span> <span class="n">currency</span><span class="p">,</span> <span class="n">source_id</span><span class="p">,</span> <span class="n">ean</span><span class="p">,</span> <span class="n">brand</span><span class="p">,</span>
+                                    <span class="n">title</span><span class="p">,</span> <span class="n">shelf_price</span><span class="p">,</span> <span class="n">was_price</span><span class="p">,</span> <span class="n">card_price</span><span class="p">,</span> <span class="n">in_stock</span><span class="p">,</span> <span class="n">on_promo</span><span class="p">,</span>
+                                    <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">promo_data</span><span class="p">),</span> <span class="n">sku_url</span><span class="p">,</span> <span class="n">image_url</span><span class="p">,</span> <span class="n">bundled</span><span class="p">,</span> <span class="n">master_sku</span><span class="p">,</span>
+                                    <span class="n">description</span><span class="p">,</span> <span class="n">category</span><span class="p">,</span> <span class="n">price_valid_until</span><span class="p">]</span>
+
+                        <span class="n">Utils</span><span class="o">.</span><span class="n">insert_to_db</span><span class="p">(</span><span class="n">insert_query</span><span class="p">,</span> <span class="n">row_data</span><span class="p">,</span> <span class="n">RETAILER</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="n">counter</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="c1"># Log to DB</span>
+        <span class="n">log_error</span><span class="o">.</span><span class="n">error_db</span><span class="p">(</span><span class="n">RETAILER</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">())</span>
+        <span class="c1"># Log to file</span>
+        <span class="n">log_error</span><span class="o">.</span><span class="n">error_file</span><span class="p">(</span><span class="n">RETAILER</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">())</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="get_product_urls"><a class="viewcode-back" href="../index.html#fuelforfans_main.get_product_urls">[docs]</a><span class="k">def</span> <span class="nf">get_product_urls</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Finds all the product hyperlinks and remove duplicates</span>
+
+<span class="sd">    :param url: Category URL</span>
+<span class="sd">    :return: All product urls</span>
+<span class="sd">    :rtype: List</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">prox</span> <span class="o">=</span> <span class="n">Proxy</span><span class="p">()</span>
+    <span class="n">prox</span><span class="o">.</span><span class="n">socks_version</span> <span class="o">=</span> <span class="mi">5</span>
+    <span class="n">prox</span><span class="o">.</span><span class="n">proxy_type</span> <span class="o">=</span> <span class="n">ProxyType</span><span class="o">.</span><span class="n">MANUAL</span>
+    <span class="n">prox</span><span class="o">.</span><span class="n">http_proxy</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;PROXIES_HTTPS&quot;</span><span class="p">)</span>
+    <span class="n">prox</span><span class="o">.</span><span class="n">socks_proxy</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;PROXIES_HTTPS&quot;</span><span class="p">)</span>
+    <span class="n">prox</span><span class="o">.</span><span class="n">ssl_proxy</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;PROXIES_HTTPS&quot;</span><span class="p">)</span>
+
+    <span class="n">capabilities</span> <span class="o">=</span> <span class="n">webdriver</span><span class="o">.</span><span class="n">DesiredCapabilities</span><span class="o">.</span><span class="n">CHROME</span>
+    <span class="n">prox</span><span class="o">.</span><span class="n">add_to_capabilities</span><span class="p">(</span><span class="n">capabilities</span><span class="p">)</span>
+
+    <span class="n">options</span> <span class="o">=</span> <span class="n">Options</span><span class="p">()</span>
+    <span class="n">options</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--no-sandbox&quot;</span><span class="p">)</span>
+    <span class="n">options</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;window-size=1920,1080&quot;</span><span class="p">)</span>
+    <span class="n">options</span><span class="o">.</span><span class="n">headless</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">driver</span> <span class="o">=</span> <span class="n">webdriver</span><span class="o">.</span><span class="n">Chrome</span><span class="p">(</span><span class="n">executable_path</span><span class="o">=</span><span class="s2">&quot;chromedriver&quot;</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="n">options</span><span class="p">,</span> <span class="n">desired_capabilities</span><span class="o">=</span><span class="n">capabilities</span><span class="p">)</span>
+
+    <span class="n">driver</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>  <span class="c1"># Allow 2 seconds for the web page to open</span>
+    <span class="n">scroll_pause_time</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">screen_height</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="s2">&quot;return window.screen.height;&quot;</span><span class="p">)</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">driver</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="s2">&quot;window.scrollTo(0, document.body.scrollHeight);&quot;</span><span class="p">)</span>
+
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">20</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">all_results_button</span> <span class="o">=</span> <span class="n">WebDriverWait</span><span class="p">(</span><span class="n">driver</span><span class="p">,</span> <span class="mi">30</span><span class="p">)</span><span class="o">.</span><span class="n">until</span><span class="p">(</span>
+                <span class="n">EC</span><span class="o">.</span><span class="n">element_to_be_clickable</span><span class="p">((</span><span class="n">By</span><span class="o">.</span><span class="n">CLASS_NAME</span><span class="p">,</span> <span class="s2">&quot;js-show-all&quot;</span><span class="p">)))</span>
+            <span class="n">driver</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="s1">&#39;arguments[0].click()&#39;</span><span class="p">,</span> <span class="n">all_results_button</span><span class="p">)</span>
+            <span class="k">break</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+            <span class="k">continue</span>
+
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="c1"># scroll one screen height each time</span>
+        <span class="n">driver</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="s2">&quot;window.scrollTo(0, </span><span class="si">{screen_height}</span><span class="s2">*</span><span class="si">{i}</span><span class="s2">);&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">screen_height</span><span class="o">=</span><span class="n">screen_height</span><span class="p">,</span> <span class="n">i</span><span class="o">=</span><span class="n">i</span><span class="p">))</span>
+        <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">scroll_pause_time</span><span class="p">)</span>
+        <span class="c1"># update scroll height each time after scrolled, as the scroll height can change after we scrolled the page</span>
+        <span class="n">scroll_height</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="s2">&quot;return document.body.scrollHeight;&quot;</span><span class="p">)</span>
+        <span class="c1"># Break the loop when the height we need to scroll to is larger than the total scroll height</span>
+        <span class="k">if</span> <span class="n">screen_height</span> <span class="o">*</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="n">scroll_height</span><span class="p">:</span>
+            <span class="k">break</span>
+
+    <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">driver</span><span class="o">.</span><span class="n">page_source</span><span class="p">,</span> <span class="s2">&quot;html.parser&quot;</span><span class="p">)</span>
+    <span class="n">product_grid</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;div&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;product-grid&quot;</span><span class="p">})</span>
+    <span class="k">if</span> <span class="n">product_grid</span><span class="p">:</span>
+        <span class="n">items_grid</span> <span class="o">=</span> <span class="n">product_grid</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;product-tile-image&quot;</span><span class="p">})</span>
+        <span class="k">if</span> <span class="n">items_grid</span><span class="p">:</span>
+            <span class="n">grid_urls</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">items_grid</span><span class="p">:</span>
+                <span class="n">url</span> <span class="o">=</span> <span class="n">item</span><span class="p">[</span><span class="s1">&#39;href&#39;</span><span class="p">]</span>
+                <span class="n">grid_urls</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">grid_urls</span></div>
+
+
+<div class="viewcode-block" id="parse_urls"><a class="viewcode-back" href="../index.html#fuelforfans_main.parse_urls">[docs]</a><span class="k">def</span> <span class="nf">parse_urls</span><span class="p">(</span><span class="n">urls</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Loop through all URL&#39;s and update the main URL dict when successfully parsed.</span>
+<span class="sd">    Collects statistical data and store it and the end of the program</span>
+
+<span class="sd">    :param urls: URL dictionary</span>
+<span class="sd">    :return: None</span>
+<span class="sd">    :rtype: None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">navigation_counter</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">item_counter</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">url</span> <span class="ow">in</span> <span class="n">urls</span><span class="p">:</span>
+        <span class="n">navigation_counter</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">navigation_url_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">urls</span><span class="p">)</span>
+        <span class="k">while</span> <span class="n">url</span><span class="p">[</span><span class="s2">&quot;success&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">and</span> <span class="n">url</span><span class="p">[</span><span class="s2">&quot;attempts&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">url</span><span class="p">[</span><span class="s2">&quot;max_attempts&quot;</span><span class="p">]:</span>
+            <span class="c1"># Increment attempts counter</span>
+            <span class="n">url</span><span class="p">[</span><span class="s2">&quot;attempts&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="c1"># Cleaned_urls returns all the products urls on the page</span>
+            <span class="n">cleaned_urls</span> <span class="o">=</span> <span class="n">get_product_urls</span><span class="p">(</span><span class="n">url</span><span class="p">[</span><span class="s2">&quot;url&quot;</span><span class="p">])</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">get_data</span><span class="p">(</span><span class="n">cleaned_urls</span><span class="p">,</span> <span class="n">url</span><span class="p">[</span><span class="s2">&quot;country&quot;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">result</span><span class="p">:</span>
+                <span class="n">url</span><span class="p">[</span><span class="s2">&quot;success&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">item_counter_actual</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">item_counter_actual</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="n">item_counter</span> <span class="o">+=</span> <span class="n">item_counter_actual</span>
+
+    <span class="n">duration</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span>
+    <span class="c1"># Lets record some stats</span>
+    <span class="n">Statistics</span><span class="o">.</span><span class="n">statistics</span><span class="p">(</span><span class="n">navigation_counter</span><span class="p">,</span>
+                          <span class="n">navigation_url_count</span><span class="p">,</span>
+                          <span class="n">item_counter</span><span class="p">,</span>
+                          <span class="n">duration</span><span class="p">,</span>
+                          <span class="n">urls</span><span class="p">,</span>
+                          <span class="n">RETAILER</span><span class="p">,</span>
+                          <span class="n">TABLE_NAME</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_navigation_urls"><a class="viewcode-back" href="../index.html#fuelforfans_main.get_navigation_urls">[docs]</a><span class="k">def</span> <span class="nf">get_navigation_urls</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a list of URL&#39;s and categories to parse through</span>
+
+<span class="sd">    :return: All navigation URLs with categories</span>
+<span class="sd">    :rtype: Dictionary</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">item_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">currencies</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;NL&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Nederland&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;currency&quot;</span><span class="p">:</span> <span class="s2">&quot;EUR&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;language&quot;</span><span class="p">:</span> <span class="s2">&quot;nl&quot;</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;AU&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Australia&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;currency&quot;</span><span class="p">:</span> <span class="s2">&quot;AUD&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;language&quot;</span><span class="p">:</span> <span class="s2">&quot;en&quot;</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;GB&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;United Kingdom&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;currency&quot;</span><span class="p">:</span> <span class="s2">&quot;GBP&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;language&quot;</span><span class="p">:</span> <span class="s2">&quot;en&quot;</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;US&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;America&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;currency&quot;</span><span class="p">:</span> <span class="s2">&quot;USD&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;language&quot;</span><span class="p">:</span> <span class="s2">&quot;en&quot;</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;DE&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Deutschland&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;currency&quot;</span><span class="p">:</span> <span class="s2">&quot;EUR&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;language&quot;</span><span class="p">:</span> <span class="s2">&quot;de&quot;</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;FR&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;France&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;currency&quot;</span><span class="p">:</span> <span class="s2">&quot;EUR&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;language&quot;</span><span class="p">:</span> <span class="s2">&quot;fr&quot;</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;ES&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Espana&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;currency&quot;</span><span class="p">:</span> <span class="s2">&quot;EUR&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;language&quot;</span><span class="p">:</span> <span class="s2">&quot;es&quot;</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;IT&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Italia&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;currency&quot;</span><span class="p">:</span> <span class="s2">&quot;EUR&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;language&quot;</span><span class="p">:</span> <span class="s2">&quot;it&quot;</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;MX&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Mexico&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;currency&quot;</span><span class="p">:</span> <span class="s2">&quot;USD&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;language&quot;</span><span class="p">:</span> <span class="s2">&quot;es&quot;</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;CA&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Canada&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;currency&quot;</span><span class="p">:</span> <span class="s2">&quot;CAD&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;language&quot;</span><span class="p">:</span> <span class="s2">&quot;en&quot;</span>
+        <span class="p">},</span>
+    <span class="p">}</span>
+
+    <span class="n">urls</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">{</span><span class="s2">&quot;category&quot;</span><span class="p">:</span> <span class="s2">&quot;Red Bull F1&quot;</span><span class="p">,</span>
+         <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;https://www.fuelforfans.com/country_code/lang/red-bull-f1/&quot;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;category&quot;</span><span class="p">:</span> <span class="s2">&quot;Sale&quot;</span><span class="p">,</span>
+         <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;https://www.fuelforfans.com/country_code/lang/sale/&quot;</span>
+                <span class="s2">&quot;?cgid=sale-regular&amp;pmin=0</span><span class="si">%2e</span><span class="s2">00&amp;start=0&amp;sz=24&quot;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;category&quot;</span><span class="p">:</span> <span class="s2">&quot;Ferrari F1&quot;</span><span class="p">,</span>
+         <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;https://www.fuelforfans.com/country_code/lang/ferrari-f1/&quot;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;category&quot;</span><span class="p">:</span> <span class="s2">&quot;Mercedes F1&quot;</span><span class="p">,</span>
+         <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;https://www.fuelforfans.com/country_code/lang/mercedes-f1/&quot;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;category&quot;</span><span class="p">:</span> <span class="s2">&quot;Mclaren F1&quot;</span><span class="p">,</span>
+         <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;https://www.fuelforfans.com/country_code/lang/mclaren-f1/&quot;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;category&quot;</span><span class="p">:</span> <span class="s2">&quot;Other Teams&quot;</span><span class="p">,</span>
+         <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;https://www.fuelforfans.com/country_code/lang/other-teams/&quot;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;category&quot;</span><span class="p">:</span> <span class="s2">&quot;F1 Merchandise&quot;</span><span class="p">,</span>
+         <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;https://www.fuelforfans.com/country_code/lang/f1-merchandise/&quot;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;category&quot;</span><span class="p">:</span> <span class="s2">&quot;Motorsport&quot;</span><span class="p">,</span>
+         <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;https://www.fuelforfans.com/country_code/lang/motorsport/&quot;</span><span class="p">},</span>
+    <span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">country_code</span><span class="p">,</span> <span class="n">country_info</span> <span class="ow">in</span> <span class="n">currencies</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">urls</span><span class="p">:</span>
+            <span class="n">url_list_item</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;url&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;country_code&quot;</span><span class="p">,</span> <span class="n">country_code</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
+                <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;lang&quot;</span><span class="p">,</span> <span class="n">country_info</span><span class="p">[</span><span class="s2">&quot;language&quot;</span><span class="p">]),</span>
+                <span class="s2">&quot;category&quot;</span><span class="p">:</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;category&quot;</span><span class="p">],</span>
+                <span class="s2">&quot;attempts&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                <span class="s2">&quot;max_attempts&quot;</span><span class="p">:</span> <span class="n">MAX_RETRIES</span><span class="p">,</span>
+                <span class="s2">&quot;success&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                <span class="s2">&quot;currency&quot;</span><span class="p">:</span> <span class="n">country_info</span><span class="p">[</span><span class="s1">&#39;currency&#39;</span><span class="p">],</span>
+                <span class="s2">&quot;country&quot;</span><span class="p">:</span> <span class="n">country_code</span>
+            <span class="p">}</span>
+            <span class="n">item_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">url_list_item</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">item_list</span></div>
+
+
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../index.html#fuelforfans_main.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Initiate collection&quot;&quot;&quot;</span>
+    <span class="n">navigation_urls</span> <span class="o">=</span> <span class="n">get_navigation_urls</span><span class="p">()</span>
+    <span class="n">parse_urls</span><span class="p">(</span><span class="n">navigation_urls</span><span class="p">)</span></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Brand Nudge Ltd.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

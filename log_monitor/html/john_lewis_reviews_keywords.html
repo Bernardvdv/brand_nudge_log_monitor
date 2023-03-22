@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>john_lewis_reviews_keywords module &mdash; Brand Nudge DC 1.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Brand Nudge DC
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">john_lewis_reviews_keywords module</a><ul>
+<li><a class="reference internal" href="#john_lewis_reviews_keywords.extract_keywords"><code class="docutils literal notranslate"><span class="pre">extract_keywords()</span></code></a></li>
+<li><a class="reference internal" href="#john_lewis_reviews_keywords.get_data_from_search_query"><code class="docutils literal notranslate"><span class="pre">get_data_from_search_query()</span></code></a></li>
+<li><a class="reference internal" href="#john_lewis_reviews_keywords.get_navigation_urls"><code class="docutils literal notranslate"><span class="pre">get_navigation_urls()</span></code></a></li>
+<li><a class="reference internal" href="#john_lewis_reviews_keywords.get_reviews"><code class="docutils literal notranslate"><span class="pre">get_reviews()</span></code></a></li>
+<li><a class="reference internal" href="#john_lewis_reviews_keywords.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+<li><a class="reference internal" href="#john_lewis_reviews_keywords.parse_urls"><code class="docutils literal notranslate"><span class="pre">parse_urls()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Brand Nudge DC</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">john_lewis_reviews_keywords module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/john_lewis_reviews_keywords.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-john_lewis_reviews_keywords">
+<span id="john-lewis-reviews-keywords-module"></span><h1>john_lewis_reviews_keywords module<a class="headerlink" href="#module-john_lewis_reviews_keywords" title="Permalink to this heading"></a></h1>
+<p>John Lewis product collection program.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="john_lewis_reviews_keywords.extract_keywords">
+<span class="sig-prename descclassname"><span class="pre">john_lewis_reviews_keywords.</span></span><span class="sig-name descname"><span class="pre">extract_keywords</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/john_lewis_reviews_keywords.html#extract_keywords"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#john_lewis_reviews_keywords.extract_keywords" title="Permalink to this definition"></a></dt>
+<dd><p>In this code, we first tokenize the input text into words using word_tokenize function from nltk.
+We then remove stop words and punctuation marks using stopwords module and a list comprehension.</p>
+<p>Next, we calculate the frequency distribution of the remaining words using FreqDist function from nltk.
+Finally, we extract the main keywords from the frequency distribution by selecting words with a length
+longer than 4 characters and return them as a set.</p>
+<p>Note that the output keywords are in lower case and in a set data structure, which removes duplicates.
+You can adjust the code to your needs, such as changing the minimum keyword length or returning a
+list instead of a set.
+:param text:
+:return:</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="john_lewis_reviews_keywords.get_data_from_search_query">
+<span class="sig-prename descclassname"><span class="pre">john_lewis_reviews_keywords.</span></span><span class="sig-name descname"><span class="pre">get_data_from_search_query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">main_category</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/john_lewis_reviews_keywords.html#get_data_from_search_query"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#john_lewis_reviews_keywords.get_data_from_search_query" title="Permalink to this definition"></a></dt>
+<dd><p>Makes a request to each URL and store the collected info in the database</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>url</strong> – Product url</p></li>
+<li><p><strong>main_category</strong> – Category looked for on the website</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if successful and product count</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Boolean and integer</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="john_lewis_reviews_keywords.get_navigation_urls">
+<span class="sig-prename descclassname"><span class="pre">john_lewis_reviews_keywords.</span></span><span class="sig-name descname"><span class="pre">get_navigation_urls</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/john_lewis_reviews_keywords.html#get_navigation_urls"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#john_lewis_reviews_keywords.get_navigation_urls" title="Permalink to this definition"></a></dt>
+<dd><p>Get all navigation URLs and categories from the state API</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>All navigation URLs</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dictionary</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="john_lewis_reviews_keywords.get_reviews">
+<span class="sig-prename descclassname"><span class="pre">john_lewis_reviews_keywords.</span></span><span class="sig-name descname"><span class="pre">get_reviews</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">product_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/john_lewis_reviews_keywords.html#get_reviews"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#john_lewis_reviews_keywords.get_reviews" title="Permalink to this definition"></a></dt>
+<dd><p>Get reviews for the current product.
+:param product_id: Product ID
+:return: Reviews as list object</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="john_lewis_reviews_keywords.main">
+<span class="sig-prename descclassname"><span class="pre">john_lewis_reviews_keywords.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/john_lewis_reviews_keywords.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#john_lewis_reviews_keywords.main" title="Permalink to this definition"></a></dt>
+<dd><p>Initiate collection</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="john_lewis_reviews_keywords.parse_urls">
+<span class="sig-prename descclassname"><span class="pre">john_lewis_reviews_keywords.</span></span><span class="sig-name descname"><span class="pre">parse_urls</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">urls</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/john_lewis_reviews_keywords.html#parse_urls"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#john_lewis_reviews_keywords.parse_urls" title="Permalink to this definition"></a></dt>
+<dd><p>Loop through all URL’s and update the main URL dict when successfully parsed.
+Collects statistical data and store it and the end of the program</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>urls</strong> – URL dictionary</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Brand Nudge Ltd.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

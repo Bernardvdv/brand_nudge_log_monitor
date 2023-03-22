@@ -1,0 +1,7 @@
+email\_stats module
+===================
+
+.. automodule:: email_stats
+   :members:
+   :undoc-members:
+   :show-inheritance:
