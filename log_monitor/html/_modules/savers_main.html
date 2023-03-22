@@ -156,7 +156,6 @@
             <span class="n">item_counter</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="k">for</span> <span class="n">page</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">last_pagination_value</span><span class="p">)):</span>
                 <span class="n">full_url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">BASE_URL</span><span class="si">}{</span><span class="n">url</span><span class="si">}</span><span class="s2">?page=</span><span class="si">{</span><span class="n">page</span><span class="si">}</span><span class="s2">&amp;resultsForPage=100&quot;</span>
-                <span class="c1"># print(f&quot;Pagination URL: {full_url}&quot;)</span>
                 <span class="n">r</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">make_request</span><span class="p">(</span><span class="n">full_url</span><span class="p">,</span> <span class="n">custom_headers</span><span class="p">,</span> <span class="n">PROXIES_RES</span><span class="p">,</span> <span class="n">retailer</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">r</span> <span class="ow">and</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
                     <span class="n">product_page</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="s2">&quot;lxml&quot;</span><span class="p">)</span>
@@ -170,88 +169,95 @@
                                 <span class="n">full_product_url</span> <span class="o">=</span> <span class="n">BASE_URL</span> <span class="o">+</span> <span class="n">product_url</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;href&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
                                 <span class="n">r</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">make_request</span><span class="p">(</span><span class="n">full_product_url</span><span class="p">,</span> <span class="n">custom_headers</span><span class="p">,</span> <span class="n">PROXIES_RES</span><span class="p">,</span> <span class="n">retailer</span><span class="p">)</span>
                                 <span class="k">if</span> <span class="n">r</span> <span class="ow">and</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
-                                    <span class="c1"># print(f&quot;Current Product URL: {full_product_url} :::::: Status Code: {r.status_code}&quot;)</span>
                                     <span class="n">product_item_page</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="s2">&quot;lxml&quot;</span><span class="p">)</span>
-                                    <span class="n">schema_products</span> <span class="o">=</span> <span class="n">product_item_page</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s2">&quot;script&quot;</span><span class="p">)</span>
-                                    <span class="n">schema_products_str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">schema_products</span><span class="p">[</span><span class="mi">18</span><span class="p">])</span>
-                                    <span class="n">cleaned_schema_products</span> <span class="o">=</span> <span class="n">schema_products_str</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
-                                        <span class="s1">&#39;&lt;script type=&quot;application/ld+json&quot;&gt;&#39;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span>
-                                    <span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&lt;/script&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+                                    <span class="n">schema_products</span> <span class="o">=</span> <span class="n">product_item_page</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s2">&quot;script&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;application/ld+json&#39;</span><span class="p">)</span>
+                                    <span class="c1"># Because I keep forgetting, this is to find the product schema</span>
+                                    <span class="n">product_schema</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">get_product_schema</span><span class="p">(</span><span class="n">schema_products</span><span class="p">,</span> <span class="s2">&quot;sku&quot;</span><span class="p">)</span>
+                                    <span class="k">if</span> <span class="n">product_schema</span><span class="p">:</span>
+                                        <span class="k">try</span><span class="p">:</span>
+                                            <span class="n">product_list</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">product_schema</span><span class="p">)</span>
+                                        <span class="k">except</span><span class="p">:</span>
+                                            <span class="n">product_list</span> <span class="o">=</span> <span class="kc">None</span>
 
-                                    <span class="k">try</span><span class="p">:</span>
-                                        <span class="n">product_list</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">cleaned_schema_products</span><span class="p">)</span>
-                                    <span class="k">except</span><span class="p">:</span>
-                                        <span class="n">product_list</span> <span class="o">=</span> <span class="kc">None</span>
+                                        <span class="k">if</span> <span class="n">product_list</span> <span class="ow">and</span> <span class="nb">type</span><span class="p">(</span><span class="n">product_list</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">dict</span><span class="p">:</span>
+                                            <span class="k">try</span><span class="p">:</span>
+                                                <span class="n">title</span> <span class="o">=</span> <span class="n">product_list</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                                            <span class="k">except</span><span class="p">:</span>
+                                                <span class="n">title</span> <span class="o">=</span> <span class="kc">None</span>
+                                            <span class="k">try</span><span class="p">:</span>
+                                                <span class="n">shelfPrice</span> <span class="o">=</span> <span class="n">product_list</span><span class="p">[</span><span class="s2">&quot;offers&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;price&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                                            <span class="k">except</span><span class="p">:</span>
+                                                <span class="n">shelfPrice</span> <span class="o">=</span> <span class="kc">None</span>
+                                            <span class="k">try</span><span class="p">:</span>
+                                                <span class="n">currency</span> <span class="o">=</span> <span class="n">product_list</span><span class="p">[</span><span class="s2">&quot;offers&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;priceCurrency&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                                            <span class="k">except</span><span class="p">:</span>
+                                                <span class="n">currency</span> <span class="o">=</span> <span class="kc">None</span>
+                                            <span class="k">try</span><span class="p">:</span>
+                                                <span class="n">sourceId</span> <span class="o">=</span> <span class="n">product_list</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sku&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                                            <span class="k">except</span><span class="p">:</span>
+                                                <span class="n">sourceId</span> <span class="o">=</span> <span class="kc">None</span>
+                                            <span class="k">try</span><span class="p">:</span>
+                                                <span class="n">imageURL</span> <span class="o">=</span> <span class="n">product_list</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;image&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                                            <span class="k">except</span><span class="p">:</span>
+                                                <span class="n">imageURL</span> <span class="o">=</span> <span class="kc">None</span>
+                                            <span class="k">try</span><span class="p">:</span>
+                                                <span class="n">brand</span> <span class="o">=</span> <span class="n">product_list</span><span class="p">[</span><span class="s2">&quot;brand&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                                            <span class="k">except</span><span class="p">:</span>
+                                                <span class="n">brand</span> <span class="o">=</span> <span class="kc">None</span>
+                                            <span class="k">try</span><span class="p">:</span>
+                                                <span class="n">ean</span> <span class="o">=</span> <span class="n">product_list</span><span class="p">[</span><span class="s2">&quot;offers&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;gtin8&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                                            <span class="k">except</span><span class="p">:</span>
+                                                <span class="n">ean</span> <span class="o">=</span> <span class="kc">None</span>
+                                            <span class="k">try</span><span class="p">:</span>
+                                                <span class="n">description</span> <span class="o">=</span> <span class="n">product_list</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;description&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                                            <span class="k">except</span><span class="p">:</span>
+                                                <span class="n">description</span> <span class="o">=</span> <span class="kc">None</span>
+                                            <span class="k">try</span><span class="p">:</span>
+                                                <span class="n">inStock_schema</span> <span class="o">=</span> <span class="n">product_list</span><span class="p">[</span><span class="s2">&quot;offers&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;availability&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                                                <span class="k">if</span> <span class="s2">&quot;InStock&quot;</span> <span class="ow">in</span> <span class="n">inStock_schema</span><span class="p">:</span>
+                                                    <span class="n">inStock</span> <span class="o">=</span> <span class="kc">True</span>
+                                                <span class="k">else</span><span class="p">:</span>
+                                                    <span class="n">inStock</span> <span class="o">=</span> <span class="kc">False</span>
+                                            <span class="k">except</span><span class="p">:</span>
+                                                <span class="n">inStock</span> <span class="o">=</span> <span class="kc">None</span>
+                                            <span class="k">try</span><span class="p">:</span>
+                                                <span class="n">skuURL</span> <span class="o">=</span> <span class="n">product_list</span><span class="p">[</span><span class="s2">&quot;offers&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;url&quot;</span><span class="p">)</span>
+                                            <span class="k">except</span><span class="p">:</span>
+                                                <span class="n">skuURL</span> <span class="o">=</span> <span class="kc">None</span>
 
-                                    <span class="k">if</span> <span class="n">product_list</span> <span class="ow">and</span> <span class="nb">type</span><span class="p">(</span><span class="n">product_list</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">dict</span><span class="p">:</span>
-                                        <span class="k">try</span><span class="p">:</span>
-                                            <span class="n">title</span> <span class="o">=</span> <span class="n">product_list</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-                                        <span class="k">except</span><span class="p">:</span>
-                                            <span class="n">title</span> <span class="o">=</span> <span class="kc">None</span>
-                                        <span class="k">try</span><span class="p">:</span>
-                                            <span class="n">shelfPrice</span> <span class="o">=</span> <span class="n">product_list</span><span class="p">[</span><span class="s2">&quot;offers&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;price&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-                                        <span class="k">except</span><span class="p">:</span>
-                                            <span class="n">shelfPrice</span> <span class="o">=</span> <span class="kc">None</span>
-                                        <span class="k">try</span><span class="p">:</span>
-                                            <span class="n">currency</span> <span class="o">=</span> <span class="n">product_list</span><span class="p">[</span><span class="s2">&quot;offers&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;priceCurrency&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-                                        <span class="k">except</span><span class="p">:</span>
-                                            <span class="n">currency</span> <span class="o">=</span> <span class="kc">None</span>
-                                        <span class="k">try</span><span class="p">:</span>
-                                            <span class="n">sourceId</span> <span class="o">=</span> <span class="n">product_list</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sku&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-                                        <span class="k">except</span><span class="p">:</span>
-                                            <span class="n">sourceId</span> <span class="o">=</span> <span class="kc">None</span>
-                                        <span class="k">try</span><span class="p">:</span>
-                                            <span class="n">imageURL</span> <span class="o">=</span> <span class="n">product_list</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;image&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-                                        <span class="k">except</span><span class="p">:</span>
-                                            <span class="n">imageURL</span> <span class="o">=</span> <span class="kc">None</span>
-                                        <span class="k">try</span><span class="p">:</span>
-                                            <span class="n">brand</span> <span class="o">=</span> <span class="n">product_list</span><span class="p">[</span><span class="s2">&quot;brand&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-                                        <span class="k">except</span><span class="p">:</span>
-                                            <span class="n">brand</span> <span class="o">=</span> <span class="kc">None</span>
-                                        <span class="k">try</span><span class="p">:</span>
-                                            <span class="n">ean</span> <span class="o">=</span> <span class="n">product_list</span><span class="p">[</span><span class="s2">&quot;offers&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;gtin8&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-                                        <span class="k">except</span><span class="p">:</span>
-                                            <span class="n">ean</span> <span class="o">=</span> <span class="kc">None</span>
-                                        <span class="k">try</span><span class="p">:</span>
-                                            <span class="n">description</span> <span class="o">=</span> <span class="n">product_list</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;description&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-                                        <span class="k">except</span><span class="p">:</span>
-                                            <span class="n">description</span> <span class="o">=</span> <span class="kc">None</span>
-                                        <span class="k">try</span><span class="p">:</span>
-                                            <span class="n">inStock_schema</span> <span class="o">=</span> <span class="n">product_list</span><span class="p">[</span><span class="s2">&quot;offers&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;availability&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-                                            <span class="k">if</span> <span class="s2">&quot;InStock&quot;</span> <span class="ow">in</span> <span class="n">inStock_schema</span><span class="p">:</span>
-                                                <span class="n">inStock</span> <span class="o">=</span> <span class="kc">True</span>
-                                            <span class="k">else</span><span class="p">:</span>
-                                                <span class="n">inStock</span> <span class="o">=</span> <span class="kc">False</span>
-                                        <span class="k">except</span><span class="p">:</span>
-                                            <span class="n">inStock</span> <span class="o">=</span> <span class="kc">None</span>
-                                        <span class="k">try</span><span class="p">:</span>
-                                            <span class="n">skuURL</span> <span class="o">=</span> <span class="n">product_list</span><span class="p">[</span><span class="s2">&quot;offers&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;url&quot;</span><span class="p">)</span>
-                                        <span class="k">except</span><span class="p">:</span>
-                                            <span class="n">skuURL</span> <span class="o">=</span> <span class="kc">None</span>
+                                            <span class="n">category_div</span> <span class="o">=</span> <span class="n">product_item_page</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;div&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;breadcrumb&quot;</span><span class="p">})</span>
+                                            <span class="n">category_urls</span> <span class="o">=</span> <span class="n">category_div</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">)</span>
+                                            <span class="n">category_list</span> <span class="o">=</span> <span class="p">[]</span>
 
-                                        <span class="n">countryCode</span> <span class="o">=</span> <span class="s2">&quot;UK&quot;</span>
-                                        <span class="n">date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
-                                        <span class="n">wasPrice</span> <span class="o">=</span> <span class="kc">None</span>
-                                        <span class="n">cardPrice</span> <span class="o">=</span> <span class="kc">None</span>
-                                        <span class="n">bundled</span> <span class="o">=</span> <span class="kc">None</span>
-                                        <span class="n">masterSku</span> <span class="o">=</span> <span class="kc">None</span>
-                                        <span class="n">onPromo</span> <span class="o">=</span> <span class="kc">None</span>
-                                        <span class="n">promoData</span> <span class="o">=</span> <span class="p">[]</span>
+                                            <span class="k">for</span> <span class="n">href</span> <span class="ow">in</span> <span class="n">category_urls</span><span class="p">:</span>
+                                                <span class="k">if</span> <span class="s2">&quot;Home&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">href</span><span class="o">.</span><span class="n">text</span><span class="p">:</span>
+                                                    <span class="n">category_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">href</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+                                            <span class="n">category_list</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+                                            <span class="n">category</span> <span class="o">=</span> <span class="s2">&quot;/&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">category_list</span><span class="p">)</span>
 
-                                        <span class="n">insert_query</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
-<span class="s2">                                                INSERT INTO public.savers(</span>
-<span class="s2">                                                    date, retailer, countrycode, currency, &quot;sourceId&quot;, ean, brand, title, &quot;shelfPrice&quot;, &quot;wasPrice&quot;, </span>
-<span class="s2">                                                    &quot;cardPrice&quot;, &quot;inStock&quot;, &quot;onPromo&quot;, &quot;promoData&quot;, &quot;skuURL&quot;, &quot;imageURL&quot;, bundled, &quot;masterSku&quot;, </span>
-<span class="s2">                                                    description)</span>
-<span class="s2">                                                    VALUES (</span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">);</span>
-<span class="s2">                                            &quot;&quot;&quot;</span>
+                                            <span class="n">countryCode</span> <span class="o">=</span> <span class="s2">&quot;UK&quot;</span>
+                                            <span class="n">date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+                                            <span class="n">wasPrice</span> <span class="o">=</span> <span class="kc">None</span>
+                                            <span class="n">cardPrice</span> <span class="o">=</span> <span class="kc">None</span>
+                                            <span class="n">bundled</span> <span class="o">=</span> <span class="kc">None</span>
+                                            <span class="n">masterSku</span> <span class="o">=</span> <span class="kc">None</span>
+                                            <span class="n">onPromo</span> <span class="o">=</span> <span class="kc">None</span>
+                                            <span class="n">promoData</span> <span class="o">=</span> <span class="p">[]</span>
 
-                                        <span class="n">row_data</span> <span class="o">=</span> <span class="p">[</span><span class="n">date</span><span class="p">,</span> <span class="n">retailer</span><span class="p">,</span> <span class="n">countryCode</span><span class="p">,</span> <span class="n">currency</span><span class="p">,</span> <span class="n">sourceId</span><span class="p">,</span> <span class="n">ean</span><span class="p">,</span> <span class="n">brand</span><span class="p">,</span>
-                                                    <span class="n">title</span><span class="p">,</span> <span class="n">shelfPrice</span><span class="p">,</span> <span class="n">wasPrice</span><span class="p">,</span> <span class="n">cardPrice</span><span class="p">,</span> <span class="n">inStock</span><span class="p">,</span> <span class="n">onPromo</span><span class="p">,</span>
-                                                    <span class="n">promoData</span><span class="p">,</span> <span class="n">skuURL</span><span class="p">,</span> <span class="n">imageURL</span><span class="p">,</span> <span class="n">bundled</span><span class="p">,</span> <span class="n">masterSku</span><span class="p">,</span> <span class="n">description</span><span class="p">]</span>
-                                        <span class="n">item_counter</span> <span class="o">+=</span> <span class="mi">1</span>
+                                            <span class="n">insert_query</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">                                                    INSERT INTO public.savers(</span>
+<span class="s2">                                                        date, retailer, countrycode, currency, &quot;sourceId&quot;, ean, brand, title, &quot;shelfPrice&quot;, &quot;wasPrice&quot;, </span>
+<span class="s2">                                                        &quot;cardPrice&quot;, &quot;inStock&quot;, &quot;onPromo&quot;, &quot;promoData&quot;, &quot;skuURL&quot;, &quot;imageURL&quot;, bundled, &quot;masterSku&quot;, </span>
+<span class="s2">                                                        description, category)</span>
+<span class="s2">                                                        VALUES (</span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">);</span>
+<span class="s2">                                                &quot;&quot;&quot;</span>
 
-                                        <span class="n">Utils</span><span class="o">.</span><span class="n">insert_to_db</span><span class="p">(</span><span class="n">insert_query</span><span class="p">,</span> <span class="n">row_data</span><span class="p">,</span> <span class="n">retailer</span><span class="p">)</span>
+                                            <span class="n">row_data</span> <span class="o">=</span> <span class="p">[</span><span class="n">date</span><span class="p">,</span> <span class="n">retailer</span><span class="p">,</span> <span class="n">countryCode</span><span class="p">,</span> <span class="n">currency</span><span class="p">,</span> <span class="n">sourceId</span><span class="p">,</span> <span class="n">ean</span><span class="p">,</span> <span class="n">brand</span><span class="p">,</span>
+                                                        <span class="n">title</span><span class="p">,</span> <span class="n">shelfPrice</span><span class="p">,</span> <span class="n">wasPrice</span><span class="p">,</span> <span class="n">cardPrice</span><span class="p">,</span> <span class="n">inStock</span><span class="p">,</span> <span class="n">onPromo</span><span class="p">,</span>
+                                                        <span class="n">promoData</span><span class="p">,</span> <span class="n">skuURL</span><span class="p">,</span> <span class="n">imageURL</span><span class="p">,</span> <span class="n">bundled</span><span class="p">,</span> <span class="n">masterSku</span><span class="p">,</span> <span class="n">description</span><span class="p">,</span> <span class="n">category</span><span class="p">]</span>
+                                            <span class="n">item_counter</span> <span class="o">+=</span> <span class="mi">1</span>
+
+                                            <span class="n">Utils</span><span class="o">.</span><span class="n">insert_to_db</span><span class="p">(</span><span class="n">insert_query</span><span class="p">,</span> <span class="n">row_data</span><span class="p">,</span> <span class="n">retailer</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="n">item_counter</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="c1"># Log to DB</span>
@@ -312,7 +318,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2023, Bernard Van Der Vyver.</p>
+    <p>&#169; Copyright 2023, Brand Nudge Ltd.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

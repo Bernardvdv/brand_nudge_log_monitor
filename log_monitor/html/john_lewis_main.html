@@ -43,7 +43,7 @@
               <div class="local-toc"><ul>
 <li><a class="reference internal" href="#">john_lewis_main module</a><ul>
 <li><a class="reference internal" href="#john_lewis_main.get_brand"><code class="docutils literal notranslate"><span class="pre">get_brand()</span></code></a></li>
-<li><a class="reference internal" href="#john_lewis_main.get_data"><code class="docutils literal notranslate"><span class="pre">get_data()</span></code></a></li>
+<li><a class="reference internal" href="#john_lewis_main.get_data_from_search_query"><code class="docutils literal notranslate"><span class="pre">get_data_from_search_query()</span></code></a></li>
 <li><a class="reference internal" href="#john_lewis_main.get_description"><code class="docutils literal notranslate"><span class="pre">get_description()</span></code></a></li>
 <li><a class="reference internal" href="#john_lewis_main.get_navigation_urls"><code class="docutils literal notranslate"><span class="pre">get_navigation_urls()</span></code></a></li>
 <li><a class="reference internal" href="#john_lewis_main.get_review_detail"><code class="docutils literal notranslate"><span class="pre">get_review_detail()</span></code></a></li>
@@ -99,15 +99,12 @@
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="john_lewis_main.get_data">
-<span class="sig-prename descclassname"><span class="pre">john_lewis_main.</span></span><span class="sig-name descname"><span class="pre">get_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">category</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/john_lewis_main.html#get_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#john_lewis_main.get_data" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="john_lewis_main.get_data_from_search_query">
+<span class="sig-prename descclassname"><span class="pre">john_lewis_main.</span></span><span class="sig-name descname"><span class="pre">get_data_from_search_query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/john_lewis_main.html#get_data_from_search_query"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#john_lewis_main.get_data_from_search_query" title="Permalink to this definition"></a></dt>
 <dd><p>Makes a request to each URL and store the collected info in the database</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>url</strong> – Product url</p></li>
-<li><p><strong>category</strong> – Product category</p></li>
-</ul>
+<dd class="field-odd"><p><strong>url</strong> – Product url</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>True if successful and product count</p>
@@ -209,7 +206,7 @@ Collects statistical data and store it and the end of the program</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2023, Bernard Van Der Vyver.</p>
+    <p>&#169; Copyright 2023, Brand Nudge Ltd.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

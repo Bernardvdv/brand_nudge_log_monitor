@@ -106,30 +106,6 @@
 <span class="n">TABLE_NAME</span> <span class="o">=</span> <span class="s2">&quot;bmstores&quot;</span>
 
 
-<div class="viewcode-block" id="get_navigation_urls"><a class="viewcode-back" href="../index.html#bm_main.get_navigation_urls">[docs]</a><span class="k">def</span> <span class="nf">get_navigation_urls</span><span class="p">():</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Get all navigation URLs from the category base URL</span>
-
-<span class="sd">    :return: All navigation URLs</span>
-<span class="sd">    :rtype: Dictionary</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">r</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">make_request</span><span class="p">(</span><span class="n">CATEGORY_URL</span><span class="p">,</span> <span class="n">headers</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">retailer</span><span class="p">)</span>
-    <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="s2">&quot;lxml&quot;</span><span class="p">)</span>
-    <span class="n">urls</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;bm-content&#39;</span><span class="p">})</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;font-weight-bold&quot;</span><span class="p">})</span>
-    <span class="n">item_list</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">urls</span><span class="p">:</span>
-        <span class="k">if</span> <span class="s2">&quot;products&quot;</span> <span class="ow">in</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;href&quot;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;href&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
-            <span class="n">url_list_item</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;href&quot;</span><span class="p">],</span>
-                <span class="s2">&quot;category&quot;</span><span class="p">:</span> <span class="n">item</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span>
-                <span class="s2">&quot;attempts&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-                <span class="s2">&quot;max_attempts&quot;</span><span class="p">:</span> <span class="n">MAX_RETRIES</span><span class="p">,</span>
-                <span class="s2">&quot;success&quot;</span><span class="p">:</span> <span class="kc">False</span>
-            <span class="p">}</span>
-            <span class="n">item_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">url_list_item</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">item_list</span></div>
-
-
 <div class="viewcode-block" id="get_products_urls"><a class="viewcode-back" href="../index.html#bm_main.get_products_urls">[docs]</a><span class="k">def</span> <span class="nf">get_products_urls</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Navigate through all category URL&#39;s</span>
@@ -140,8 +116,7 @@
 <span class="sd">    :rtype: List</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">product_urls</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">full_url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">BASE_URL</span><span class="si">}{</span><span class="n">url</span><span class="si">}</span><span class="s2">?page=1&amp;hitsPerPage=72&quot;</span>
-    <span class="n">r</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">make_request</span><span class="p">(</span><span class="n">full_url</span><span class="p">,</span> <span class="n">headers</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">retailer</span><span class="p">)</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">make_request</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">retailer</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">r</span> <span class="ow">and</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
         <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="s2">&quot;lxml&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">soup</span><span class="p">:</span>
@@ -153,15 +128,19 @@
             <span class="k">if</span> <span class="n">pagination</span><span class="p">:</span>
                 <span class="n">pagination</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">pagination</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;Page 1 of &quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">))</span>
                 <span class="k">for</span> <span class="n">product_url</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">pagination</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
-                    <span class="n">full_url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">BASE_URL</span><span class="si">}{</span><span class="n">url</span><span class="si">}</span><span class="s2">?page=</span><span class="si">{</span><span class="n">product_url</span><span class="si">}</span><span class="s2">&amp;hitsPerPage=72&quot;</span>
-                    <span class="n">r</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">make_request</span><span class="p">(</span><span class="n">full_url</span><span class="p">,</span> <span class="n">headers</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">retailer</span><span class="p">)</span>
-                    <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="s2">&quot;lxml&quot;</span><span class="p">)</span>
-                    <span class="n">prod_listing</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;div&quot;</span><span class="p">,</span> <span class="s2">&quot;prod-listing&quot;</span><span class="p">)</span>
-                    <span class="k">if</span> <span class="n">prod_listing</span><span class="p">:</span>
-                        <span class="n">product_list</span> <span class="o">=</span> <span class="n">prod_listing</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;bm-product-stretch-link&quot;</span><span class="p">})</span>
-                        <span class="k">if</span> <span class="n">product_list</span><span class="p">:</span>
-                            <span class="k">for</span> <span class="n">p_url</span> <span class="ow">in</span> <span class="n">product_list</span><span class="p">:</span>
-                                <span class="n">product_urls</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p_url</span><span class="p">[</span><span class="s2">&quot;href&quot;</span><span class="p">])</span>
+                    <span class="n">full_url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">url</span><span class="si">}</span><span class="s2">?page=</span><span class="si">{</span><span class="n">product_url</span><span class="si">}</span><span class="s2">&amp;hitsPerPage=72&quot;</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">r</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">make_request</span><span class="p">(</span><span class="n">full_url</span><span class="p">,</span> <span class="n">headers</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">retailer</span><span class="p">)</span>
+                    <span class="k">except</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">r</span> <span class="ow">and</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
+                        <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="s2">&quot;lxml&quot;</span><span class="p">)</span>
+                        <span class="n">prod_listing</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;div&quot;</span><span class="p">,</span> <span class="s2">&quot;prod-listing&quot;</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">prod_listing</span><span class="p">:</span>
+                            <span class="n">product_list</span> <span class="o">=</span> <span class="n">prod_listing</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;bm-product-stretch-link&quot;</span><span class="p">})</span>
+                            <span class="k">if</span> <span class="n">product_list</span><span class="p">:</span>
+                                <span class="k">for</span> <span class="n">p_url</span> <span class="ow">in</span> <span class="n">product_list</span><span class="p">:</span>
+                                    <span class="n">product_urls</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p_url</span><span class="p">[</span><span class="s2">&quot;href&quot;</span><span class="p">])</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">prod_listing</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;div&quot;</span><span class="p">,</span> <span class="s2">&quot;prod-listing&quot;</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">prod_listing</span><span class="p">:</span>
@@ -184,7 +163,10 @@
         <span class="n">item_counter</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">for</span> <span class="n">url</span> <span class="ow">in</span> <span class="n">urls</span><span class="p">:</span>
             <span class="n">full_url</span> <span class="o">=</span> <span class="n">BASE_URL</span> <span class="o">+</span> <span class="n">url</span>
-            <span class="n">r</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">make_request</span><span class="p">(</span><span class="n">full_url</span><span class="p">,</span> <span class="n">headers</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">retailer</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">r</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">make_request</span><span class="p">(</span><span class="n">full_url</span><span class="p">,</span> <span class="n">headers</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">retailer</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
             <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="s2">&quot;lxml&quot;</span><span class="p">)</span>
             <span class="n">schema_products</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s2">&quot;script&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;application/ld+json&quot;</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">schema_products</span><span class="p">:</span>
@@ -324,7 +306,10 @@
 <span class="sd">    :rtype: List</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">full_url</span> <span class="o">=</span> <span class="n">BASE_URL</span> <span class="o">+</span> <span class="n">url</span>
-    <span class="n">r</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">make_request</span><span class="p">(</span><span class="n">full_url</span><span class="p">,</span> <span class="n">headers</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">retailer</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">make_request</span><span class="p">(</span><span class="n">full_url</span><span class="p">,</span> <span class="n">headers</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">retailer</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">r</span> <span class="ow">and</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
         <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="s2">&quot;lxml&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">soup</span><span class="p">:</span>
@@ -338,6 +323,37 @@
         <span class="k">return</span> <span class="kc">None</span></div>
 
 
+<span class="c1"># def parse_urls(urls):</span>
+<span class="c1">#     &quot;&quot;&quot;</span>
+<span class="c1">#     Loop through all URL&#39;s and update the main URL dict when successfully parsed.</span>
+<span class="c1">#     Collects statistical data and store it and the end of the program</span>
+<span class="c1">#</span>
+<span class="c1">#     :param urls: URL dictionary</span>
+<span class="c1">#     :return: None</span>
+<span class="c1">#     :rtype: None</span>
+<span class="c1">#     &quot;&quot;&quot;</span>
+<span class="c1">#     start = time.time()</span>
+<span class="c1">#     navigation_counter = 0</span>
+<span class="c1">#     item_counter = 0</span>
+<span class="c1">#     for url in urls:</span>
+<span class="c1">#         navigation_counter += 1</span>
+<span class="c1">#         navigation_url_count = len(urls)</span>
+<span class="c1">#         sub_category_urls = get_category_urls(url[&quot;url&quot;])</span>
+<span class="c1">#         for cat in sub_category_urls:</span>
+<span class="c1">#             products_urls = get_products_urls(cat)</span>
+<span class="c1">#             result = get_data(products_urls)</span>
+<span class="c1">#             if result:</span>
+<span class="c1">#                 url[&quot;success&quot;] = result[0]</span>
+<span class="c1">#                 item_counter_actual = result[1]</span>
+<span class="c1">#             else:</span>
+<span class="c1">#                 item_counter_actual = 0</span>
+<span class="c1">#</span>
+<span class="c1">#     item_counter += item_counter_actual</span>
+<span class="c1">#</span>
+<span class="c1">#     duration = time.time() - start</span>
+<span class="c1">#     # # Lets record some stats</span>
+<span class="c1">#     Statistics.statistics(navigation_counter, navigation_url_count, item_counter, duration, [], retailer, TABLE_NAME)</span>
+
 <div class="viewcode-block" id="parse_urls"><a class="viewcode-back" href="../index.html#bm_main.parse_urls">[docs]</a><span class="k">def</span> <span class="nf">parse_urls</span><span class="p">(</span><span class="n">urls</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Loop through all URL&#39;s and update the main URL dict when successfully parsed.</span>
@@ -350,24 +366,47 @@
     <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
     <span class="n">navigation_counter</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">item_counter</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">navigation_url_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">urls</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">url</span> <span class="ow">in</span> <span class="n">urls</span><span class="p">:</span>
-        <span class="n">navigation_counter</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="n">navigation_url_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">urls</span><span class="p">)</span>
-        <span class="n">sub_category_urls</span> <span class="o">=</span> <span class="n">get_category_urls</span><span class="p">(</span><span class="n">url</span><span class="p">[</span><span class="s2">&quot;url&quot;</span><span class="p">])</span>
-        <span class="k">for</span> <span class="n">cat</span> <span class="ow">in</span> <span class="n">sub_category_urls</span><span class="p">:</span>
-            <span class="n">products_urls</span> <span class="o">=</span> <span class="n">get_products_urls</span><span class="p">(</span><span class="n">cat</span><span class="p">)</span>
-            <span class="n">result</span> <span class="o">=</span> <span class="n">get_data</span><span class="p">(</span><span class="n">products_urls</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">result</span><span class="p">:</span>
-                <span class="n">url</span><span class="p">[</span><span class="s2">&quot;success&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-                <span class="n">item_counter_actual</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">item_counter_actual</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">full_url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">BASE_URL</span><span class="si">}{</span><span class="n">url</span><span class="p">[</span><span class="s1">&#39;url&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">?page=1&amp;hitsPerPage=72&quot;</span>
+        <span class="n">products_urls</span> <span class="o">=</span> <span class="n">get_products_urls</span><span class="p">(</span><span class="n">full_url</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">get_data</span><span class="p">(</span><span class="n">products_urls</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">result</span><span class="p">:</span>
+            <span class="n">url</span><span class="p">[</span><span class="s2">&quot;success&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">item_counter_actual</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">item_counter_actual</span> <span class="o">=</span> <span class="mi">0</span>
 
     <span class="n">item_counter</span> <span class="o">+=</span> <span class="n">item_counter_actual</span>
 
     <span class="n">duration</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span>
     <span class="c1"># # Lets record some stats</span>
-    <span class="n">Statistics</span><span class="o">.</span><span class="n">statistics</span><span class="p">(</span><span class="n">navigation_counter</span><span class="p">,</span> <span class="n">navigation_url_count</span><span class="p">,</span> <span class="n">item_counter</span><span class="p">,</span> <span class="n">duration</span><span class="p">,</span> <span class="p">[],</span> <span class="n">retailer</span><span class="p">,</span> <span class="n">TABLE_NAME</span><span class="p">)</span></div>
+    <span class="n">Statistics</span><span class="o">.</span><span class="n">statistics</span><span class="p">(</span><span class="n">navigation_counter</span><span class="p">,</span> <span class="n">navigation_url_count</span><span class="p">,</span> <span class="n">item_counter</span><span class="p">,</span> <span class="n">duration</span><span class="p">,</span> <span class="p">[],</span>
+                          <span class="n">retailer</span><span class="p">,</span> <span class="n">TABLE_NAME</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_navigation_urls"><a class="viewcode-back" href="../index.html#bm_main.get_navigation_urls">[docs]</a><span class="k">def</span> <span class="nf">get_navigation_urls</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get all navigation URLs from the category base URL</span>
+
+<span class="sd">    :return: All navigation URLs</span>
+<span class="sd">    :rtype: Dictionary</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">make_request</span><span class="p">(</span><span class="n">CATEGORY_URL</span><span class="p">,</span> <span class="n">headers</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">retailer</span><span class="p">)</span>
+    <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="s2">&quot;lxml&quot;</span><span class="p">)</span>
+    <span class="n">urls</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;bm-content&#39;</span><span class="p">})</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;font-weight-bold&quot;</span><span class="p">})</span>
+    <span class="n">item_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">urls</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s2">&quot;products&quot;</span> <span class="ow">in</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;href&quot;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;href&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">url_list_item</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;href&quot;</span><span class="p">],</span>
+                <span class="s2">&quot;category&quot;</span><span class="p">:</span> <span class="n">item</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span>
+                <span class="s2">&quot;attempts&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                <span class="s2">&quot;max_attempts&quot;</span><span class="p">:</span> <span class="n">MAX_RETRIES</span><span class="p">,</span>
+                <span class="s2">&quot;success&quot;</span><span class="p">:</span> <span class="kc">False</span>
+            <span class="p">}</span>
+            <span class="n">item_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">url_list_item</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">item_list</span></div>
 
 
 <div class="viewcode-block" id="main"><a class="viewcode-back" href="../index.html#bm_main.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
@@ -387,7 +426,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2023, Bernard Van Der Vyver.</p>
+    <p>&#169; Copyright 2023, Brand Nudge Ltd.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

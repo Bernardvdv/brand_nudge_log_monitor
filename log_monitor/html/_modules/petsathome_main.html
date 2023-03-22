@@ -268,11 +268,14 @@
                                             <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;;&quot;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&lt;/script&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;})&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
                                         <span class="n">cleaned_product</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">cleaned_string</span><span class="p">)</span>
                                         <span class="k">if</span> <span class="n">cleaned_product</span><span class="p">:</span>
-                                            <span class="n">skuURL</span> <span class="o">=</span> <span class="n">BASE_URL</span> <span class="o">+</span> <span class="n">cleaned_product</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;productDetailsPageURL&quot;</span><span class="p">)</span>
+                                            <span class="k">if</span> <span class="n">BASE_URL</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">cleaned_product</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;productDetailsPageURL&quot;</span><span class="p">):</span>
+                                                <span class="n">skuURL</span> <span class="o">=</span> <span class="n">BASE_URL</span> <span class="o">+</span> <span class="n">cleaned_product</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;productDetailsPageURL&quot;</span><span class="p">)</span>
+                                            <span class="k">else</span><span class="p">:</span>
+                                                <span class="n">skuURL</span> <span class="o">=</span> <span class="n">cleaned_product</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;productDetailsPageURL&quot;</span><span class="p">)</span>
                                             <span class="n">overLayText</span> <span class="o">=</span> <span class="n">cleaned_product</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;overlayText&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-
-                                            <span class="n">r</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">make_request</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;https://</span><span class="si">{</span><span class="n">skuURL</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">headers</span><span class="p">,</span> <span class="n">PROXIES_RES</span><span class="p">,</span>
-                                                                   <span class="n">retailer</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+                                            <span class="k">if</span> <span class="s2">&quot;https://&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">skuURL</span><span class="p">:</span>
+                                                <span class="n">skuURL</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;https://</span><span class="si">{</span><span class="n">skuURL</span><span class="si">}</span><span class="s2">&quot;</span>
+                                            <span class="n">r</span> <span class="o">=</span> <span class="n">Utils</span><span class="o">.</span><span class="n">make_request</span><span class="p">(</span><span class="n">skuURL</span><span class="p">,</span> <span class="n">headers</span><span class="p">,</span> <span class="n">PROXIES_RES</span><span class="p">,</span> <span class="n">retailer</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
                                             <span class="k">if</span> <span class="n">r</span> <span class="ow">and</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
                                                 <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="s2">&quot;lxml&quot;</span><span class="p">)</span>
                                                 <span class="k">if</span> <span class="n">soup</span><span class="p">:</span>
@@ -443,7 +446,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2023, Bernard Van Der Vyver.</p>
+    <p>&#169; Copyright 2023, Brand Nudge Ltd.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

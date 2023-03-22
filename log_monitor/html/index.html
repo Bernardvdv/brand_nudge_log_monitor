@@ -42,6 +42,49 @@
               <!-- Local TOC -->
               <div class="local-toc"><ul>
 <li><a class="reference internal" href="#">Brand Nudge Documentation</a></li>
+<li><a class="reference internal" href="#module-bm_main">bm_main module</a><ul>
+<li><a class="reference internal" href="#bm_main.get_category_urls"><code class="docutils literal notranslate"><span class="pre">get_category_urls()</span></code></a></li>
+<li><a class="reference internal" href="#bm_main.get_data"><code class="docutils literal notranslate"><span class="pre">get_data()</span></code></a></li>
+<li><a class="reference internal" href="#bm_main.get_navigation_urls"><code class="docutils literal notranslate"><span class="pre">get_navigation_urls()</span></code></a></li>
+<li><a class="reference internal" href="#bm_main.get_products_urls"><code class="docutils literal notranslate"><span class="pre">get_products_urls()</span></code></a></li>
+<li><a class="reference internal" href="#bm_main.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+<li><a class="reference internal" href="#bm_main.parse_urls"><code class="docutils literal notranslate"><span class="pre">parse_urls()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#cmcmotorsports-main-module">cmcmotorsports_main module</a></li>
+<li><a class="reference internal" href="#module-constants">constants module</a></li>
+<li><a class="reference internal" href="#cron-imports-module">cron_imports module</a></li>
+<li><a class="reference internal" href="#module-dunnes_store_main">dunnes_store_main module</a><ul>
+<li><a class="reference internal" href="#dunnes_store_main.cleanup"><code class="docutils literal notranslate"><span class="pre">cleanup()</span></code></a></li>
+<li><a class="reference internal" href="#dunnes_store_main.get_data"><code class="docutils literal notranslate"><span class="pre">get_data()</span></code></a></li>
+<li><a class="reference internal" href="#dunnes_store_main.get_navigation_urls"><code class="docutils literal notranslate"><span class="pre">get_navigation_urls()</span></code></a></li>
+<li><a class="reference internal" href="#dunnes_store_main.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+<li><a class="reference internal" href="#dunnes_store_main.parse_urls"><code class="docutils literal notranslate"><span class="pre">parse_urls()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-email_stats">email_stats module</a><ul>
+<li><a class="reference internal" href="#email_stats.generate_message"><code class="docutils literal notranslate"><span class="pre">generate_message()</span></code></a></li>
+<li><a class="reference internal" href="#email_stats.get_cron_jobs"><code class="docutils literal notranslate"><span class="pre">get_cron_jobs()</span></code></a></li>
+<li><a class="reference internal" href="#email_stats.get_exception_logs"><code class="docutils literal notranslate"><span class="pre">get_exception_logs()</span></code></a></li>
+<li><a class="reference internal" href="#email_stats.get_stats"><code class="docutils literal notranslate"><span class="pre">get_stats()</span></code></a></li>
+<li><a class="reference internal" href="#email_stats.send_mail"><code class="docutils literal notranslate"><span class="pre">send_mail()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#f1store-main-module">f1store_main module</a></li>
+<li><a class="reference internal" href="#fanatics-intl-main-module">fanatics_intl_main module</a></li>
+<li><a class="reference internal" href="#fuelforfans-main-module">fuelforfans_main module</a></li>
+<li><a class="reference internal" href="#module-john_lewis_main">john_lewis_main module</a><ul>
+<li><a class="reference internal" href="#john_lewis_main.get_brand"><code class="docutils literal notranslate"><span class="pre">get_brand()</span></code></a></li>
+<li><a class="reference internal" href="#john_lewis_main.get_data_from_search_query"><code class="docutils literal notranslate"><span class="pre">get_data_from_search_query()</span></code></a></li>
+<li><a class="reference internal" href="#john_lewis_main.get_description"><code class="docutils literal notranslate"><span class="pre">get_description()</span></code></a></li>
+<li><a class="reference internal" href="#john_lewis_main.get_navigation_urls"><code class="docutils literal notranslate"><span class="pre">get_navigation_urls()</span></code></a></li>
+<li><a class="reference internal" href="#john_lewis_main.get_review_detail"><code class="docutils literal notranslate"><span class="pre">get_review_detail()</span></code></a></li>
+<li><a class="reference internal" href="#john_lewis_main.get_variants"><code class="docutils literal notranslate"><span class="pre">get_variants()</span></code></a></li>
+<li><a class="reference internal" href="#john_lewis_main.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+<li><a class="reference internal" href="#john_lewis_main.parse_urls"><code class="docutils literal notranslate"><span class="pre">parse_urls()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#john-lewis-reviews-keywords-module">john_lewis_reviews_keywords module</a></li>
 <li><a class="reference internal" href="#module-logging_class">logging_class module</a><ul>
 <li><a class="reference internal" href="#logging_class.LogHandler"><code class="docutils literal notranslate"><span class="pre">LogHandler</span></code></a><ul>
 <li><a class="reference internal" href="#logging_class.LogHandler.create_cron_table"><code class="docutils literal notranslate"><span class="pre">LogHandler.create_cron_table()</span></code></a></li>
@@ -69,41 +112,14 @@
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#module-john_lewis_main">john_lewis_main module</a><ul>
-<li><a class="reference internal" href="#john_lewis_main.get_brand"><code class="docutils literal notranslate"><span class="pre">get_brand()</span></code></a></li>
-<li><a class="reference internal" href="#john_lewis_main.get_data"><code class="docutils literal notranslate"><span class="pre">get_data()</span></code></a></li>
-<li><a class="reference internal" href="#john_lewis_main.get_description"><code class="docutils literal notranslate"><span class="pre">get_description()</span></code></a></li>
-<li><a class="reference internal" href="#john_lewis_main.get_navigation_urls"><code class="docutils literal notranslate"><span class="pre">get_navigation_urls()</span></code></a></li>
-<li><a class="reference internal" href="#john_lewis_main.get_review_detail"><code class="docutils literal notranslate"><span class="pre">get_review_detail()</span></code></a></li>
-<li><a class="reference internal" href="#john_lewis_main.get_variants"><code class="docutils literal notranslate"><span class="pre">get_variants()</span></code></a></li>
-<li><a class="reference internal" href="#john_lewis_main.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
-<li><a class="reference internal" href="#john_lewis_main.parse_urls"><code class="docutils literal notranslate"><span class="pre">parse_urls()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#module-supervalu_main">supervalu_main module</a><ul>
-<li><a class="reference internal" href="#supervalu_main.get_data"><code class="docutils literal notranslate"><span class="pre">get_data()</span></code></a></li>
-<li><a class="reference internal" href="#supervalu_main.get_navigation_urls"><code class="docutils literal notranslate"><span class="pre">get_navigation_urls()</span></code></a></li>
-<li><a class="reference internal" href="#supervalu_main.get_promotions"><code class="docutils literal notranslate"><span class="pre">get_promotions()</span></code></a></li>
-<li><a class="reference internal" href="#supervalu_main.get_was_price"><code class="docutils literal notranslate"><span class="pre">get_was_price()</span></code></a></li>
-<li><a class="reference internal" href="#supervalu_main.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
-<li><a class="reference internal" href="#supervalu_main.parse_urls"><code class="docutils literal notranslate"><span class="pre">parse_urls()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#module-dunnes_store_main">dunnes_store_main module</a><ul>
-<li><a class="reference internal" href="#dunnes_store_main.cleanup"><code class="docutils literal notranslate"><span class="pre">cleanup()</span></code></a></li>
-<li><a class="reference internal" href="#dunnes_store_main.get_data"><code class="docutils literal notranslate"><span class="pre">get_data()</span></code></a></li>
-<li><a class="reference internal" href="#dunnes_store_main.get_navigation_urls"><code class="docutils literal notranslate"><span class="pre">get_navigation_urls()</span></code></a></li>
-<li><a class="reference internal" href="#dunnes_store_main.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
-<li><a class="reference internal" href="#dunnes_store_main.parse_urls"><code class="docutils literal notranslate"><span class="pre">parse_urls()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#module-bm_main">bm_main module</a><ul>
-<li><a class="reference internal" href="#bm_main.get_category_urls"><code class="docutils literal notranslate"><span class="pre">get_category_urls()</span></code></a></li>
-<li><a class="reference internal" href="#bm_main.get_data"><code class="docutils literal notranslate"><span class="pre">get_data()</span></code></a></li>
-<li><a class="reference internal" href="#bm_main.get_navigation_urls"><code class="docutils literal notranslate"><span class="pre">get_navigation_urls()</span></code></a></li>
-<li><a class="reference internal" href="#bm_main.get_products_urls"><code class="docutils literal notranslate"><span class="pre">get_products_urls()</span></code></a></li>
-<li><a class="reference internal" href="#bm_main.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
-<li><a class="reference internal" href="#bm_main.parse_urls"><code class="docutils literal notranslate"><span class="pre">parse_urls()</span></code></a></li>
+<li><a class="reference internal" href="#mercedesamgf1-main-module">mercedesamgf1_main module</a></li>
+<li><a class="reference internal" href="#module-pet_planet_main">pet_planet_main module</a><ul>
+<li><a class="reference internal" href="#pet_planet_main.get_cleaned_product_urls"><code class="docutils literal notranslate"><span class="pre">get_cleaned_product_urls()</span></code></a></li>
+<li><a class="reference internal" href="#pet_planet_main.get_data"><code class="docutils literal notranslate"><span class="pre">get_data()</span></code></a></li>
+<li><a class="reference internal" href="#pet_planet_main.get_navigation_urls"><code class="docutils literal notranslate"><span class="pre">get_navigation_urls()</span></code></a></li>
+<li><a class="reference internal" href="#pet_planet_main.get_variant_urls"><code class="docutils literal notranslate"><span class="pre">get_variant_urls()</span></code></a></li>
+<li><a class="reference internal" href="#pet_planet_main.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+<li><a class="reference internal" href="#pet_planet_main.parse_urls"><code class="docutils literal notranslate"><span class="pre">parse_urls()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#module-petsathome_main">petsathome_main module</a><ul>
@@ -118,6 +134,7 @@
 <li><a class="reference internal" href="#petsathome_main.parse_urls"><code class="docutils literal notranslate"><span class="pre">parse_urls()</span></code></a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#racecrate-main-module">racecrate_main module</a></li>
 <li><a class="reference internal" href="#module-savers_main">savers_main module</a><ul>
 <li><a class="reference internal" href="#savers_main.get_data"><code class="docutils literal notranslate"><span class="pre">get_data()</span></code></a></li>
 <li><a class="reference internal" href="#savers_main.get_navigation_urls"><code class="docutils literal notranslate"><span class="pre">get_navigation_urls()</span></code></a></li>
@@ -125,6 +142,17 @@
 <li><a class="reference internal" href="#savers_main.parse_urls"><code class="docutils literal notranslate"><span class="pre">parse_urls()</span></code></a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#module-supervalu_main">supervalu_main module</a><ul>
+<li><a class="reference internal" href="#supervalu_main.get_data"><code class="docutils literal notranslate"><span class="pre">get_data()</span></code></a></li>
+<li><a class="reference internal" href="#supervalu_main.get_navigation_urls"><code class="docutils literal notranslate"><span class="pre">get_navigation_urls()</span></code></a></li>
+<li><a class="reference internal" href="#supervalu_main.get_promotions"><code class="docutils literal notranslate"><span class="pre">get_promotions()</span></code></a></li>
+<li><a class="reference internal" href="#supervalu_main.get_was_price"><code class="docutils literal notranslate"><span class="pre">get_was_price()</span></code></a></li>
+<li><a class="reference internal" href="#supervalu_main.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+<li><a class="reference internal" href="#supervalu_main.parse_urls"><code class="docutils literal notranslate"><span class="pre">parse_urls()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-tests">tests module</a></li>
+<li><a class="reference internal" href="#wilko-main-module">wilko_main module</a></li>
 <li><a class="reference internal" href="#module-zooplus_main">zooplus_main module</a><ul>
 <li><a class="reference internal" href="#zooplus_main.get_data"><code class="docutils literal notranslate"><span class="pre">get_data()</span></code></a></li>
 <li><a class="reference internal" href="#zooplus_main.get_navigation_urls"><code class="docutils literal notranslate"><span class="pre">get_navigation_urls()</span></code></a></li>
@@ -161,6 +189,338 @@
              
   <section id="brand-nudge-documentation">
 <h1>Brand Nudge Documentation<a class="headerlink" href="#brand-nudge-documentation" title="Permalink to this heading"></a></h1>
+</section>
+<section id="module-bm_main">
+<span id="bm-main-module"></span><h1>bm_main module<a class="headerlink" href="#module-bm_main" title="Permalink to this heading"></a></h1>
+<p>Bmstores product collection program.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="bm_main.get_category_urls">
+<span class="sig-prename descclassname"><span class="pre">bm_main.</span></span><span class="sig-name descname"><span class="pre">get_category_urls</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bm_main.html#get_category_urls"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bm_main.get_category_urls" title="Permalink to this definition"></a></dt>
+<dd><p>Gather all sub category URLS from main navigation URL’s</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>url</strong> – Main navigation URLS in list</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>All sub category URLS</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bm_main.get_data">
+<span class="sig-prename descclassname"><span class="pre">bm_main.</span></span><span class="sig-name descname"><span class="pre">get_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">urls</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bm_main.html#get_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bm_main.get_data" title="Permalink to this definition"></a></dt>
+<dd><p>Makes a request to each URL and store the collected info in the database</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>urls</strong> – Product url</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if successful and product count</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Boolean and integer</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bm_main.get_navigation_urls">
+<span class="sig-prename descclassname"><span class="pre">bm_main.</span></span><span class="sig-name descname"><span class="pre">get_navigation_urls</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/bm_main.html#get_navigation_urls"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bm_main.get_navigation_urls" title="Permalink to this definition"></a></dt>
+<dd><p>Get all navigation URLs from the category base URL</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>All navigation URLs</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dictionary</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bm_main.get_products_urls">
+<span class="sig-prename descclassname"><span class="pre">bm_main.</span></span><span class="sig-name descname"><span class="pre">get_products_urls</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bm_main.html#get_products_urls"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bm_main.get_products_urls" title="Permalink to this definition"></a></dt>
+<dd><p>Navigate through all category URL’s
+and add the product URL’s in a list</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>url</strong> – Category URLS</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Product URLS</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bm_main.main">
+<span class="sig-prename descclassname"><span class="pre">bm_main.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/bm_main.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bm_main.main" title="Permalink to this definition"></a></dt>
+<dd><p>Initiate collection</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bm_main.parse_urls">
+<span class="sig-prename descclassname"><span class="pre">bm_main.</span></span><span class="sig-name descname"><span class="pre">parse_urls</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">urls</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bm_main.html#parse_urls"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bm_main.parse_urls" title="Permalink to this definition"></a></dt>
+<dd><p>Loop through all URL’s and update the main URL dict when successfully parsed.
+Collects statistical data and store it and the end of the program</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>urls</strong> – URL dictionary</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="cmcmotorsports-main-module">
+<h1>cmcmotorsports_main module<a class="headerlink" href="#cmcmotorsports-main-module" title="Permalink to this heading"></a></h1>
+</section>
+<section id="module-constants">
+<span id="constants-module"></span><h1>constants module<a class="headerlink" href="#module-constants" title="Permalink to this heading"></a></h1>
+</section>
+<section id="cron-imports-module">
+<h1>cron_imports module<a class="headerlink" href="#cron-imports-module" title="Permalink to this heading"></a></h1>
+</section>
+<section id="module-dunnes_store_main">
+<span id="dunnes-store-main-module"></span><h1>dunnes_store_main module<a class="headerlink" href="#module-dunnes_store_main" title="Permalink to this heading"></a></h1>
+<p>Dunnes Store product collection program.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="dunnes_store_main.cleanup">
+<span class="sig-prename descclassname"><span class="pre">dunnes_store_main.</span></span><span class="sig-name descname"><span class="pre">cleanup</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/dunnes_store_main.html#cleanup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dunnes_store_main.cleanup" title="Permalink to this definition"></a></dt>
+<dd><p>Removing all duplicates for the current date which matches the where clause criteria</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="dunnes_store_main.get_data">
+<span class="sig-prename descclassname"><span class="pre">dunnes_store_main.</span></span><span class="sig-name descname"><span class="pre">get_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dunnes_store_main.html#get_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dunnes_store_main.get_data" title="Permalink to this definition"></a></dt>
+<dd><p>Makes a request to each URL and store the collected info in the database</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>url</strong> – Product url</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if successful and product count</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Boolean and integer</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="dunnes_store_main.get_navigation_urls">
+<span class="sig-prename descclassname"><span class="pre">dunnes_store_main.</span></span><span class="sig-name descname"><span class="pre">get_navigation_urls</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/dunnes_store_main.html#get_navigation_urls"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dunnes_store_main.get_navigation_urls" title="Permalink to this definition"></a></dt>
+<dd><p>Get all navigation URLs from the base URL</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>All navigation URLs</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dictionary</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="dunnes_store_main.main">
+<span class="sig-prename descclassname"><span class="pre">dunnes_store_main.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/dunnes_store_main.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dunnes_store_main.main" title="Permalink to this definition"></a></dt>
+<dd><p>Initiate collection</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="dunnes_store_main.parse_urls">
+<span class="sig-prename descclassname"><span class="pre">dunnes_store_main.</span></span><span class="sig-name descname"><span class="pre">parse_urls</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">urls</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dunnes_store_main.html#parse_urls"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dunnes_store_main.parse_urls" title="Permalink to this definition"></a></dt>
+<dd><p>Loop through all URL’s and update the main URL dict when successfully parsed.
+Collects statistical data and store it and the end of the program</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>urls</strong> – URL dictionary</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-email_stats">
+<span id="email-stats-module"></span><h1>email_stats module<a class="headerlink" href="#module-email_stats" title="Permalink to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="email_stats.generate_message">
+<span class="sig-prename descclassname"><span class="pre">email_stats.</span></span><span class="sig-name descname"><span class="pre">generate_message</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/email_stats.html#generate_message"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#email_stats.generate_message" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="email_stats.get_cron_jobs">
+<span class="sig-prename descclassname"><span class="pre">email_stats.</span></span><span class="sig-name descname"><span class="pre">get_cron_jobs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/email_stats.html#get_cron_jobs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#email_stats.get_cron_jobs" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="email_stats.get_exception_logs">
+<span class="sig-prename descclassname"><span class="pre">email_stats.</span></span><span class="sig-name descname"><span class="pre">get_exception_logs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/email_stats.html#get_exception_logs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#email_stats.get_exception_logs" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="email_stats.get_stats">
+<span class="sig-prename descclassname"><span class="pre">email_stats.</span></span><span class="sig-name descname"><span class="pre">get_stats</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/email_stats.html#get_stats"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#email_stats.get_stats" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="email_stats.send_mail">
+<span class="sig-prename descclassname"><span class="pre">email_stats.</span></span><span class="sig-name descname"><span class="pre">send_mail</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/email_stats.html#send_mail"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#email_stats.send_mail" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="f1store-main-module">
+<h1>f1store_main module<a class="headerlink" href="#f1store-main-module" title="Permalink to this heading"></a></h1>
+</section>
+<section id="fanatics-intl-main-module">
+<h1>fanatics_intl_main module<a class="headerlink" href="#fanatics-intl-main-module" title="Permalink to this heading"></a></h1>
+</section>
+<section id="fuelforfans-main-module">
+<h1>fuelforfans_main module<a class="headerlink" href="#fuelforfans-main-module" title="Permalink to this heading"></a></h1>
+</section>
+<section id="module-john_lewis_main">
+<span id="john-lewis-main-module"></span><h1>john_lewis_main module<a class="headerlink" href="#module-john_lewis_main" title="Permalink to this heading"></a></h1>
+<p>John Lewis product collection program.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="john_lewis_main.get_brand">
+<span class="sig-prename descclassname"><span class="pre">john_lewis_main.</span></span><span class="sig-name descname"><span class="pre">get_brand</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/john_lewis_main.html#get_brand"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#john_lewis_main.get_brand" title="Permalink to this definition"></a></dt>
+<dd><p>Get the brand from the provided javascript tag</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>schema</strong> – Javascript tag containing the product data</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Brand if found else None</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>String</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="john_lewis_main.get_data_from_search_query">
+<span class="sig-prename descclassname"><span class="pre">john_lewis_main.</span></span><span class="sig-name descname"><span class="pre">get_data_from_search_query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/john_lewis_main.html#get_data_from_search_query"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#john_lewis_main.get_data_from_search_query" title="Permalink to this definition"></a></dt>
+<dd><p>Makes a request to each URL and store the collected info in the database</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>url</strong> – Product url</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if successful and product count</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Boolean and integer</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="john_lewis_main.get_description">
+<span class="sig-prename descclassname"><span class="pre">john_lewis_main.</span></span><span class="sig-name descname"><span class="pre">get_description</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/john_lewis_main.html#get_description"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#john_lewis_main.get_description" title="Permalink to this definition"></a></dt>
+<dd><p>Get the description from the provided javascript tag</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>schema</strong> – Javascript tag containing the product data</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Description if found else None</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>String</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="john_lewis_main.get_navigation_urls">
+<span class="sig-prename descclassname"><span class="pre">john_lewis_main.</span></span><span class="sig-name descname"><span class="pre">get_navigation_urls</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/john_lewis_main.html#get_navigation_urls"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#john_lewis_main.get_navigation_urls" title="Permalink to this definition"></a></dt>
+<dd><p>Get all navigation URLs and categories from the state API</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>All navigation URLs</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dictionary</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="john_lewis_main.get_review_detail">
+<span class="sig-prename descclassname"><span class="pre">john_lewis_main.</span></span><span class="sig-name descname"><span class="pre">get_review_detail</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/john_lewis_main.html#get_review_detail"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#john_lewis_main.get_review_detail" title="Permalink to this definition"></a></dt>
+<dd><p>Get the product review detail from the provided javascript tag</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>schema</strong> – Javascript tag containing the product data</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Review count, product rating if found else None</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="john_lewis_main.get_variants">
+<span class="sig-prename descclassname"><span class="pre">john_lewis_main.</span></span><span class="sig-name descname"><span class="pre">get_variants</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/john_lewis_main.html#get_variants"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#john_lewis_main.get_variants" title="Permalink to this definition"></a></dt>
+<dd><p>Get the product variants from the provided javascript tag
+:param schema: Javascript tag containing the product data
+:return: Variants if found else None
+:rtype: List</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="john_lewis_main.main">
+<span class="sig-prename descclassname"><span class="pre">john_lewis_main.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/john_lewis_main.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#john_lewis_main.main" title="Permalink to this definition"></a></dt>
+<dd><p>Initiate collection</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="john_lewis_main.parse_urls">
+<span class="sig-prename descclassname"><span class="pre">john_lewis_main.</span></span><span class="sig-name descname"><span class="pre">parse_urls</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">urls</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/john_lewis_main.html#parse_urls"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#john_lewis_main.parse_urls" title="Permalink to this definition"></a></dt>
+<dd><p>Loop through all URL’s and update the main URL dict when successfully parsed.
+Collects statistical data and store it and the end of the program</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>urls</strong> – URL dictionary</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="john-lewis-reviews-keywords-module">
+<h1>john_lewis_reviews_keywords module<a class="headerlink" href="#john-lewis-reviews-keywords-module" title="Permalink to this heading"></a></h1>
 </section>
 <section id="module-logging_class">
 <span id="logging-class-module"></span><h1>logging_class module<a class="headerlink" href="#module-logging_class" title="Permalink to this heading"></a></h1>
@@ -482,36 +842,36 @@ e.g. 01H 08m 55s</p>
 </dd></dl>
 
 </section>
-<section id="module-john_lewis_main">
-<span id="john-lewis-main-module"></span><h1>john_lewis_main module<a class="headerlink" href="#module-john_lewis_main" title="Permalink to this heading"></a></h1>
-<p>John Lewis product collection program.</p>
+<section id="mercedesamgf1-main-module">
+<h1>mercedesamgf1_main module<a class="headerlink" href="#mercedesamgf1-main-module" title="Permalink to this heading"></a></h1>
+</section>
+<section id="module-pet_planet_main">
+<span id="pet-planet-main-module"></span><h1>pet_planet_main module<a class="headerlink" href="#module-pet_planet_main" title="Permalink to this heading"></a></h1>
+<p>www.petplanet.co.uk product collection program.</p>
 <dl class="py function">
-<dt class="sig sig-object py" id="john_lewis_main.get_brand">
-<span class="sig-prename descclassname"><span class="pre">john_lewis_main.</span></span><span class="sig-name descname"><span class="pre">get_brand</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/john_lewis_main.html#get_brand"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#john_lewis_main.get_brand" title="Permalink to this definition"></a></dt>
-<dd><p>Get the brand from the provided javascript tag</p>
+<dt class="sig sig-object py" id="pet_planet_main.get_cleaned_product_urls">
+<span class="sig-prename descclassname"><span class="pre">pet_planet_main.</span></span><span class="sig-name descname"><span class="pre">get_cleaned_product_urls</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pet_planet_main.html#get_cleaned_product_urls"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pet_planet_main.get_cleaned_product_urls" title="Permalink to this definition"></a></dt>
+<dd><p>Finds all the product hyperlinks and remove duplicates</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>schema</strong> – Javascript tag containing the product data</p>
+<dd class="field-odd"><p><strong>url</strong> – Category URL</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Brand if found else None</p>
+<dd class="field-even"><p>All product urls</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>String</p>
+<dd class="field-odd"><p>List</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="john_lewis_main.get_data">
-<span class="sig-prename descclassname"><span class="pre">john_lewis_main.</span></span><span class="sig-name descname"><span class="pre">get_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">category</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/john_lewis_main.html#get_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#john_lewis_main.get_data" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="pet_planet_main.get_data">
+<span class="sig-prename descclassname"><span class="pre">pet_planet_main.</span></span><span class="sig-name descname"><span class="pre">get_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item_url</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pet_planet_main.html#get_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pet_planet_main.get_data" title="Permalink to this definition"></a></dt>
 <dd><p>Makes a request to each URL and store the collected info in the database</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>url</strong> – Product url</p></li>
-<li><p><strong>category</strong> – Product category</p></li>
-</ul>
+<dd class="field-odd"><p><strong>item_url</strong> – Product url</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>True if successful and product count</p>
@@ -523,29 +883,12 @@ e.g. 01H 08m 55s</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="john_lewis_main.get_description">
-<span class="sig-prename descclassname"><span class="pre">john_lewis_main.</span></span><span class="sig-name descname"><span class="pre">get_description</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/john_lewis_main.html#get_description"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#john_lewis_main.get_description" title="Permalink to this definition"></a></dt>
-<dd><p>Get the description from the provided javascript tag</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>schema</strong> – Javascript tag containing the product data</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Description if found else None</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>String</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="john_lewis_main.get_navigation_urls">
-<span class="sig-prename descclassname"><span class="pre">john_lewis_main.</span></span><span class="sig-name descname"><span class="pre">get_navigation_urls</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/john_lewis_main.html#get_navigation_urls"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#john_lewis_main.get_navigation_urls" title="Permalink to this definition"></a></dt>
-<dd><p>Get all navigation URLs and categories from the state API</p>
+<dt class="sig sig-object py" id="pet_planet_main.get_navigation_urls">
+<span class="sig-prename descclassname"><span class="pre">pet_planet_main.</span></span><span class="sig-name descname"><span class="pre">get_navigation_urls</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pet_planet_main.html#get_navigation_urls"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pet_planet_main.get_navigation_urls" title="Permalink to this definition"></a></dt>
+<dd><p>Create a list of URL’s and categories to parse through</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>All navigation URLs</p>
+<dd class="field-odd"><p>All navigation URLs with categories</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>Dictionary</p>
@@ -554,100 +897,15 @@ e.g. 01H 08m 55s</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="john_lewis_main.get_review_detail">
-<span class="sig-prename descclassname"><span class="pre">john_lewis_main.</span></span><span class="sig-name descname"><span class="pre">get_review_detail</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/john_lewis_main.html#get_review_detail"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#john_lewis_main.get_review_detail" title="Permalink to this definition"></a></dt>
-<dd><p>Get the product review detail from the provided javascript tag</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>schema</strong> – Javascript tag containing the product data</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Review count, product rating if found else None</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>List</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="john_lewis_main.get_variants">
-<span class="sig-prename descclassname"><span class="pre">john_lewis_main.</span></span><span class="sig-name descname"><span class="pre">get_variants</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/john_lewis_main.html#get_variants"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#john_lewis_main.get_variants" title="Permalink to this definition"></a></dt>
-<dd><p>Get the product variants from the provided javascript tag
-:param schema: Javascript tag containing the product data
-:return: Variants if found else None
-:rtype: List</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="john_lewis_main.main">
-<span class="sig-prename descclassname"><span class="pre">john_lewis_main.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/john_lewis_main.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#john_lewis_main.main" title="Permalink to this definition"></a></dt>
-<dd><p>Initiate collection</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="john_lewis_main.parse_urls">
-<span class="sig-prename descclassname"><span class="pre">john_lewis_main.</span></span><span class="sig-name descname"><span class="pre">parse_urls</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">urls</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/john_lewis_main.html#parse_urls"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#john_lewis_main.parse_urls" title="Permalink to this definition"></a></dt>
-<dd><p>Loop through all URL’s and update the main URL dict when successfully parsed.
-Collects statistical data and store it and the end of the program</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>urls</strong> – URL dictionary</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>None</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>None</p>
-</dd>
-</dl>
-</dd></dl>
-
-</section>
-<section id="module-supervalu_main">
-<span id="supervalu-main-module"></span><h1>supervalu_main module<a class="headerlink" href="#module-supervalu_main" title="Permalink to this heading"></a></h1>
-<p>Supervalu.ie product collection program.</p>
-<dl class="py function">
-<dt class="sig sig-object py" id="supervalu_main.get_data">
-<span class="sig-prename descclassname"><span class="pre">supervalu_main.</span></span><span class="sig-name descname"><span class="pre">get_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/supervalu_main.html#get_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#supervalu_main.get_data" title="Permalink to this definition"></a></dt>
-<dd><p>Makes a request to each URL and store the collected info in the database</p>
+<dt class="sig sig-object py" id="pet_planet_main.get_variant_urls">
+<span class="sig-prename descclassname"><span class="pre">pet_planet_main.</span></span><span class="sig-name descname"><span class="pre">get_variant_urls</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pet_planet_main.html#get_variant_urls"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pet_planet_main.get_variant_urls" title="Permalink to this definition"></a></dt>
+<dd><p>Request to item page and collect variant urls and remove any duplicates</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>url</strong> – Product url</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>True if successful and product count</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Boolean and integer</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="supervalu_main.get_navigation_urls">
-<span class="sig-prename descclassname"><span class="pre">supervalu_main.</span></span><span class="sig-name descname"><span class="pre">get_navigation_urls</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/supervalu_main.html#get_navigation_urls"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#supervalu_main.get_navigation_urls" title="Permalink to this definition"></a></dt>
-<dd><p>Get all navigation URLs from the base URL</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>All navigation URLs</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>Dictionary</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="supervalu_main.get_promotions">
-<span class="sig-prename descclassname"><span class="pre">supervalu_main.</span></span><span class="sig-name descname"><span class="pre">get_promotions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">soup</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/supervalu_main.html#get_promotions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#supervalu_main.get_promotions" title="Permalink to this definition"></a></dt>
-<dd><p>Get the promotions form the BS4 object</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>soup</strong> – BS4 object</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>List of promotion text</p>
+<dd class="field-even"><p>All variant urls</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>List</p>
@@ -656,195 +914,14 @@ Collects statistical data and store it and the end of the program</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="supervalu_main.get_was_price">
-<span class="sig-prename descclassname"><span class="pre">supervalu_main.</span></span><span class="sig-name descname"><span class="pre">get_was_price</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">soup</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/supervalu_main.html#get_was_price"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#supervalu_main.get_was_price" title="Permalink to this definition"></a></dt>
-<dd><p>Get value of the was price from string</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>soup</strong> – BS4 object</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Was price value else none</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>String</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="supervalu_main.main">
-<span class="sig-prename descclassname"><span class="pre">supervalu_main.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/supervalu_main.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#supervalu_main.main" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="pet_planet_main.main">
+<span class="sig-prename descclassname"><span class="pre">pet_planet_main.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pet_planet_main.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pet_planet_main.main" title="Permalink to this definition"></a></dt>
 <dd><p>Initiate collection</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="supervalu_main.parse_urls">
-<span class="sig-prename descclassname"><span class="pre">supervalu_main.</span></span><span class="sig-name descname"><span class="pre">parse_urls</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">urls</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/supervalu_main.html#parse_urls"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#supervalu_main.parse_urls" title="Permalink to this definition"></a></dt>
-<dd><p>Loop through all URL’s and update the main URL dict when successfully parsed.
-Collects statistical data and store it and the end of the program</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>urls</strong> – URL dictionary</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>None</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>None</p>
-</dd>
-</dl>
-</dd></dl>
-
-</section>
-<section id="module-dunnes_store_main">
-<span id="dunnes-store-main-module"></span><h1>dunnes_store_main module<a class="headerlink" href="#module-dunnes_store_main" title="Permalink to this heading"></a></h1>
-<p>Dunnes Store product collection program.</p>
-<dl class="py function">
-<dt class="sig sig-object py" id="dunnes_store_main.cleanup">
-<span class="sig-prename descclassname"><span class="pre">dunnes_store_main.</span></span><span class="sig-name descname"><span class="pre">cleanup</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/dunnes_store_main.html#cleanup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dunnes_store_main.cleanup" title="Permalink to this definition"></a></dt>
-<dd><p>Removing all duplicates for the current date which matches the where clause criteria</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>None</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="dunnes_store_main.get_data">
-<span class="sig-prename descclassname"><span class="pre">dunnes_store_main.</span></span><span class="sig-name descname"><span class="pre">get_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dunnes_store_main.html#get_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dunnes_store_main.get_data" title="Permalink to this definition"></a></dt>
-<dd><p>Makes a request to each URL and store the collected info in the database</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>url</strong> – Product url</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>True if successful and product count</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Boolean and integer</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="dunnes_store_main.get_navigation_urls">
-<span class="sig-prename descclassname"><span class="pre">dunnes_store_main.</span></span><span class="sig-name descname"><span class="pre">get_navigation_urls</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/dunnes_store_main.html#get_navigation_urls"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dunnes_store_main.get_navigation_urls" title="Permalink to this definition"></a></dt>
-<dd><p>Get all navigation URLs from the base URL</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>All navigation URLs</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>Dictionary</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="dunnes_store_main.main">
-<span class="sig-prename descclassname"><span class="pre">dunnes_store_main.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/dunnes_store_main.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dunnes_store_main.main" title="Permalink to this definition"></a></dt>
-<dd><p>Initiate collection</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="dunnes_store_main.parse_urls">
-<span class="sig-prename descclassname"><span class="pre">dunnes_store_main.</span></span><span class="sig-name descname"><span class="pre">parse_urls</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">urls</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dunnes_store_main.html#parse_urls"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dunnes_store_main.parse_urls" title="Permalink to this definition"></a></dt>
-<dd><p>Loop through all URL’s and update the main URL dict when successfully parsed.
-Collects statistical data and store it and the end of the program</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>urls</strong> – URL dictionary</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>None</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>None</p>
-</dd>
-</dl>
-</dd></dl>
-
-</section>
-<section id="module-bm_main">
-<span id="bm-main-module"></span><h1>bm_main module<a class="headerlink" href="#module-bm_main" title="Permalink to this heading"></a></h1>
-<p>Bmstores product collection program.</p>
-<dl class="py function">
-<dt class="sig sig-object py" id="bm_main.get_category_urls">
-<span class="sig-prename descclassname"><span class="pre">bm_main.</span></span><span class="sig-name descname"><span class="pre">get_category_urls</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bm_main.html#get_category_urls"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bm_main.get_category_urls" title="Permalink to this definition"></a></dt>
-<dd><p>Gather all sub category URLS from main navigation URL’s</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>url</strong> – Main navigation URLS in list</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>All sub category URLS</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>List</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="bm_main.get_data">
-<span class="sig-prename descclassname"><span class="pre">bm_main.</span></span><span class="sig-name descname"><span class="pre">get_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">urls</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bm_main.html#get_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bm_main.get_data" title="Permalink to this definition"></a></dt>
-<dd><p>Makes a request to each URL and store the collected info in the database</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>urls</strong> – Product url</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>True if successful and product count</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Boolean and integer</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="bm_main.get_navigation_urls">
-<span class="sig-prename descclassname"><span class="pre">bm_main.</span></span><span class="sig-name descname"><span class="pre">get_navigation_urls</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/bm_main.html#get_navigation_urls"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bm_main.get_navigation_urls" title="Permalink to this definition"></a></dt>
-<dd><p>Get all navigation URLs from the category base URL</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>All navigation URLs</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>Dictionary</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="bm_main.get_products_urls">
-<span class="sig-prename descclassname"><span class="pre">bm_main.</span></span><span class="sig-name descname"><span class="pre">get_products_urls</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bm_main.html#get_products_urls"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bm_main.get_products_urls" title="Permalink to this definition"></a></dt>
-<dd><p>Navigate through all category URL’s
-and add the product URL’s in a list</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>url</strong> – Category URLS</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Product URLS</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>List</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="bm_main.main">
-<span class="sig-prename descclassname"><span class="pre">bm_main.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/bm_main.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bm_main.main" title="Permalink to this definition"></a></dt>
-<dd><p>Initiate collection</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="bm_main.parse_urls">
-<span class="sig-prename descclassname"><span class="pre">bm_main.</span></span><span class="sig-name descname"><span class="pre">parse_urls</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">urls</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bm_main.html#parse_urls"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bm_main.parse_urls" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="pet_planet_main.parse_urls">
+<span class="sig-prename descclassname"><span class="pre">pet_planet_main.</span></span><span class="sig-name descname"><span class="pre">parse_urls</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">urls</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pet_planet_main.html#parse_urls"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pet_planet_main.parse_urls" title="Permalink to this definition"></a></dt>
 <dd><p>Loop through all URL’s and update the main URL dict when successfully parsed.
 Collects statistical data and store it and the end of the program</p>
 <dl class="field-list simple">
@@ -1008,6 +1085,9 @@ Collects statistical data and store it and the end of the program</p>
 </dd></dl>
 
 </section>
+<section id="racecrate-main-module">
+<h1>racecrate_main module<a class="headerlink" href="#racecrate-main-module" title="Permalink to this heading"></a></h1>
+</section>
 <section id="module-savers_main">
 <span id="savers-main-module"></span><h1>savers_main module<a class="headerlink" href="#module-savers_main" title="Permalink to this heading"></a></h1>
 <p>savers.co.uk product collection program.</p>
@@ -1066,6 +1146,105 @@ Collects statistical data and store it and the end of the program</p>
 </dl>
 </dd></dl>
 
+</section>
+<section id="module-supervalu_main">
+<span id="supervalu-main-module"></span><h1>supervalu_main module<a class="headerlink" href="#module-supervalu_main" title="Permalink to this heading"></a></h1>
+<p>Supervalu.ie product collection program.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="supervalu_main.get_data">
+<span class="sig-prename descclassname"><span class="pre">supervalu_main.</span></span><span class="sig-name descname"><span class="pre">get_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/supervalu_main.html#get_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#supervalu_main.get_data" title="Permalink to this definition"></a></dt>
+<dd><p>Makes a request to each URL and store the collected info in the database</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>url</strong> – Product url</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if successful and product count</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Boolean and integer</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="supervalu_main.get_navigation_urls">
+<span class="sig-prename descclassname"><span class="pre">supervalu_main.</span></span><span class="sig-name descname"><span class="pre">get_navigation_urls</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/supervalu_main.html#get_navigation_urls"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#supervalu_main.get_navigation_urls" title="Permalink to this definition"></a></dt>
+<dd><p>Get all navigation URLs from the base URL</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>All navigation URLs</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dictionary</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="supervalu_main.get_promotions">
+<span class="sig-prename descclassname"><span class="pre">supervalu_main.</span></span><span class="sig-name descname"><span class="pre">get_promotions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">soup</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/supervalu_main.html#get_promotions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#supervalu_main.get_promotions" title="Permalink to this definition"></a></dt>
+<dd><p>Get the promotions form the BS4 object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>soup</strong> – BS4 object</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of promotion text</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="supervalu_main.get_was_price">
+<span class="sig-prename descclassname"><span class="pre">supervalu_main.</span></span><span class="sig-name descname"><span class="pre">get_was_price</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">soup</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/supervalu_main.html#get_was_price"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#supervalu_main.get_was_price" title="Permalink to this definition"></a></dt>
+<dd><p>Get value of the was price from string</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>soup</strong> – BS4 object</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Was price value else none</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>String</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="supervalu_main.main">
+<span class="sig-prename descclassname"><span class="pre">supervalu_main.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/supervalu_main.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#supervalu_main.main" title="Permalink to this definition"></a></dt>
+<dd><p>Initiate collection</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="supervalu_main.parse_urls">
+<span class="sig-prename descclassname"><span class="pre">supervalu_main.</span></span><span class="sig-name descname"><span class="pre">parse_urls</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">urls</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/supervalu_main.html#parse_urls"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#supervalu_main.parse_urls" title="Permalink to this definition"></a></dt>
+<dd><p>Loop through all URL’s and update the main URL dict when successfully parsed.
+Collects statistical data and store it and the end of the program</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>urls</strong> – URL dictionary</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-tests">
+<span id="tests-module"></span><h1>tests module<a class="headerlink" href="#module-tests" title="Permalink to this heading"></a></h1>
+</section>
+<section id="wilko-main-module">
+<h1>wilko_main module<a class="headerlink" href="#wilko-main-module" title="Permalink to this heading"></a></h1>
 </section>
 <section id="module-zooplus_main">
 <span id="zooplus-main-module"></span><h1>zooplus_main module<a class="headerlink" href="#module-zooplus_main" title="Permalink to this heading"></a></h1>
@@ -1146,7 +1325,7 @@ Collects statistical data and store it and the end of the program</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2023, Bernard Van Der Vyver.</p>
+    <p>&#169; Copyright 2023, Brand Nudge Ltd.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
