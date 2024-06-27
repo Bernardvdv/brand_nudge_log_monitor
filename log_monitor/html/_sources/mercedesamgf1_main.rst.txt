@@ -1,7 +1,0 @@
-mercedesamgf1\_main module
-==========================
-
-.. automodule:: mercedesamgf1_main
-   :members:
-   :undoc-members:
-   :show-inheritance:

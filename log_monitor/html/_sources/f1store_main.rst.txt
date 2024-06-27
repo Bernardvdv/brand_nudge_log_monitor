@@ -1,7 +1,0 @@
-f1store\_main module
-====================
-
-.. automodule:: f1store_main
-   :members:
-   :undoc-members:
-   :show-inheritance:

@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>tools.create_collector &mdash; Brand Nudge Data Collect  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Brand Nudge Data Collect
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">Home</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools.html">Tools package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Brand Nudge Data Collect</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">tools.create_collector</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for tools.create_collector</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">ruamel.yaml</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+
+<div class="viewcode-block" id="generate_collectors_script">
+<a class="viewcode-back" href="../../tools.html#tools.create_collector.generate_collectors_script">[docs]</a>
+<span class="k">def</span> <span class="nf">generate_collectors_script</span><span class="p">(</span><span class="n">retailer_name</span><span class="p">,</span> <span class="n">country_code</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate a Python scraper file based on the provided template</span>
+
+<span class="sd">    This function will return a template format of the latest scraper logic</span>
+
+<span class="sd">    :param retailer_name: The retailer name for the new scraper</span>
+<span class="sd">    :param country_code: The country code for the new scraper</span>
+<span class="sd">    :return: Template response of the new scraper</span>
+<span class="sd">    :rtype: str</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">template</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;&#39;&#39;</span><span class="se">\</span>
+<span class="s1">&quot;&quot;&quot;Product collection program.&quot;&quot;&quot;</span>
+
+<span class="s1">import collections</span>
+<span class="s1">import json</span>
+<span class="s1">import ssl</span>
+<span class="s1">import sys</span>
+<span class="s1">import time</span>
+<span class="s1">import os</span>
+<span class="s1">import re</span>
+<span class="s1">from datetime import datetime</span>
+<span class="s1">from multiprocessing import Pool</span>
+
+<span class="s1">import lxml  # noqa</span>
+<span class="s1">from bs4 import BeautifulSoup</span>
+<span class="s1">from dotenv import load_dotenv</span>
+<span class="s1">from fake_useragent import UserAgent</span>
+
+<span class="s1">try:</span>
+<span class="s1">    _create_unverified_https_context = ssl._create_unverified_context</span>
+<span class="s1">except AttributeError:</span>
+<span class="s1">    pass</span>
+<span class="s1">else:</span>
+<span class="s1">    ssl._create_default_https_context = _create_unverified_https_context</span>
+
+<span class="s1">load_dotenv()</span>
+<span class="s1">project_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), &#39;..&#39;))</span>
+<span class="s1">sys.path.append(project_dir)</span>
+<span class="s1">from tools.utils import Ingest, LogHandler, Statistics, Utils</span>
+
+<span class="s1">ingest = Ingest()</span>
+
+<span class="s1">RETAILER = &quot;</span><span class="si">{</span><span class="n">retailer_name</span><span class="o">.</span><span class="n">title</span><span class="p">()</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">country_code</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s1">&quot;</span>
+<span class="s1">config = Utils.read_yaml_config(RETAILER)</span>
+
+<span class="s1">CORE_NAME = config.get(&quot;config&quot;, None).get(&quot;core_name&quot;, None)</span>
+<span class="s1">BASE_URL = config.get(&quot;config&quot;, None).get(&quot;base_url&quot;, None)</span>
+<span class="s1">MAX_RETRIES = config.get(&quot;default&quot;, None).get(&quot;max_retries&quot;, None)</span>
+<span class="s1">TABLE_NAME = config.get(&quot;config&quot;, None).get(&quot;table_name&quot;, None)</span>
+<span class="s1">COUNTRY_CODE = config.get(&quot;config&quot;, None).get(&quot;country_code&quot;, None)</span>
+<span class="s1">ALPHA_2_CODE = config.get(&quot;config&quot;, None).get(&quot;alpha_2_code&quot;, None)</span>
+<span class="s1">COLLECTIONS_TYPE = config.get(&quot;config&quot;, None).get(&quot;collections_type&quot;, None)</span>
+<span class="s1">PROXY_TYPE = config.get(&quot;config&quot;, None).get(&quot;proxy&quot;, None)</span>
+<span class="s1">PROXY = Utils.proxy_country_new(PROXY_TYPE, COUNTRY_CODE, ALPHA_2_CODE)</span>
+<span class="s1">SITE_URLS = config.get(&quot;urls&quot;, None)</span>
+<span class="s1">WORKERS = config.get(&quot;config&quot;, None).get(&quot;workers&quot;, None)</span>
+<span class="s1">TABLE_COLUMNS = config.get(&quot;config&quot;, None).get(&quot;table&quot;, None)</span>
+<span class="s1">INSERT_QUERY = Utils.get_insert_query(TABLE_NAME, TABLE_COLUMNS)</span>
+<span class="s1">CORE_QUERY = config.get(&quot;sql&quot;, None).get(&quot;core_query&quot;, None)</span>
+<span class="s1">EXPORT_DELAY = config.get(&quot;default&quot;, None).get(&quot;ingest_export_delay&quot;, None)</span>
+<span class="s1">DATE = datetime.now()</span>
+<span class="s1">HEADERS = </span><span class="se">\u007b</span><span class="s1">&quot;user-agent&quot;: UserAgent().chrome</span><span class="se">\u007d</span>
+<span class="s1">INGEST_ENABLED = config.get(&quot;config&quot;, None).get(&quot;ingest_enabled&quot;, None)</span>
+<span class="s1"># Setup argument object for debugging</span>
+<span class="s1">debug = Utils.setup_debugging()</span>
+<span class="s1"># Extra</span>
+<span class="s1"># Replace any additional retailer specific info with this line</span>
+
+
+<span class="s1">def get_pagination(full_url):</span>
+<span class="s1">    &quot;&quot;&quot;</span>
+<span class="s1">    Get pagination count from product grid</span>
+<span class="s1">    :param full_url:</span>
+<span class="s1">    :return:</span>
+<span class="s1">    &quot;&quot;&quot;</span>
+<span class="s1">    pass</span>
+
+
+<span class="s1">def get_data(url):</span>
+<span class="s1">    &quot;&quot;&quot;</span>
+<span class="s1">    Makes a request to each URL and store the collected info in the database</span>
+
+<span class="s1">    :param url: Product url</span>
+<span class="s1">    :return: True if successful and product count</span>
+<span class="s1">    :rtype: Boolean and integer</span>
+<span class="s1">    &quot;&quot;&quot;</span>
+<span class="s1">    pass</span>
+<span class="s1">    </span>
+
+<span class="s1">def parse_urls(urls):</span>
+<span class="s1">    &quot;&quot;&quot;</span>
+<span class="s1">    Loop through all URL&#39;s and update the main URL dict when successfully parsed.</span>
+<span class="s1">    Collects statistical data and store it and the end of the program</span>
+
+<span class="s1">    :param urls: URL dictionary</span>
+<span class="s1">    :return: None</span>
+<span class="s1">    :rtype: None</span>
+<span class="s1">    &quot;&quot;&quot;</span>
+<span class="s1">    start = time.time()</span>
+<span class="s1">    navigation_counter = 0</span>
+<span class="s1">    item_counter = 0</span>
+
+<span class="s1">    for url in urls:</span>
+<span class="s1">        navigation_counter += 1</span>
+<span class="s1">        navigation_url_count = len(urls)</span>
+<span class="s1">        attempts = 0</span>
+<span class="s1">        while url[&quot;success&quot;] is False and attempts &lt; MAX_RETRIES:</span>
+<span class="s1">            # Increment attempts counter</span>
+<span class="s1">            attempts += 1</span>
+<span class="s1">            result = get_data(url)</span>
+<span class="s1">            if result:</span>
+<span class="s1">                url[&quot;success&quot;] = result[0]</span>
+<span class="s1">                item_counter_actual = result[1]</span>
+<span class="s1">            else:</span>
+<span class="s1">                item_counter_actual = 0</span>
+
+<span class="s1">        item_counter += item_counter_actual</span>
+
+<span class="s1">    duration = time.time() - start</span>
+<span class="s1">    # Lets record some stats</span>
+<span class="s1">    Statistics.statistics(navigation_counter, navigation_url_count, item_counter, duration, urls, RETAILER, TABLE_NAME)</span>
+<span class="s1">    </span>
+
+<span class="s1">def clean_promo_data(retailer, data):</span>
+<span class="s1">    &quot;&quot;&quot;</span>
+<span class="s1">    Apply promotion rules</span>
+<span class="s1">    :param retailer: Current retailer</span>
+<span class="s1">    :param data: Product data</span>
+<span class="s1">    :return:</span>
+<span class="s1">    &quot;&quot;&quot;</span>
+<span class="s1">    try:</span>
+<span class="s1">        product_data = []</span>
+
+<span class="s1">        for row in data:</span>
+<span class="s1">            promotion_data = []</span>
+<span class="s1">            sku = row[1]</span>
+<span class="s1">            ean = row[2]</span>
+<span class="s1">            brand = row[3]</span>
+<span class="s1">            title = row[4]</span>
+<span class="s1">            shelf_price = row[5]</span>
+<span class="s1">            was_price = row[6]</span>
+<span class="s1">            card_price = row[7]</span>
+<span class="s1">            in_stock = row[8]</span>
+<span class="s1">            on_promo = row[9]</span>
+<span class="s1">            promo_data = row[10]</span>
+<span class="s1">            sku_url = row[11]</span>
+<span class="s1">            image_url = row[12]</span>
+<span class="s1">            bundled = row[13]</span>
+<span class="s1">            master_sku = row[14]</span>
+
+<span class="s1">            d = collections.OrderedDict()</span>
+<span class="s1">            d[&quot;date&quot;] = row[0]</span>
+<span class="s1">            d[&quot;sourceId&quot;] = sku</span>
+<span class="s1">            d[&quot;ean&quot;] = ean</span>
+<span class="s1">            d[&quot;brand&quot;] = brand</span>
+<span class="s1">            d[&quot;title&quot;] = title</span>
+<span class="s1">            d[&quot;shelfPrice&quot;] = shelf_price</span>
+<span class="s1">            d[&quot;wasPrice&quot;] = was_price</span>
+<span class="s1">            d[&quot;cardPrice&quot;] = card_price</span>
+<span class="s1">            d[&quot;inStock&quot;] = in_stock</span>
+<span class="s1">            d[&quot;onPromo&quot;] = on_promo</span>
+<span class="s1">            d[&quot;promoData&quot;] = promotion_data</span>
+<span class="s1">            d[&quot;skuURL&quot;] = sku_url</span>
+<span class="s1">            d[&quot;imageURL&quot;] = image_url</span>
+<span class="s1">            d[&quot;bundled&quot;] = bundled</span>
+<span class="s1">            d[&quot;masterSku&quot;] = master_sku</span>
+<span class="s1">            product_data.append(d)</span>
+
+<span class="s1">        data = </span><span class="se">\u007b</span>
+<span class="s1">            &quot;retailer&quot;: CORE_NAME,</span>
+<span class="s1">            &quot;products&quot;: product_data</span>
+<span class="s1">        </span><span class="se">\u007d</span>
+<span class="s1">        return data</span>
+
+<span class="s1">    except Exception as e:</span>
+<span class="s1">        Utils.print_error(debug, retailer, str(e))</span>
+<span class="s1">        # Log to DB</span>
+<span class="s1">        LogHandler.error_db(retailer, e, sys.exc_info())</span>
+<span class="s1">        # Log to file</span>
+<span class="s1">        LogHandler.error_file(retailer, e, sys.exc_info())</span>
+<span class="s1">        </span>
+
+<span class="s1">def get_navigation_urls():</span>
+<span class="s1">    &quot;&quot;&quot;</span>
+<span class="s1">    Get category urls from xxx</span>
+<span class="s1">    :return: URL List</span>
+<span class="s1">    &quot;&quot;&quot;</span>
+<span class="s1">    try:</span>
+<span class="s1">        pass</span>
+<span class="s1">    except Exception as e:</span>
+<span class="s1">        # Log to DB</span>
+<span class="s1">        LogHandler.error_db(RETAILER, e, sys.exc_info())</span>
+<span class="s1">        # Log to file</span>
+<span class="s1">        LogHandler.error_file(RETAILER, e, sys.exc_info())</span>
+<span class="s1">        Utils.print_error(debug, RETAILER, str(e))</span>
+<span class="s1">        </span>
+<span class="s1">        </span>
+<span class="s1">def main():</span>
+<span class="s1">    &quot;&quot;&quot;Initiate collection&quot;&quot;&quot;</span>
+<span class="s1">    data_file = None</span>
+<span class="s1">    data_length = None</span>
+<span class="s1">    tracking_id = Utils.set_start_time(RETAILER, COLLECTIONS_TYPE, INGEST_ENABLED)</span>
+<span class="s1">    try:</span>
+<span class="s1">        navigation_urls = get_navigation_urls()</span>
+<span class="s1">        parse_urls(navigation_urls)</span>
+<span class="s1">        if INGEST_ENABLED:</span>
+<span class="s1">            product_data = ingest.extract_data_from_db(CORE_NAME, CORE_QUERY)</span>
+<span class="s1">            if product_data:</span>
+<span class="s1">                promo_data_cleaned = clean_promo_data(CORE_NAME, product_data)</span>
+<span class="s1">                data_file, data_length = ingest.main(CORE_NAME, promo_data_cleaned, EXPORT_DELAY)</span>
+<span class="s1">            else:</span>
+<span class="s1">                Utils.print_error(debug, CORE_NAME, f&quot;No products found for </span><span class="se">\u007b</span><span class="s1">RETAILER</span><span class="se">\u007d</span><span class="s1">&quot;)</span>
+<span class="s1">                raise ValueError(f&quot;No products found for </span><span class="se">\u007b</span><span class="s1">RETAILER</span><span class="se">\u007d</span><span class="s1">&quot;)</span>
+<span class="s1">        Utils.set_finish(RETAILER, tracking_id, data_file, data_length)</span>
+<span class="s1">    except Exception as e:</span>
+<span class="s1">        Utils.set_failed(RETAILER, tracking_id)</span>
+<span class="s1">        # Log to DB</span>
+<span class="s1">        LogHandler.error_db(RETAILER, e, sys.exc_info())</span>
+<span class="s1">        # Log to file</span>
+<span class="s1">        LogHandler.error_file(RETAILER, e, sys.exc_info())</span>
+<span class="s1">        Utils.print_error(debug, RETAILER, str(e))</span>
+
+
+<span class="s1">if __name__ == &quot;__main__&quot;:</span>
+<span class="s1">    main()</span>
+
+<span class="s1">&#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="n">template</span></div>
+
+
+
+<div class="viewcode-block" id="generate_sql_file">
+<a class="viewcode-back" href="../../tools.html#tools.create_collector.generate_sql_file">[docs]</a>
+<span class="k">def</span> <span class="nf">generate_sql_file</span><span class="p">(</span><span class="n">retailer_name</span><span class="p">,</span> <span class="n">country_code</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function will generate a template response of the table structure</span>
+<span class="sd">    for the new scraper by dynamically addnng the table name from the users</span>
+<span class="sd">    input</span>
+
+<span class="sd">    :param retailer_name: The retailer name for the new scraper</span>
+<span class="sd">    :param country_code: The country code for the new scraper</span>
+<span class="sd">    :return: The template response for the SQL table structure and table name</span>
+<span class="sd">    :rtype: str</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">table_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">retailer_name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="n">country_code</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;_&quot;</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span>
+    <span class="n">template</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;&#39;&#39;</span><span class="se">\</span>
+<span class="s1">-- Table: public.</span><span class="si">{</span><span class="n">table_name</span><span class="si">}</span>
+
+<span class="s1">-- DROP TABLE IF EXISTS public.</span><span class="si">{</span><span class="n">table_name</span><span class="si">}</span><span class="s1">;</span>
+
+<span class="s1">CREATE TABLE IF NOT EXISTS public.</span><span class="si">{</span><span class="n">table_name</span><span class="si">}</span>
+<span class="s1">(</span>
+<span class="s1">    date date,</span>
+<span class="s1">    retailer text COLLATE pg_catalog.&quot;default&quot;,</span>
+<span class="s1">    &quot;countryCode&quot; text COLLATE pg_catalog.&quot;default&quot;,</span>
+<span class="s1">    currency text COLLATE pg_catalog.&quot;default&quot;,</span>
+<span class="s1">    &quot;sourceId&quot; text COLLATE pg_catalog.&quot;default&quot;,</span>
+<span class="s1">    ean text COLLATE pg_catalog.&quot;default&quot;,</span>
+<span class="s1">    brand text COLLATE pg_catalog.&quot;default&quot;,</span>
+<span class="s1">    title text COLLATE pg_catalog.&quot;default&quot;,</span>
+<span class="s1">    &quot;shelfPrice&quot; text COLLATE pg_catalog.&quot;default&quot;,</span>
+<span class="s1">    &quot;wasPrice&quot; text COLLATE pg_catalog.&quot;default&quot;,</span>
+<span class="s1">    &quot;cardPrice&quot; text COLLATE pg_catalog.&quot;default&quot;,</span>
+<span class="s1">    &quot;inStock&quot; boolean,</span>
+<span class="s1">    &quot;onPromo&quot; boolean,</span>
+<span class="s1">    &quot;promoData&quot; jsonb,</span>
+<span class="s1">    &quot;skuURL&quot; text COLLATE pg_catalog.&quot;default&quot;,</span>
+<span class="s1">    &quot;imageURL&quot; text COLLATE pg_catalog.&quot;default&quot;,</span>
+<span class="s1">    bundled text COLLATE pg_catalog.&quot;default&quot;,</span>
+<span class="s1">    &quot;masterSku&quot; text COLLATE pg_catalog.&quot;default&quot;,</span>
+<span class="s1">    category text COLLATE pg_catalog.&quot;default&quot;,</span>
+<span class="s1">    id serial NOT NULL,</span>
+<span class="s1">    CONSTRAINT </span><span class="si">{</span><span class="n">table_name</span><span class="si">}</span><span class="s1">_pkey PRIMARY KEY (id)</span>
+<span class="s1">)</span>
+
+<span class="s1">TABLESPACE pg_default;</span>
+
+<span class="s1">ALTER TABLE IF EXISTS public.</span><span class="si">{</span><span class="n">table_name</span><span class="si">}</span>
+<span class="s1">    OWNER to postgres;</span>
+<span class="s1">&#39;&#39;&#39;</span>
+
+    <span class="k">return</span> <span class="n">template</span><span class="p">,</span> <span class="n">table_name</span></div>
+
+
+
+<div class="viewcode-block" id="generate_yaml_config">
+<a class="viewcode-back" href="../../tools.html#tools.create_collector.generate_yaml_config">[docs]</a>
+<span class="k">def</span> <span class="nf">generate_yaml_config</span><span class="p">(</span><span class="n">base_url</span><span class="p">,</span> <span class="n">country_code</span><span class="p">,</span> <span class="n">alpha_2_code</span><span class="p">,</span> <span class="n">collections_type</span><span class="p">,</span> <span class="n">retailer_name</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate a YAML configuration file based on provided parameters.</span>
+
+<span class="sd">    This function generates a YAML configuration file for a retailer based on the provided parameters. It creates</span>
+<span class="sd">    sections for default configuration, site-specific configuration, extra configuration, SQL queries, and URL</span>
+<span class="sd">    taxonomy.</span>
+
+<span class="sd">    - Default Configuration:</span>
+<span class="sd">      Contains default settings such as maximum retries and ingest/export delay.</span>
+<span class="sd">    - Site-specific Configuration:</span>
+<span class="sd">      Includes parameters specific to the retailer, such as core name, base URL, table name, country code,</span>
+<span class="sd">      alpha-2 code, collections type, proxy settings, number of workers, table schema, and ingest enablement.</span>
+<span class="sd">    - Extra Configuration:</span>
+<span class="sd">      Allows for additional custom configuration settings specific to the retailer.</span>
+<span class="sd">    - SQL Queries:</span>
+<span class="sd">      Currently empty, intended for storing SQL queries related to data operations.</span>
+<span class="sd">    - URL Taxonomy:</span>
+<span class="sd">      Provides a list of URLs categorized by their purpose, with placeholders for actual URLs and categories.</span>
+
+<span class="sd">    The generated YAML file will be saved in the &#39;config&#39; directory with a filename based on the lowercase retailer</span>
+<span class="sd">    name and country code (e.g., &#39;example_retailer_us.yaml&#39;).</span>
+
+<span class="sd">    :param base_url: The base URL for the retailer&#39;s website.</span>
+<span class="sd">    :param country_code: The ISO 3166-1 alpha-2 country code (e.g., &#39;US&#39;, &#39;CA&#39;).</span>
+<span class="sd">    :param alpha_2_code: The ISO 3166-1 alpha-2 code for the country</span>
+<span class="sd">    :param collections_type: Type of collector e.g. Core, Banners etc...</span>
+<span class="sd">    :param retailer_name: The name of the retailer.</span>
+<span class="sd">    :return: File name of the generated YAML configuration file.</span>
+<span class="sd">    :rtype: str</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">yaml</span> <span class="o">=</span> <span class="n">ruamel</span><span class="o">.</span><span class="n">yaml</span><span class="o">.</span><span class="n">YAML</span><span class="p">()</span>
+
+    <span class="n">config</span> <span class="o">=</span> <span class="n">ruamel</span><span class="o">.</span><span class="n">yaml</span><span class="o">.</span><span class="n">comments</span><span class="o">.</span><span class="n">CommentedMap</span><span class="p">()</span>
+    <span class="n">config</span><span class="o">.</span><span class="n">yaml_set_comment_before_after_key</span><span class="p">(</span><span class="s2">&quot;default&quot;</span><span class="p">,</span> <span class="n">before</span><span class="o">=</span><span class="s2">&quot;Default configuration&quot;</span><span class="p">)</span>
+
+    <span class="n">config</span><span class="p">[</span><span class="s2">&quot;default&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;max_retries&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+        <span class="s2">&quot;ingest_export_delay&quot;</span><span class="p">:</span> <span class="mi">10</span>
+    <span class="p">}</span>
+
+    <span class="n">config</span><span class="p">[</span><span class="s2">&quot;config&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;core_name&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">retailer_name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;_&quot;</span><span class="p">)</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="n">country_code</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;_&quot;</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+        <span class="s2">&quot;base_url&quot;</span><span class="p">:</span> <span class="n">base_url</span><span class="p">,</span>
+        <span class="s2">&quot;table_name&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">retailer_name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;_&quot;</span><span class="p">)</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="n">country_code</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;_&quot;</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+        <span class="s2">&quot;country_code&quot;</span><span class="p">:</span> <span class="n">country_code</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span>
+        <span class="s2">&quot;alpha_2_code&quot;</span><span class="p">:</span> <span class="n">alpha_2_code</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span>
+        <span class="s2">&quot;collections_type&quot;</span><span class="p">:</span> <span class="n">collections_type</span><span class="o">.</span><span class="n">title</span><span class="p">(),</span>
+        <span class="s2">&quot;proxy&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="s2">&quot;workers&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+        <span class="s2">&quot;table&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="s2">&quot;date&quot;</span><span class="p">,</span> <span class="s2">&quot;retailer&quot;</span><span class="p">,</span> <span class="s2">&quot;countryCode&quot;</span><span class="p">,</span> <span class="s2">&quot;currency&quot;</span><span class="p">,</span> <span class="s2">&quot;sourceId&quot;</span><span class="p">,</span> <span class="s2">&quot;ean&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;brand&quot;</span><span class="p">,</span> <span class="s2">&quot;title&quot;</span><span class="p">,</span> <span class="s2">&quot;shelfPrice&quot;</span><span class="p">,</span> <span class="s2">&quot;wasPrice&quot;</span><span class="p">,</span> <span class="s2">&quot;cardPrice&quot;</span><span class="p">,</span> <span class="s2">&quot;inStock&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;onPromo&quot;</span><span class="p">,</span> <span class="s2">&quot;promoData&quot;</span><span class="p">,</span> <span class="s2">&quot;skuURL&quot;</span><span class="p">,</span> <span class="s2">&quot;imageURL&quot;</span><span class="p">,</span> <span class="s2">&quot;bundled&quot;</span><span class="p">,</span> <span class="s2">&quot;masterSku&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;category&quot;</span>
+        <span class="p">],</span>
+        <span class="s2">&quot;ingest_enabled&quot;</span><span class="p">:</span> <span class="kc">False</span>
+    <span class="p">}</span>
+    <span class="n">config</span><span class="o">.</span><span class="n">yaml_set_comment_before_after_key</span><span class="p">(</span><span class="s2">&quot;config&quot;</span><span class="p">,</span> <span class="n">before</span><span class="o">=</span><span class="s2">&quot;Site specific configuration&quot;</span><span class="p">)</span>
+
+    <span class="n">config</span><span class="p">[</span><span class="s2">&quot;extra&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;Example&quot;</span><span class="p">:</span> <span class="s2">&quot;Replace with extra config&quot;</span>
+    <span class="p">}</span>
+    <span class="n">config</span><span class="o">.</span><span class="n">yaml_set_comment_before_after_key</span><span class="p">(</span><span class="s2">&quot;extra&quot;</span><span class="p">,</span> <span class="n">before</span><span class="o">=</span><span class="s2">&quot;Extra configuration&quot;</span><span class="p">)</span>
+
+    <span class="n">config</span><span class="p">[</span><span class="s2">&quot;sql&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;core_query&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span>
+    <span class="p">}</span>
+    <span class="n">config</span><span class="o">.</span><span class="n">yaml_set_comment_before_after_key</span><span class="p">(</span><span class="s2">&quot;sql&quot;</span><span class="p">,</span> <span class="n">before</span><span class="o">=</span><span class="s2">&quot;SQL queries&quot;</span><span class="p">)</span>
+
+    <span class="n">config</span><span class="p">[</span><span class="s2">&quot;urls&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;Replace with URL&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;category&quot;</span><span class="p">:</span> <span class="s2">&quot;Replace with category&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;success&quot;</span><span class="p">:</span> <span class="kc">False</span>
+        <span class="p">}</span>
+    <span class="p">]</span>
+    <span class="n">config</span><span class="o">.</span><span class="n">yaml_set_comment_before_after_key</span><span class="p">(</span><span class="s2">&quot;urls&quot;</span><span class="p">,</span> <span class="n">before</span><span class="o">=</span><span class="s2">&quot;Taxonomy configuration&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Convert the list to a plain text representation</span>
+    <span class="n">table_list</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;config&quot;</span><span class="p">][</span><span class="s2">&quot;table&quot;</span><span class="p">])</span>
+
+    <span class="c1"># Replace the list in the YAML configuration</span>
+    <span class="n">config</span><span class="p">[</span><span class="s2">&quot;config&quot;</span><span class="p">][</span><span class="s2">&quot;table&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">table_list</span>
+
+    <span class="c1"># Save the YAML config to a file</span>
+    <span class="n">yaml_file_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;config/</span><span class="si">{</span><span class="n">retailer_name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;_&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">country_code</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s2">.yaml&quot;</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">yaml_file_name</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">yaml_file</span><span class="p">:</span>
+        <span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">yaml_file</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">yaml_file_name</span></div>
+
+
+
+<div class="viewcode-block" id="display_folder_structure">
+<a class="viewcode-back" href="../../tools.html#tools.create_collector.display_folder_structure">[docs]</a>
+<span class="k">def</span> <span class="nf">display_folder_structure</span><span class="p">(</span><span class="n">paths</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Display the folder structure based on provided file paths.</span>
+
+<span class="sd">    This function constructs a nested dictionary representing the folder structure</span>
+<span class="sd">    and prints it with indentation to visualize the hierarchy. It uses ANSI escape</span>
+<span class="sd">    codes to print folder names in green color.</span>
+
+<span class="sd">    :param paths: List of file paths to construct the folder structure from.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">structure</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">paths</span><span class="p">:</span>
+        <span class="n">parts</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">sep</span><span class="p">)</span>
+        <span class="n">current_level</span> <span class="o">=</span> <span class="n">structure</span>
+
+        <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">parts</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">part</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">current_level</span><span class="p">:</span>
+                <span class="n">current_level</span><span class="p">[</span><span class="n">part</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">current_level</span> <span class="o">=</span> <span class="n">current_level</span><span class="p">[</span><span class="n">part</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">print_structure</span><span class="p">(</span><span class="n">structure</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Recursively print the folder structure with indentation.</span>
+
+<span class="sd">        This function recursively prints the folder structure, adding dashes</span>
+<span class="sd">        for each level of indentation and using ANSI escape codes to print</span>
+<span class="sd">        folder names in green color.</span>
+
+<span class="sd">        :param structure: Nested dictionary representing the folder structure.</span>
+<span class="sd">        :param indent: Current level of indentation (default is 0).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">structure</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot; &quot;</span> <span class="o">*</span> <span class="n">indent</span> <span class="o">+</span> <span class="s2">&quot;-&quot;</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[32m&quot;</span> <span class="o">+</span> <span class="n">key</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[0m&quot;</span><span class="p">)</span>
+            <span class="n">print_structure</span><span class="p">(</span><span class="n">structure</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">indent</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;New files created.&quot;</span><span class="p">)</span>
+    <span class="n">print_structure</span><span class="p">(</span><span class="n">structure</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="main">
+<a class="viewcode-back" href="../../tools.html#tools.create_collector.main">[docs]</a>
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Main function to generate scripts and configuration files for a retailer&#39;s data collection and processing.</span>
+
+<span class="sd">    Prompts the user for input to gather necessary information such as retailer name, website URL, country code,</span>
+<span class="sd">    alpha-2 code, and type of collections. It then generates the following files:</span>
+<span class="sd">    - A collectors script file in Python.</span>
+<span class="sd">    - An SQL table file for data storage.</span>
+<span class="sd">    - A YAML configuration file for data processing configuration.</span>
+
+<span class="sd">    :returns:</span>
+<span class="sd">        - file_name: File path of the generated Python script.</span>
+<span class="sd">        - sql_file_name: File path of the generated SQL table definition file.</span>
+<span class="sd">        - collectors_config: Contents of the generated YAML configuration as a string.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Get user input</span>
+    <span class="n">retailer_name</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Enter retailer name: &quot;</span><span class="p">)</span>
+    <span class="c1"># table_name = input(&quot;Enter table name: &quot;)</span>
+    <span class="n">base_url</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Enter the website URL: &quot;</span><span class="p">)</span>
+    <span class="n">country_code</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Enter the country code: &quot;</span><span class="p">)</span>
+    <span class="n">alpha_2_code</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Enter the alpha 2 code: &quot;</span><span class="p">)</span>
+    <span class="n">collections_type</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Enter the collections type (Core, Reviews, Ranking): &quot;</span><span class="p">)</span>
+
+    <span class="c1"># Generate the collectors file template</span>
+    <span class="n">collectors_script</span> <span class="o">=</span> <span class="n">generate_collectors_script</span><span class="p">(</span><span class="n">retailer_name</span><span class="p">,</span> <span class="n">country_code</span><span class="p">)</span>
+    <span class="c1"># Generate table file template</span>
+    <span class="n">collectors_table</span><span class="p">,</span> <span class="n">table_name</span> <span class="o">=</span> <span class="n">generate_sql_file</span><span class="p">(</span><span class="n">retailer_name</span><span class="p">,</span> <span class="n">country_code</span><span class="p">)</span>
+    <span class="c1"># Generate config file template</span>
+    <span class="n">collectors_config</span> <span class="o">=</span> <span class="n">generate_yaml_config</span><span class="p">(</span><span class="n">base_url</span><span class="p">,</span> <span class="n">country_code</span><span class="p">,</span> <span class="n">alpha_2_code</span><span class="p">,</span> <span class="n">collections_type</span><span class="p">,</span>
+                                             <span class="n">retailer_name</span><span class="p">)</span>
+
+    <span class="n">file_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;core/</span><span class="si">{</span><span class="n">retailer_name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;_&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">country_code</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s2">_main.py&quot;</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+        <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">collectors_script</span><span class="p">)</span>
+
+    <span class="n">sql_file_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;sql/</span><span class="si">{</span><span class="n">table_name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;_&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">collections_type</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s2">.sql&quot;</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">sql_file_name</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">sql_file</span><span class="p">:</span>
+        <span class="n">sql_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">collectors_table</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">file_name</span><span class="p">,</span> <span class="n">sql_file_name</span><span class="p">,</span> <span class="n">collectors_config</span></div>
+
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">file_name</span><span class="p">,</span> <span class="n">sql_file_name</span><span class="p">,</span> <span class="n">collectors_config</span> <span class="o">=</span> <span class="n">main</span><span class="p">()</span>
+    <span class="n">file_paths</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">file_name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;..&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
+        <span class="n">sql_file_name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;..&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
+        <span class="n">collectors_config</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;..&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
+    <span class="p">]</span>
+
+    <span class="n">display_folder_structure</span><span class="p">(</span><span class="n">file_paths</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Brand Nudge.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

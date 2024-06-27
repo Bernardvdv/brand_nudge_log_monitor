@@ -25,10 +25,4 @@ urlpatterns = [
          views.HomePageView.get_yesterday_today_imports,
          name="get_yesterday_today_imports"),
     path('docs/', include('docs.urls')),
-    path('classification',
-         views.ClassificationPageView.as_view(),
-         name="classification"),
-    path('openai_classification/',
-         views.ClassificationPageView.openai_classification,
-         name="openai_classification"),
 ]

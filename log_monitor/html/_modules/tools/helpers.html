@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>tools.helpers &mdash; Brand Nudge Data Collect  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Brand Nudge Data Collect
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">Home</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools.html">Tools package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Brand Nudge Data Collect</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">tools.helpers</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for tools.helpers</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+
+<div class="viewcode-block" id="pricing">
+<a class="viewcode-back" href="../../tools.html#tools.helpers.pricing">[docs]</a>
+<span class="k">def</span> <span class="nf">pricing</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Processes the input value by converting it to a decimal representation.</span>
+
+<span class="sd">    If the input value is non-empty and not a float, it will replace special characters</span>
+<span class="sd">    in the value, count the radix, and then convert the cleaned value to a decimal.</span>
+<span class="sd">    If the input value is a float, it directly converts the float to a decimal.</span>
+<span class="sd">    If the input value is neither of these, it returns the value as is.</span>
+
+<span class="sd">    :param value: Product price.</span>
+<span class="sd">    :return: A decimal representation of the input value if it is a string or a float,</span>
+<span class="sd">        otherwise returns the input value unchanged.</span>
+<span class="sd">    :rtype: float</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">value</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+        <span class="n">clean_val</span> <span class="o">=</span> <span class="n">replace_characters</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">convert_value_to_decimal</span><span class="p">(</span><span class="n">count_radix</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">clean_val</span><span class="p">)))</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">convert_value_to_decimal</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">value</span></div>
+
+
+
+<div class="viewcode-block" id="replace_characters">
+<a class="viewcode-back" href="../../tools.html#tools.helpers.replace_characters">[docs]</a>
+<span class="k">def</span> <span class="nf">replace_characters</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Cleans and formats the input price value.</span>
+
+<span class="sd">    If the input value is not an integer, it removes non-numeric characters except for commas</span>
+<span class="sd">    and periods, then replaces any commas with periods to standardize the format.</span>
+<span class="sd">    If the input value is an integer, it returns the value unchanged.</span>
+
+<span class="sd">    :param value: The input price value to be cleaned and formatted. This can be of any type,</span>
+<span class="sd">        but the function specifically checks if it is not an integer.</span>
+<span class="sd">    :return: A cleaned and formatted string representation of the input value if it is not an integer,</span>
+<span class="sd">        otherwise returns the input value unchanged.</span>
+<span class="sd">    :rtype: str or int</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="n">pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;(\.\d\d\d,\d\d)&quot;</span><span class="p">)</span>
+        <span class="n">match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">match</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Remove non-numeric characters except &#39;,&#39; and &#39;.&#39;</span>
+        <span class="n">cleaned_input</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;[^\d.,]&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+        <span class="c1"># Remove thousand-separators (commas followed by three digits)</span>
+        <span class="n">clean_string</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;,(?=\d</span><span class="si">{3}</span><span class="s1">(?:\.\d{0,2})?$)&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">cleaned_input</span><span class="p">)</span>
+
+        <span class="c1"># Replace any remaining commas with dots (for decimal points)</span>
+        <span class="n">clean_string</span> <span class="o">=</span> <span class="n">clean_string</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">)</span>
+
+        <span class="n">value</span> <span class="o">=</span> <span class="n">clean_string</span>
+
+    <span class="k">return</span> <span class="n">value</span></div>
+
+
+
+<div class="viewcode-block" id="count_radix">
+<a class="viewcode-back" href="../../tools.html#tools.helpers.count_radix">[docs]</a>
+<span class="k">def</span> <span class="nf">count_radix</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Cleans and formats the input price value.</span>
+
+<span class="sd">    If the input value is not an integer, it performs the following steps:</span>
+<span class="sd">    1. Removes non-numeric characters except for commas and periods.</span>
+<span class="sd">    2. Replaces any commas with periods to standardize the format.</span>
+<span class="sd">    3. If there are multiple periods in the cleaned value, removes all but the first period.</span>
+
+<span class="sd">    If the input value is an integer, it returns the value unchanged.</span>
+
+<span class="sd">    :param value: The input price value to be cleaned and formatted. This can be of any type,</span>
+<span class="sd">        but the function specifically checks if it is not an integer.</span>
+<span class="sd">    :return: A cleaned and formatted string representation of the input value if it is not an integer,</span>
+<span class="sd">        otherwise returns the input value unchanged.</span>
+<span class="sd">    :rtype: str or int</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">dot_count</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">dot_count</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">value</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">value</span></div>
+
+
+
+<div class="viewcode-block" id="convert_value_to_decimal">
+<a class="viewcode-back" href="../../tools.html#tools.helpers.convert_value_to_decimal">[docs]</a>
+<span class="k">def</span> <span class="nf">convert_value_to_decimal</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converts the value to a float and formats it to two decimal places</span>
+<span class="sd">    and returns a string representation</span>
+
+<span class="sd">    :param value: Pricing value.</span>
+<span class="sd">    :return: Formatted string representation of the input value to two decimal places.</span>
+<span class="sd">    :rtype: str</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="generate_unique_str">
+<a class="viewcode-back" href="../../tools.html#tools.helpers.generate_unique_str">[docs]</a>
+<span class="k">def</span> <span class="nf">generate_unique_str</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generates a unique string based on the current time and the input value.</span>
+
+<span class="sd">    This function creates a unique string by taking the current time in seconds since the epoch,</span>
+<span class="sd">    removing the decimal point, and appending the string representation of the input value if it exists.</span>
+
+<span class="sd">    :param value: The input value to be included in the unique string. This can be of any type.</span>
+<span class="sd">    :return: A unique string composed of the current time and the input value.</span>
+<span class="sd">    :rtype: str</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">unique_str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">value</span><span class="p">:</span>
+        <span class="n">unique_str</span> <span class="o">+=</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">unique_str</span></div>
+
+
+
+<div class="viewcode-block" id="remove_files">
+<a class="viewcode-back" href="../../tools.html#tools.helpers.remove_files">[docs]</a>
+<span class="k">def</span> <span class="nf">remove_files</span><span class="p">(</span><span class="n">folder_path</span><span class="p">,</span> <span class="n">extension</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Removes files with the specified extension in the given folder.</span>
+
+<span class="sd">    This function iterates through all the files in the specified folder and deletes</span>
+<span class="sd">    those that end with the given extension. If an error occurs during the removal of</span>
+<span class="sd">    a file, the error is caught and ignored.</span>
+
+<span class="sd">    :param folder_path: The path to the folder containing the files.</span>
+<span class="sd">    :param extension: The file extension to look for (e.g., &#39;.txt&#39;).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">folder_path</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">filename</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">extension</span><span class="p">):</span>
+            <span class="n">file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">folder_path</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="c1"># Not the end of the world if this crashes, can be done manually</span>
+                <span class="k">pass</span></div>
+
+
+
+<div class="viewcode-block" id="setup">
+<a class="viewcode-back" href="../../tools.html#tools.helpers.setup">[docs]</a>
+<span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="n">banner_folder</span><span class="p">,</span> <span class="n">core_name</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates the necessary directories if they do not exist.</span>
+
+<span class="sd">    This function checks if the `banner_folder` directory exists in the current working directory,</span>
+<span class="sd">    and if not, creates it. It also checks if the `core_name` directory exists inside the `banner_folder`</span>
+<span class="sd">    directory, and if not, creates it.</span>
+
+<span class="sd">    :param banner_folder: The name of the banner folder to be checked/created.</span>
+<span class="sd">    :param core_name: The name of the retailer-specific folder to be checked/created inside the banner folder.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Create the screenshots directory if it doesn&#39;t exist.</span>
+    <span class="n">dir_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">banner_folder</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">dir_path</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dir_path</span><span class="p">,</span> <span class="n">banner_folder</span><span class="p">))</span>
+    <span class="c1"># Create the retailer specific directory if it doesn&#39;t exist</span>
+    <span class="k">if</span> <span class="n">core_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dir_path</span><span class="p">,</span> <span class="n">banner_folder</span><span class="p">)):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dir_path</span><span class="p">,</span> <span class="n">banner_folder</span><span class="p">,</span> <span class="n">core_name</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="check_element">
+<a class="viewcode-back" href="../../tools.html#tools.helpers.check_element">[docs]</a>
+<span class="k">def</span> <span class="nf">check_element</span><span class="p">(</span><span class="n">driver</span><span class="p">,</span> <span class="n">xpath</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Checks if an element exists on the web page using the specified XPath.</span>
+
+<span class="sd">    This function attempts to find an element using the given XPath on the web page</span>
+<span class="sd">    controlled by the WebDriver instance `driver`. If the element does not exist,</span>
+<span class="sd">    it catches the NoSuchElementException and returns False. Otherwise, it returns True.</span>
+
+<span class="sd">    :param driver: The WebDriver instance used to control the web browser.</span>
+<span class="sd">    :param xpath: The XPath expression to locate the element.</span>
+<span class="sd">    :return: True if the element exists, False otherwise.</span>
+<span class="sd">    :rtype: bool</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">NoSuchElementException</span>
+    <span class="kn">from</span> <span class="nn">selenium.webdriver.common.by</span> <span class="kn">import</span> <span class="n">By</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">driver</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">XPATH</span><span class="p">,</span> <span class="n">xpath</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">NoSuchElementException</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="kc">True</span></div>
+
+
+
+<div class="viewcode-block" id="price_inclusive">
+<a class="viewcode-back" href="../../tools.html#tools.helpers.price_inclusive">[docs]</a>
+<span class="k">def</span> <span class="nf">price_inclusive</span><span class="p">(</span><span class="n">exclusive_price</span><span class="p">,</span> <span class="n">vat_rate</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculates the final price including VAT.</span>
+
+<span class="sd">    This function calculates the final price by adding the VAT to the exclusive price.</span>
+<span class="sd">    The VAT amount is calculated as the product of the exclusive price and the VAT rate,</span>
+<span class="sd">    and then added to the exclusive price. The final price is rounded to two decimal places.</span>
+
+<span class="sd">    :param exclusive_price: The exclusive price of the item.</span>
+<span class="sd">    :param vat_rate: The VAT rate as a decimal value (e.g., 0.20 for 20%) (float).</span>
+<span class="sd">    :return: The final price including VAT, rounded to two decimal places.</span>
+<span class="sd">    :rtype: float</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">final_price</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">pricing</span><span class="p">(</span><span class="n">exclusive_price</span><span class="p">))</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="n">vat_rate</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">round</span><span class="p">(</span><span class="n">final_price</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="contains_html_tags">
+<a class="viewcode-back" href="../../tools.html#tools.helpers.contains_html_tags">[docs]</a>
+<span class="k">def</span> <span class="nf">contains_html_tags</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Checks if HTML tags exist in the given texts.</span>
+
+<span class="sd">    This function takes a variable number of arguments (texts) and checks if each text contains</span>
+<span class="sd">    any HTML tags. It uses a regular expression pattern to search for HTML tags within the texts.</span>
+<span class="sd">    If a text is a string, it returns True if HTML tags are found, otherwise False. If a text is not</span>
+<span class="sd">    a string, it returns False.</span>
+
+<span class="sd">    :param: Variable number of texts to be checked for HTML tags.</span>
+<span class="sd">    :return: A list of boolean values indicating whether HTML tags are found in each text.</span>
+<span class="sd">    :rtype: list[bool]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">html_tag_pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;&lt;[^&gt;]+&gt;&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">[</span><span class="nb">bool</span><span class="p">(</span><span class="n">html_tag_pattern</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">text</span><span class="p">))</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="kc">False</span> <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">args</span><span class="p">]</span></div>
+
+
+
+<div class="viewcode-block" id="get_was_price_promo">
+<a class="viewcode-back" href="../../tools.html#tools.helpers.get_was_price_promo">[docs]</a>
+<span class="k">def</span> <span class="nf">get_was_price_promo</span><span class="p">(</span><span class="n">shelf_price</span><span class="p">,</span> <span class="n">was_price</span><span class="p">,</span> <span class="n">country_code</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generates a promotional text if the &#39;was&#39; price is greater than the &#39;shelf&#39; price.</span>
+
+<span class="sd">    This function checks if the &#39;was&#39; price is greater than the &#39;shelf&#39; price. If it is,</span>
+<span class="sd">    it creates a promotional text in the specified language indicating the price cut.</span>
+<span class="sd">    If the &#39;was&#39; price is not provided or is not greater than the &#39;shelf&#39; price, it returns None.</span>
+<span class="sd">    If the country code are not mapped to corresponding data, the fallback will return</span>
+<span class="sd">    generic English formatting</span>
+
+<span class="sd">    :param shelf_price: The current price after the promotion.</span>
+<span class="sd">    :param was_price: The original price before the promotion.</span>
+<span class="sd">    :param country_code: The country code for the specific country</span>
+<span class="sd">    :return: A dictionary containing promotion details if the &#39;was&#39; price is greater than the &#39;shelf&#39; price,</span>
+<span class="sd">          otherwise None. The dictionary includes:</span>
+<span class="sd">          - &#39;promo_id&#39; (str): An empty string as a placeholder for the promotion ID.</span>
+<span class="sd">          - &#39;promo_description&#39; (str): The promotional text indicating the price cut.</span>
+<span class="sd">          - &#39;promo_type&#39; (str): The type of promotion, which is &#39;price cut&#39;.</span>
+<span class="sd">    :rtype: dict or None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># TODO: Add additional languages</span>
+    <span class="n">country_info</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;UK&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;translation&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Was&quot;</span><span class="p">,</span> <span class="s2">&quot;Now&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;currency&quot;</span><span class="p">:</span> <span class="s2">&quot;£&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;position&quot;</span><span class="p">:</span> <span class="mi">0</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;SE&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;translation&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Var&quot;</span><span class="p">,</span> <span class="s2">&quot;Nu&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;currency&quot;</span><span class="p">:</span> <span class="s2">&quot;SEK&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;position&quot;</span><span class="p">:</span> <span class="mi">1</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;DE&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;translation&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;War, Jetzt&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;currency&quot;</span><span class="p">:</span> <span class="s2">&quot;€&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;position&quot;</span><span class="p">:</span> <span class="mi">0</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;PL&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;translation&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Było&quot;</span><span class="p">,</span> <span class="s2">&quot;Teraz&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;currency&quot;</span><span class="p">:</span> <span class="s2">&quot;zł&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;position&quot;</span><span class="p">:</span> <span class="mi">0</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;MX&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;translation&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Antes&quot;</span><span class="p">,</span> <span class="s2">&quot;Ahora&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;currency&quot;</span><span class="p">:</span> <span class="s2">&quot;$&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;position&quot;</span><span class="p">:</span> <span class="mi">0</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;IT&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;translation&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Era&quot;</span><span class="p">,</span> <span class="s2">&quot;Ora&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;currency&quot;</span><span class="p">:</span> <span class="s2">&quot;€&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;position&quot;</span><span class="p">:</span> <span class="mi">0</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;PT&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;translation&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Era&quot;</span><span class="p">,</span> <span class="s2">&quot;Agora&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;currency&quot;</span><span class="p">:</span> <span class="s2">&quot;€&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;position&quot;</span><span class="p">:</span> <span class="mi">0</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;US&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;translation&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Was&quot;</span><span class="p">,</span> <span class="s2">&quot;Now&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;currency&quot;</span><span class="p">:</span> <span class="s2">&quot;$&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;position&quot;</span><span class="p">:</span> <span class="mi">0</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">was_price</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="nb">float</span><span class="p">(</span><span class="n">was_price</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">float</span><span class="p">(</span><span class="n">shelf_price</span><span class="p">):</span>
+        <span class="n">info</span> <span class="o">=</span> <span class="n">country_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">country_code</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">info</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;position&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">promo_text</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;translation&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">title</span><span class="p">()</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;currency&#39;</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">was_price</span><span class="si">}</span><span class="s2">, &quot;</span> \
+                             <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;translation&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;currency&#39;</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">shelf_price</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="k">elif</span> <span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;position&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">promo_text</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;translation&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">title</span><span class="p">()</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">was_price</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;currency&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">,&quot;</span> \
+                             <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;translation&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">shelf_price</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;currency&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">promo_text</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Was </span><span class="si">{</span><span class="n">was_price</span><span class="si">}</span><span class="s2">, Now </span><span class="si">{</span><span class="n">shelf_price</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">return</span> <span class="p">{</span>
+                    <span class="s1">&#39;promo_id&#39;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+                    <span class="s1">&#39;promo_description&#39;</span><span class="p">:</span> <span class="n">promo_text</span><span class="p">,</span>
+                    <span class="s1">&#39;promo_type&#39;</span><span class="p">:</span> <span class="s1">&#39;price cut&#39;</span>
+        <span class="p">}</span>
+    <span class="k">return</span> <span class="kc">None</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Brand Nudge.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

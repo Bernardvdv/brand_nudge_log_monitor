@@ -1,7 +1,0 @@
-john\_lewis\_reviews\_keywords module
-=====================================
-
-.. automodule:: john_lewis_reviews_keywords
-   :members:
-   :undoc-members:
-   :show-inheritance:

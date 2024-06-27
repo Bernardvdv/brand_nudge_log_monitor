@@ -1,0 +1,1975 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tools package &mdash; Brand Nudge Data Collect  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Home" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Brand Nudge Data Collect
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="index.html">Home</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Tools package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#module-tools.helpers">tools.helpers module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#tools.helpers.check_element"><code class="docutils literal notranslate"><span class="pre">check_element()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tools.helpers.contains_html_tags"><code class="docutils literal notranslate"><span class="pre">contains_html_tags()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tools.helpers.convert_value_to_decimal"><code class="docutils literal notranslate"><span class="pre">convert_value_to_decimal()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tools.helpers.count_radix"><code class="docutils literal notranslate"><span class="pre">count_radix()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tools.helpers.generate_unique_str"><code class="docutils literal notranslate"><span class="pre">generate_unique_str()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tools.helpers.get_was_price_promo"><code class="docutils literal notranslate"><span class="pre">get_was_price_promo()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tools.helpers.price_inclusive"><code class="docutils literal notranslate"><span class="pre">price_inclusive()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tools.helpers.pricing"><code class="docutils literal notranslate"><span class="pre">pricing()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tools.helpers.remove_files"><code class="docutils literal notranslate"><span class="pre">remove_files()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tools.helpers.replace_characters"><code class="docutils literal notranslate"><span class="pre">replace_characters()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tools.helpers.setup"><code class="docutils literal notranslate"><span class="pre">setup()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-tools.utils">tools.utils module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#tools.utils.Ingest"><code class="docutils literal notranslate"><span class="pre">Ingest</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#tools.utils.Ingest.banner_ingest"><code class="docutils literal notranslate"><span class="pre">Ingest.banner_ingest()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tools.utils.Ingest.delete_local_file"><code class="docutils literal notranslate"><span class="pre">Ingest.delete_local_file()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tools.utils.Ingest.extract_data_from_db"><code class="docutils literal notranslate"><span class="pre">Ingest.extract_data_from_db()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tools.utils.Ingest.generate_export_banner_file"><code class="docutils literal notranslate"><span class="pre">Ingest.generate_export_banner_file()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tools.utils.Ingest.generate_export_file"><code class="docutils literal notranslate"><span class="pre">Ingest.generate_export_file()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tools.utils.Ingest.is_valid_url"><code class="docutils literal notranslate"><span class="pre">Ingest.is_valid_url()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tools.utils.Ingest.main"><code class="docutils literal notranslate"><span class="pre">Ingest.main()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tools.utils.Ingest.upload_banners_to_s3"><code class="docutils literal notranslate"><span class="pre">Ingest.upload_banners_to_s3()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tools.utils.Ingest.upload_file_to_s3"><code class="docutils literal notranslate"><span class="pre">Ingest.upload_file_to_s3()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tools.utils.Ingest.validate_data"><code class="docutils literal notranslate"><span class="pre">Ingest.validate_data()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#tools.utils.LogHandler"><code class="docutils literal notranslate"><span class="pre">LogHandler</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#tools.utils.LogHandler.create_cron_table"><code class="docutils literal notranslate"><span class="pre">LogHandler.create_cron_table()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tools.utils.LogHandler.create_debug_table"><code class="docutils literal notranslate"><span class="pre">LogHandler.create_debug_table()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tools.utils.LogHandler.create_exception_table"><code class="docutils literal notranslate"><span class="pre">LogHandler.create_exception_table()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tools.utils.LogHandler.create_log_table"><code class="docutils literal notranslate"><span class="pre">LogHandler.create_log_table()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tools.utils.LogHandler.cron_logs"><code class="docutils literal notranslate"><span class="pre">LogHandler.cron_logs()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tools.utils.LogHandler.debug_file"><code class="docutils literal notranslate"><span class="pre">LogHandler.debug_file()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tools.utils.LogHandler.debug_logs"><code class="docutils literal notranslate"><span class="pre">LogHandler.debug_logs()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tools.utils.LogHandler.error_db"><code class="docutils literal notranslate"><span class="pre">LogHandler.error_db()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tools.utils.LogHandler.error_exception_report"><code class="docutils literal notranslate"><span class="pre">LogHandler.error_exception_report()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tools.utils.LogHandler.error_file"><code class="docutils literal notranslate"><span class="pre">LogHandler.error_file()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tools.utils.LogHandler.error_slack"><code class="docutils literal notranslate"><span class="pre">LogHandler.error_slack()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#tools.utils.Statistics"><code class="docutils literal notranslate"><span class="pre">Statistics</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#tools.utils.Statistics.create_stats_table"><code class="docutils literal notranslate"><span class="pre">Statistics.create_stats_table()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tools.utils.Statistics.log_to_db"><code class="docutils literal notranslate"><span class="pre">Statistics.log_to_db()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tools.utils.Statistics.statistics"><code class="docutils literal notranslate"><span class="pre">Statistics.statistics()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#tools.utils.Utils"><code class="docutils literal notranslate"><span class="pre">Utils</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#tools.utils.Utils.bn_api_auth"><code class="docutils literal notranslate"><span class="pre">Utils.bn_api_auth()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tools.utils.Utils.create_db_con"><code class="docutils literal notranslate"><span class="pre">Utils.create_db_con()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tools.utils.Utils.create_task"><code class="docutils literal notranslate"><span class="pre">Utils.create_task()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tools.utils.Utils.format_price"><code class="docutils literal notranslate"><span class="pre">Utils.format_price()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tools.utils.Utils.get_bn_api_data"><code class="docutils literal notranslate"><span class="pre">Utils.get_bn_api_data()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tools.utils.Utils.get_country_info"><code class="docutils literal notranslate"><span class="pre">Utils.get_country_info()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tools.utils.Utils.get_field_id"><code class="docutils literal notranslate"><span class="pre">Utils.get_field_id()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tools.utils.Utils.get_insert_query"><code class="docutils literal notranslate"><span class="pre">Utils.get_insert_query()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tools.utils.Utils.get_product_schema"><code class="docutils literal notranslate"><span class="pre">Utils.get_product_schema()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tools.utils.Utils.housekeeping"><code class="docutils literal notranslate"><span class="pre">Utils.housekeeping()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tools.utils.Utils.insert_to_db"><code class="docutils literal notranslate"><span class="pre">Utils.insert_to_db()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tools.utils.Utils.insert_to_db_batch"><code class="docutils literal notranslate"><span class="pre">Utils.insert_to_db_batch()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tools.utils.Utils.make_request"><code class="docutils literal notranslate"><span class="pre">Utils.make_request()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tools.utils.Utils.make_request_post"><code class="docutils literal notranslate"><span class="pre">Utils.make_request_post()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tools.utils.Utils.print_debug"><code class="docutils literal notranslate"><span class="pre">Utils.print_debug()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tools.utils.Utils.print_error"><code class="docutils literal notranslate"><span class="pre">Utils.print_error()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tools.utils.Utils.print_info"><code class="docutils literal notranslate"><span class="pre">Utils.print_info()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tools.utils.Utils.print_time"><code class="docutils literal notranslate"><span class="pre">Utils.print_time()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tools.utils.Utils.proxy_country"><code class="docutils literal notranslate"><span class="pre">Utils.proxy_country()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tools.utils.Utils.proxy_country_new"><code class="docutils literal notranslate"><span class="pre">Utils.proxy_country_new()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tools.utils.Utils.read_yaml_config"><code class="docutils literal notranslate"><span class="pre">Utils.read_yaml_config()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tools.utils.Utils.redact_api_key"><code class="docutils literal notranslate"><span class="pre">Utils.redact_api_key()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tools.utils.Utils.remove_html_tags"><code class="docutils literal notranslate"><span class="pre">Utils.remove_html_tags()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tools.utils.Utils.set_failed"><code class="docutils literal notranslate"><span class="pre">Utils.set_failed()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tools.utils.Utils.set_finish"><code class="docutils literal notranslate"><span class="pre">Utils.set_finish()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tools.utils.Utils.set_new_task_category"><code class="docutils literal notranslate"><span class="pre">Utils.set_new_task_category()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tools.utils.Utils.set_start_time"><code class="docutils literal notranslate"><span class="pre">Utils.set_start_time()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tools.utils.Utils.setup_debugging"><code class="docutils literal notranslate"><span class="pre">Utils.setup_debugging()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tools.utils.Utils.time_format"><code class="docutils literal notranslate"><span class="pre">Utils.time_format()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tools.utils.Utils.update_progress"><code class="docutils literal notranslate"><span class="pre">Utils.update_progress()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tools.utils.Utils.validate_data"><code class="docutils literal notranslate"><span class="pre">Utils.validate_data()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tools.utils.Utils.validate_images"><code class="docutils literal notranslate"><span class="pre">Utils.validate_images()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tools.utils.Utils.validate_yaml"><code class="docutils literal notranslate"><span class="pre">Utils.validate_yaml()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tools.utils.Utils.zenrows"><code class="docutils literal notranslate"><span class="pre">Utils.zenrows()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-tools.constants">tools.constants module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#tools.constants.BLUE"><code class="docutils literal notranslate"><span class="pre">BLUE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tools.constants.CARREFOUR_QUERY"><code class="docutils literal notranslate"><span class="pre">CARREFOUR_QUERY</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tools.constants.COLLECTION_TYPE"><code class="docutils literal notranslate"><span class="pre">COLLECTION_TYPE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tools.constants.GREEN"><code class="docutils literal notranslate"><span class="pre">GREEN</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tools.constants.LECLERC_QUERY"><code class="docutils literal notranslate"><span class="pre">LECLERC_QUERY</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tools.constants.MAX_RETRIES"><code class="docutils literal notranslate"><span class="pre">MAX_RETRIES</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tools.constants.PROXY_PORT_MAP"><code class="docutils literal notranslate"><span class="pre">PROXY_PORT_MAP</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tools.constants.RED"><code class="docutils literal notranslate"><span class="pre">RED</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tools.constants.REPORT_COUNT_QUERY"><code class="docutils literal notranslate"><span class="pre">REPORT_COUNT_QUERY</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tools.constants.REPORT_COUNT_QUERY_US"><code class="docutils literal notranslate"><span class="pre">REPORT_COUNT_QUERY_US</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tools.constants.RESET"><code class="docutils literal notranslate"><span class="pre">RESET</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tools.constants.YELLOW"><code class="docutils literal notranslate"><span class="pre">YELLOW</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-tools.create_collector">tools.create_collector module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#tools.create_collector.display_folder_structure"><code class="docutils literal notranslate"><span class="pre">display_folder_structure()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tools.create_collector.generate_collectors_script"><code class="docutils literal notranslate"><span class="pre">generate_collectors_script()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tools.create_collector.generate_sql_file"><code class="docutils literal notranslate"><span class="pre">generate_sql_file()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tools.create_collector.generate_yaml_config"><code class="docutils literal notranslate"><span class="pre">generate_yaml_config()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tools.create_collector.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Brand Nudge Data Collect</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Tools package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/tools.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="tools-package">
+<h1>Tools package<a class="headerlink" href="#tools-package" title="Link to this heading"></a></h1>
+<section id="module-tools.helpers">
+<span id="tools-helpers-module"></span><h2>tools.helpers module<a class="headerlink" href="#module-tools.helpers" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="tools.helpers.check_element">
+<span class="sig-prename descclassname"><span class="pre">tools.helpers.</span></span><span class="sig-name descname"><span class="pre">check_element</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">driver</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xpath</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/helpers.html#check_element"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.helpers.check_element" title="Link to this definition"></a></dt>
+<dd><p>Checks if an element exists on the web page using the specified XPath.</p>
+<p>This function attempts to find an element using the given XPath on the web page
+controlled by the WebDriver instance <cite>driver</cite>. If the element does not exist,
+it catches the NoSuchElementException and returns False. Otherwise, it returns True.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>driver</strong> – The WebDriver instance used to control the web browser.</p></li>
+<li><p><strong>xpath</strong> – The XPath expression to locate the element.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if the element exists, False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tools.helpers.contains_html_tags">
+<span class="sig-prename descclassname"><span class="pre">tools.helpers.</span></span><span class="sig-name descname"><span class="pre">contains_html_tags</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/helpers.html#contains_html_tags"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.helpers.contains_html_tags" title="Link to this definition"></a></dt>
+<dd><p>Checks if HTML tags exist in the given texts.</p>
+<p>This function takes a variable number of arguments (texts) and checks if each text contains
+any HTML tags. It uses a regular expression pattern to search for HTML tags within the texts.
+If a text is a string, it returns True if HTML tags are found, otherwise False. If a text is not
+a string, it returns False.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Param<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Variable number of texts to be checked for HTML tags.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of boolean values indicating whether HTML tags are found in each text.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[bool]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tools.helpers.convert_value_to_decimal">
+<span class="sig-prename descclassname"><span class="pre">tools.helpers.</span></span><span class="sig-name descname"><span class="pre">convert_value_to_decimal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/helpers.html#convert_value_to_decimal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.helpers.convert_value_to_decimal" title="Link to this definition"></a></dt>
+<dd><p>Converts the value to a float and formats it to two decimal places
+and returns a string representation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>value</strong> – Pricing value.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Formatted string representation of the input value to two decimal places.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tools.helpers.count_radix">
+<span class="sig-prename descclassname"><span class="pre">tools.helpers.</span></span><span class="sig-name descname"><span class="pre">count_radix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/helpers.html#count_radix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.helpers.count_radix" title="Link to this definition"></a></dt>
+<dd><p>Cleans and formats the input price value.</p>
+<p>If the input value is not an integer, it performs the following steps:
+1. Removes non-numeric characters except for commas and periods.
+2. Replaces any commas with periods to standardize the format.
+3. If there are multiple periods in the cleaned value, removes all but the first period.</p>
+<p>If the input value is an integer, it returns the value unchanged.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>value</strong> – The input price value to be cleaned and formatted. This can be of any type,
+but the function specifically checks if it is not an integer.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A cleaned and formatted string representation of the input value if it is not an integer,
+otherwise returns the input value unchanged.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str or int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tools.helpers.generate_unique_str">
+<span class="sig-prename descclassname"><span class="pre">tools.helpers.</span></span><span class="sig-name descname"><span class="pre">generate_unique_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/helpers.html#generate_unique_str"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.helpers.generate_unique_str" title="Link to this definition"></a></dt>
+<dd><p>Generates a unique string based on the current time and the input value.</p>
+<p>This function creates a unique string by taking the current time in seconds since the epoch,
+removing the decimal point, and appending the string representation of the input value if it exists.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>value</strong> – The input value to be included in the unique string. This can be of any type.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A unique string composed of the current time and the input value.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tools.helpers.get_was_price_promo">
+<span class="sig-prename descclassname"><span class="pre">tools.helpers.</span></span><span class="sig-name descname"><span class="pre">get_was_price_promo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shelf_price</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">was_price</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">country_code</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/helpers.html#get_was_price_promo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.helpers.get_was_price_promo" title="Link to this definition"></a></dt>
+<dd><p>Generates a promotional text if the ‘was’ price is greater than the ‘shelf’ price.</p>
+<p>This function checks if the ‘was’ price is greater than the ‘shelf’ price. If it is,
+it creates a promotional text in the specified language indicating the price cut.
+If the ‘was’ price is not provided or is not greater than the ‘shelf’ price, it returns None.
+If the country code are not mapped to corresponding data, the fallback will return
+generic English formatting</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>shelf_price</strong> – The current price after the promotion.</p></li>
+<li><p><strong>was_price</strong> – The original price before the promotion.</p></li>
+<li><p><strong>country_code</strong> – The country code for the specific country</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dictionary containing promotion details if the ‘was’ price is greater than the ‘shelf’ price,
+otherwise None. The dictionary includes:
+- ‘promo_id’ (str): An empty string as a placeholder for the promotion ID.
+- ‘promo_description’ (str): The promotional text indicating the price cut.
+- ‘promo_type’ (str): The type of promotion, which is ‘price cut’.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tools.helpers.price_inclusive">
+<span class="sig-prename descclassname"><span class="pre">tools.helpers.</span></span><span class="sig-name descname"><span class="pre">price_inclusive</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">exclusive_price</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vat_rate</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/helpers.html#price_inclusive"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.helpers.price_inclusive" title="Link to this definition"></a></dt>
+<dd><p>Calculates the final price including VAT.</p>
+<p>This function calculates the final price by adding the VAT to the exclusive price.
+The VAT amount is calculated as the product of the exclusive price and the VAT rate,
+and then added to the exclusive price. The final price is rounded to two decimal places.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>exclusive_price</strong> – The exclusive price of the item.</p></li>
+<li><p><strong>vat_rate</strong> – The VAT rate as a decimal value (e.g., 0.20 for 20%) (float).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The final price including VAT, rounded to two decimal places.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tools.helpers.pricing">
+<span class="sig-prename descclassname"><span class="pre">tools.helpers.</span></span><span class="sig-name descname"><span class="pre">pricing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/helpers.html#pricing"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.helpers.pricing" title="Link to this definition"></a></dt>
+<dd><p>Processes the input value by converting it to a decimal representation.</p>
+<p>If the input value is non-empty and not a float, it will replace special characters
+in the value, count the radix, and then convert the cleaned value to a decimal.
+If the input value is a float, it directly converts the float to a decimal.
+If the input value is neither of these, it returns the value as is.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>value</strong> – Product price.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A decimal representation of the input value if it is a string or a float,
+otherwise returns the input value unchanged.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tools.helpers.remove_files">
+<span class="sig-prename descclassname"><span class="pre">tools.helpers.</span></span><span class="sig-name descname"><span class="pre">remove_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">folder_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extension</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/helpers.html#remove_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.helpers.remove_files" title="Link to this definition"></a></dt>
+<dd><p>Removes files with the specified extension in the given folder.</p>
+<p>This function iterates through all the files in the specified folder and deletes
+those that end with the given extension. If an error occurs during the removal of
+a file, the error is caught and ignored.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>folder_path</strong> – The path to the folder containing the files.</p></li>
+<li><p><strong>extension</strong> – The file extension to look for (e.g., ‘.txt’).</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tools.helpers.replace_characters">
+<span class="sig-prename descclassname"><span class="pre">tools.helpers.</span></span><span class="sig-name descname"><span class="pre">replace_characters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/helpers.html#replace_characters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.helpers.replace_characters" title="Link to this definition"></a></dt>
+<dd><p>Cleans and formats the input price value.</p>
+<p>If the input value is not an integer, it removes non-numeric characters except for commas
+and periods, then replaces any commas with periods to standardize the format.
+If the input value is an integer, it returns the value unchanged.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>value</strong> – The input price value to be cleaned and formatted. This can be of any type,
+but the function specifically checks if it is not an integer.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A cleaned and formatted string representation of the input value if it is not an integer,
+otherwise returns the input value unchanged.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str or int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tools.helpers.setup">
+<span class="sig-prename descclassname"><span class="pre">tools.helpers.</span></span><span class="sig-name descname"><span class="pre">setup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">banner_folder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">core_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/helpers.html#setup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.helpers.setup" title="Link to this definition"></a></dt>
+<dd><p>Creates the necessary directories if they do not exist.</p>
+<p>This function checks if the <cite>banner_folder</cite> directory exists in the current working directory,
+and if not, creates it. It also checks if the <cite>core_name</cite> directory exists inside the <cite>banner_folder</cite>
+directory, and if not, creates it.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>banner_folder</strong> – The name of the banner folder to be checked/created.</p></li>
+<li><p><strong>core_name</strong> – The name of the retailer-specific folder to be checked/created inside the banner folder.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-tools.utils">
+<span id="tools-utils-module"></span><h2>tools.utils module<a class="headerlink" href="#module-tools.utils" title="Link to this heading"></a></h2>
+<p>A class that provides generic reusable features for data collect.</p>
+<p>This class is designed to provide common functionality that can be used across
+different Python programs.
+It includes methods for handling error logging, string manipulation,
+data conversion, and more.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="tools.utils.Ingest">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tools.utils.</span></span><span class="sig-name descname"><span class="pre">Ingest</span></span><a class="reference internal" href="_modules/tools/utils.html#Ingest"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.utils.Ingest" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A class for extracting data from a retailer’s database, subjecting it to a comprehensive set of validation rules,
+and finally uploading it to an AWS S3 bucket.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tools.utils.Ingest.banner_ingest">
+<span class="sig-name descname"><span class="pre">banner_ingest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">retailer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delay</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/utils.html#Ingest.banner_ingest"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.utils.Ingest.banner_ingest" title="Link to this definition"></a></dt>
+<dd><p>Extract, prepare and upload data to a S3 bucket. Move the file to processed</p>
+<p>This method processes banner data for a specific retailer. It checks if the retailer’s name matches
+the one in the data and if the data contains banners. If both conditions are met, it generates an export
+file, waits for the specified delay, and then uploads the file to an S3 bucket. If the upload is successful,
+the local file is deleted. If any validation or processing errors occur, they are logged and raised.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>retailer</strong> – The name of the retailer.</p></li>
+<li><p><strong>data</strong> – The data to be processed. In this case, banner data.</p></li>
+<li><p><strong>delay</strong> – The delay in seconds between operations</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A tuple containing the filename of the exported file and the number of products processed.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple(str, int)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tools.utils.Ingest.delete_local_file">
+<span class="sig-name descname"><span class="pre">delete_local_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">retailer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_file</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/utils.html#Ingest.delete_local_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.utils.Ingest.delete_local_file" title="Link to this definition"></a></dt>
+<dd><p>Deletes a local file.</p>
+<p>This method attempts to delete a local file.
+If the debug mode is disabled, and the file exists, it is deleted.
+If the file does not exist, a debug message is printed indicating the filename was not found.
+If an exception occurs during the deletion process, it is caught, and a debug message is printed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>retailer</strong> – The name of the retailer.</p></li>
+<li><p><strong>data_file</strong> – The filename of the file to be deleted.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tools.utils.Ingest.extract_data_from_db">
+<span class="sig-name descname"><span class="pre">extract_data_from_db</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">retailer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extract_query</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/utils.html#Ingest.extract_data_from_db"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.utils.Ingest.extract_data_from_db" title="Link to this definition"></a></dt>
+<dd><p>Extract product data from retailers table.</p>
+<p>This method executes the provided SQL query to extract data from the retailer’s table.
+If the <cite>params</cite> argument is True, the query is executed with the current date as a parameter.
+After executing the query, the method checks if any rows are fetched. If rows are found, it prints a debug
+message and returns the fetched data. If no rows are found, it returns None.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>retailer</strong> – Current retailer.</p></li>
+<li><p><strong>extract_query</strong> – SQL query to extract product data specific to the retailer.</p></li>
+<li><p><strong>params</strong> – Indicates whether parameters are passed into the query. Defaults to True.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Extracted data from the database.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list of tuples or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tools.utils.Ingest.generate_export_banner_file">
+<span class="sig-name descname"><span class="pre">generate_export_banner_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">retailer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/utils.html#Ingest.generate_export_banner_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.utils.Ingest.generate_export_banner_file" title="Link to this definition"></a></dt>
+<dd><p>Saves banner data for a retailer to a JSON file.</p>
+<p>This method converts the banner data into JSON format and saves it to a JSON file.
+The filename of the JSON file is constructed using the retailer’s name and the current date.
+The saved JSON file contains the banner data for the retailer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>retailer</strong> – The name of the retailer.</p></li>
+<li><p><strong>data</strong> – The banner data to be saved.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The filename of the saved JSON file.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tools.utils.Ingest.generate_export_file">
+<span class="sig-name descname"><span class="pre">generate_export_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">retailer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">promo_data_applied</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/utils.html#Ingest.generate_export_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.utils.Ingest.generate_export_file" title="Link to this definition"></a></dt>
+<dd><p>Processes and saves product data for a retailer.</p>
+<p>This method validates the given product data and saves it to a JSON file.
+If any validation errors occur, they are logged, and an exception is raised.
+The promotional product data is then saved to a JSON file with a filename based on the retailer’s name
+and the current date.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>retailer</strong> – The name of the retailer.</p></li>
+<li><p><strong>promo_data_applied</strong> – Promotional product data applied.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The filename of the saved JSON file.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tools.utils.Ingest.is_valid_url">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_valid_url</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/utils.html#Ingest.is_valid_url"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.utils.Ingest.is_valid_url" title="Link to this definition"></a></dt>
+<dd><p>Validate whether the given URL is well-formed and valid</p>
+<p>This method uses the <cite>urlparse</cite> function from the <cite>urllib.parse</cite> module to parse the URL.
+It checks if the URL has a scheme and a network location. If both are present, the URL is considered valid.
+If the URL is malformed, a ValueError is caught, and the method returns False.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>url</strong> – The URL to be validated.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if the URL is valid, False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tools.utils.Ingest.main">
+<span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">retailer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delay</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/utils.html#Ingest.main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.utils.Ingest.main" title="Link to this definition"></a></dt>
+<dd><p>Extract, prepare and upload data to a S3 bucket. Move the file to processed</p>
+<p>This method processes data for a specific retailer. It checks if the retailer’s name matches the one in the data
+and if the data contains products. If both conditions are met, it generates an export file, waits for the
+specified delay, and then uploads the file to an S3 bucket. If the upload is successful, the local file is
+deleted. If any validation or processing errors occur, they are logged and raised.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>retailer</strong> – The name of the retailer.</p></li>
+<li><p><strong>data</strong> – The data to be processed. In this case, product data.</p></li>
+<li><p><strong>delay</strong> – The delay in seconds between operations</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A tuple containing the filename of the exported file and the number of products processed.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple(str, int)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tools.utils.Ingest.upload_banners_to_s3">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">upload_banners_to_s3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">retailer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bucket</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">screenshot_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">screenshot_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/utils.html#Ingest.upload_banners_to_s3"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.utils.Ingest.upload_banners_to_s3" title="Link to this definition"></a></dt>
+<dd><p>Uploads a file to an AWS S3 bucket.</p>
+<p>This method uploads a file to an AWS S3 bucket.
+If the debug mode is disabled, the file is uploaded to the designated S3 bucket.
+The filename used for the S3 object is prefixed with ‘Ready/’.
+Upon successful upload, a debug message is printed indicating the filename uploaded to S3.
+Returns True if the upload is successful, otherwise returns False.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>retailer</strong> – The name of the retailer.</p></li>
+<li><p><strong>bucket</strong> – Destination S3 bucket</p></li>
+<li><p><strong>screenshot_name</strong> – Screenshot file name</p></li>
+<li><p><strong>screenshot_path</strong> – Path to destination</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if the upload is successful, False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tools.utils.Ingest.upload_file_to_s3">
+<span class="sig-name descname"><span class="pre">upload_file_to_s3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">retailer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_file</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/utils.html#Ingest.upload_file_to_s3"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.utils.Ingest.upload_file_to_s3" title="Link to this definition"></a></dt>
+<dd><p>Uploads a file to an AWS S3 bucket.</p>
+<p>This method uploads a file to an AWS S3 bucket.
+If the debug mode is disabled, the file is uploaded to the designated S3 bucket.
+The filename used for the S3 object is prefixed with ‘Ready/’.
+Upon successful upload, a debug message is printed indicating the filename uploaded to S3.
+Returns True if the upload is successful, otherwise returns False.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_file</strong> – The filename of the file to be uploaded.</p></li>
+<li><p><strong>retailer</strong> – The name of the retailer.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if the upload is successful, False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tools.utils.Ingest.validate_data">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">validate_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/utils.html#Ingest.validate_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.utils.Ingest.validate_data" title="Link to this definition"></a></dt>
+<dd><p>Validate the given data against defined criteria.</p>
+<p>This method validates the given data against a set of predefined criteria.
+It checks for the presence of required keys, verifies the format of prices,
+ensures consistency between prices and promotion details, validates URLs,
+and checks for other specific constraints.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> – Data to be validated.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A tuple containing a boolean indicating if the data is valid and a string
+describing the validation result.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple(bool, str)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tools.utils.LogHandler">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tools.utils.</span></span><span class="sig-name descname"><span class="pre">LogHandler</span></span><a class="reference internal" href="_modules/tools/utils.html#LogHandler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.utils.LogHandler" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A class for logging errors and Slack messages.</p>
+<p>This class provides methods for logging various types of errors and messages.
+It uses the standard logging module to write error messages to a file or database
+and the Slack API to push messages to a defined Slack channel</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tools.utils.LogHandler.create_cron_table">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create_cron_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connection</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/utils.html#LogHandler.create_cron_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.utils.LogHandler.create_cron_table" title="Link to this definition"></a></dt>
+<dd><p>Executes a cron SQL statement on the given database connection and creates the cron_logs table.</p>
+<p>This method executes an exception SQL statement defined in <cite>constants.cron_table</cite> using the provided
+database connection. It commits the transaction after executing the statement and then closes the cursor.
+Any exceptions raised during this process should be handled by the calling code.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>connection</strong> – A database connection object.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tools.utils.LogHandler.create_debug_table">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create_debug_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connection</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/utils.html#LogHandler.create_debug_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.utils.LogHandler.create_debug_table" title="Link to this definition"></a></dt>
+<dd><p>Executes a debug SQL statement on the given database connection and creates the debug_logs table.</p>
+<p>This method executes an exception SQL statement defined in <cite>constants.debug_table</cite> using the provided
+database connection. It commits the transaction after executing the statement and then closes the cursor.
+Any exceptions raised during this process should be handled by the calling code.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>connection</strong> – A database connection object.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tools.utils.LogHandler.create_exception_table">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create_exception_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connection</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/utils.html#LogHandler.create_exception_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.utils.LogHandler.create_exception_table" title="Link to this definition"></a></dt>
+<dd><p>Executes an exception SQL statement on the given database connection and creates the exception_logs table.</p>
+<p>This method executes an exception SQL statement defined in <cite>constants.exception_sql</cite> using the provided
+database connection. It commits the transaction after executing the statement and then closes the cursor.
+Any exceptions raised during this process should be handled by the calling code.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>connection</strong> – A database connection object.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tools.utils.LogHandler.create_log_table">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create_log_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connection</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/utils.html#LogHandler.create_log_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.utils.LogHandler.create_log_table" title="Link to this definition"></a></dt>
+<dd><p>Executes an initial SQL statement on the given database connection and creates the log table.</p>
+<p>This method executes an initial SQL statement defined in <cite>constants.initial_sql</cite> using the provided
+database connection. It commits the transaction after executing the statement and then closes the cursor.
+Any exceptions raised during this process should be handled by the calling code.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>connection</strong> – A database connection object.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tools.utils.LogHandler.cron_logs">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cron_logs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lines</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/utils.html#LogHandler.cron_logs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.utils.LogHandler.cron_logs" title="Link to this definition"></a></dt>
+<dd><p>Logs cron job data to the database.</p>
+<p>This method logs cron job data to the database. It creates a connection to the database,
+checks if the cron table exists (and creates it if not), and inserts each line from the provided
+list into the cron table along with the current datetime. If an error occurs during this process,
+it is logged to both the database and a file, and the method continues execution.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>lines</strong> – List of lines to be logged.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tools.utils.LogHandler.debug_file">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">debug_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">retailer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/utils.html#LogHandler.debug_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.utils.LogHandler.debug_file" title="Link to this definition"></a></dt>
+<dd><p>Logs debugging messages to a local file called debug.log.</p>
+<p>This method appends a debug message to a log file specific to the retailer.
+The log entry includes the current datetime, the retailer’s name, and the message.
+The log file is named in the format ‘{retailer}_debug.log’.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>retailer</strong> – The name of the retailer.</p></li>
+<li><p><strong>message</strong> – The error message to be logged.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tools.utils.LogHandler.debug_logs">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">debug_logs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">retailer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/utils.html#LogHandler.debug_logs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.utils.LogHandler.debug_logs" title="Link to this definition"></a></dt>
+<dd><p>Logs a debug message to the database for the specified retailer.</p>
+<p>This method logs a debug message to the database for the given retailer. It creates a connection to the
+database, checks if the debug table exists (and creates it if not), and inserts the debug message along
+with the current datetime and retailer’s name into the debug table. If an error occurs during this process,
+it is logged to both the database and a file, and the method continues execution.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>retailer</strong> – The name of the retailer.</p></li>
+<li><p><strong>message</strong> – The debug message to be logged.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tools.utils.LogHandler.error_db">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">error_db</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">retailer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sys_info</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/utils.html#LogHandler.error_db"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.utils.LogHandler.error_db" title="Link to this definition"></a></dt>
+<dd><p>Logs an error message to the database for the specified retailer.</p>
+<p>This method logs an error message to a database for the given retailer. It extracts the function name
+and line number from the traceback, redacts any API keys in the error message, and creates an error record.
+It then establishes a database connection, checks if the log table exists (and creates it if not),
+and inserts the error record into the log table. After committing the transaction, the cursor is closed.
+Any exceptions raised during this process are silently ignored.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>retailer</strong> – The name of the retailer.</p></li>
+<li><p><strong>message</strong> – The error message to be logged.</p></li>
+<li><p><strong>sys_info</strong> – System information, typically obtained from <cite>sys.exc_info()</cite>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tools.utils.LogHandler.error_exception_report">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">error_exception_report</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">retailer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/utils.html#LogHandler.error_exception_report"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.utils.LogHandler.error_exception_report" title="Link to this definition"></a></dt>
+<dd><p>Log failed urls to the exception report table</p>
+<p>This method logs an exception url to a database for the given retailer. It creates an error record with the
+current datetime, retailer’s name, URL, and the exception message. It then establishes a database connection,
+checks if the exception log table exists (and creates it if not), and inserts the error record into the
+exception log table. After committing the transaction, the cursor is closed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>retailer</strong> – The name of the retailer.</p></li>
+<li><p><strong>url</strong> – Failed URL</p></li>
+<li><p><strong>message</strong> – The error message to be logged.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tools.utils.LogHandler.error_file">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">error_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">retailer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sys_info</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/utils.html#LogHandler.error_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.utils.LogHandler.error_file" title="Link to this definition"></a></dt>
+<dd><p>Logs an error message to a local file called scrapers.log.</p>
+<p>This method logs an error message to a file for the given retailer. It sets up logging configuration with the
+specified format, filename, and logging level. The method extracts the function name and line number from the
+traceback, redacts any API keys in the error message, and logs the error message to the file with details
+including retailer, function name, and line number.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>retailer</strong> – The name of the retailer.</p></li>
+<li><p><strong>message</strong> – The error message to be logged.</p></li>
+<li><p><strong>sys_info</strong> – System information, typically obtained from <cite>sys.exc_info()</cite>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tools.utils.LogHandler.error_slack">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">error_slack</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">retailer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/utils.html#LogHandler.error_slack"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.utils.LogHandler.error_slack" title="Link to this definition"></a></dt>
+<dd><p>Send a Slack message to a channel via a webhook.</p>
+<p>This method sends a Slack notification for the given retailer based on the provided message type.
+If the message type is ‘error’, a notification about an error is sent, including the retailer’s name
+and the error message. If the message type is ‘stats’, a statistics report is sent, including various
+statistics about the retailer’s data collection process, such as navigation links count, product count,
+duration, and failed URLs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>retailer</strong> – The name of the retailer.</p></li>
+<li><p><strong>message</strong> – The message to be sent. It can be either a string or a dictionary.</p></li>
+<li><p><strong>message_type</strong> – The type of message to be sent. It can be either ‘error’ or ‘stats’.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The response object from the Slack API request.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>requests.Response</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tools.utils.Statistics">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tools.utils.</span></span><span class="sig-name descname"><span class="pre">Statistics</span></span><a class="reference internal" href="_modules/tools/utils.html#Statistics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.utils.Statistics" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A collection of methods used to store statistical data.</p>
+<p>This class contains a variety of methods for storing statistical data,
+from creating the tables to inserting the data.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tools.utils.Statistics.create_stats_table">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create_stats_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connection</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/utils.html#Statistics.create_stats_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.utils.Statistics.create_stats_table" title="Link to this definition"></a></dt>
+<dd><p>Executes a stats SQL statement on the given database connection and creates the statistics table.</p>
+<p>This method executes an exception SQL statement defined in <cite>constants.initial_stats</cite> using the provided
+database connection. It commits the transaction after executing the statement and then closes the cursor.
+Any exceptions raised during this process should be handled by the calling code.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>connection</strong> – A database connection object.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tools.utils.Statistics.log_to_db">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">log_to_db</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">retailer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stats</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/utils.html#Statistics.log_to_db"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.utils.Statistics.log_to_db" title="Link to this definition"></a></dt>
+<dd><p>Logs statistics to the database for the specified retailer by calling
+the appropriate stored procedure.</p>
+<p>This method logs statistical data to the database for the given retailer.
+It establishes a database connection, ensures the statistics table exists
+(and creates it if not), and then calls the appropriate stored procedure based
+on the retailer’s name. The stored procedures handle specific retailers like
+“Reviews”, “Carrefour FR”, and “Amazon”, while a default stored procedure is
+used for others. The statistics data includes navigation counts, duration,
+failed URLs, and table name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>retailer</strong> – The name of the retailer.</p></li>
+<li><p><strong>stats</strong> – A dictionary containing statistical data to be logged. Expected keys are:
+- “Navigation_count”: int
+- “Navigation_url_count”: int
+- “Duration”: str
+- “Failed_URLS”: list
+- “Table_Name”: str</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tools.utils.Statistics.statistics">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">statistics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">navigation_counter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">navigation_url_count</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">item_counter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">urls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retailer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/utils.html#Statistics.statistics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.utils.Statistics.statistics" title="Link to this definition"></a></dt>
+<dd><p>Processes and logs statistical data for the specified retailer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>navigation_counter</strong> – The count of navigation links processed.</p></li>
+<li><p><strong>navigation_url_count</strong> – The expected count of navigation links.</p></li>
+<li><p><strong>item_counter</strong> – The count of items collected.</p></li>
+<li><p><strong>duration</strong> – The duration of the process.</p></li>
+<li><p><strong>urls</strong> – List of URLs with their success status.</p></li>
+<li><p><strong>retailer</strong> – The name of the retailer.</p></li>
+<li><p><strong>table_name</strong> – The name of the table where data is stored.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tools.utils.Utils">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tools.utils.</span></span><span class="sig-name descname"><span class="pre">Utils</span></span><a class="reference internal" href="_modules/tools/utils.html#Utils"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.utils.Utils" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A collection of utility methods for common Python tasks.</p>
+<p>This class contains a variety of methods that can be reused across different Python scripts
+and projects. These methods cover a range of tasks, including string manipulation, file
+handling, data validation, and more.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tools.utils.Utils.bn_api_auth">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">bn_api_auth</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">retailer</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/utils.html#Utils.bn_api_auth"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.utils.Utils.bn_api_auth" title="Link to this definition"></a></dt>
+<dd><p>Authenticate with the admin API using username and password, and retrieve the authentication token.</p>
+<p>This function sends a POST request to the specified <cite>BN_AUTH_URL</cite> endpoint with the provided <cite>ADMIN_API_USER</cite>
+and <cite>ADMIN_API_PASS</cite> credentials as JSON payload. If authentication is successful (status code 200), it logs
+the successful authentication time and returns the authentication token from the response JSON. If
+authentication fails, it logs an error and returns None.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>retailer</strong> – The current retailer.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The authentication token if authentication is successful, otherwise None.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str or none</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tools.utils.Utils.create_db_con">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create_db_con</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">retries</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delay</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/utils.html#Utils.create_db_con"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.utils.Utils.create_db_con" title="Link to this definition"></a></dt>
+<dd><p>Establishes a connection to the PostgreSQL database with retry logic.</p>
+<p>This method attempts to connect to a PostgreSQL database using credentials and connection parameters
+from environment variables. If the initial connection attempt fails, it retries the specified number
+of times with a delay between each attempt. If all retries fail, an OperationalError is raised. In case
+of other exceptions, an error message is logged.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>retries</strong> – The number of retry attempts for connecting to the database. Default is 3.</p></li>
+<li><p><strong>delay</strong> – The delay in seconds between retry attempts. Default is 5.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A connection object to the PostgreSQL database.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>psycopg2.extensions.connection</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tools.utils.Utils.create_task">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create_task</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">retailer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collection_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/utils.html#Utils.create_task"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.utils.Utils.create_task" title="Link to this definition"></a></dt>
+<dd><p>Update a ClickUp task with a bug ID in a specific custom field.</p>
+<p>This function updates a ClickUp task identified by <cite>task_id</cite> with a bug ID
+in a custom field named “Category”. It uses the ClickUp API to perform the update.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>retailer</strong> – The retailer name.</p></li>
+<li><p><strong>description</strong> – Task description which we want to add.</p></li>
+<li><p><strong>collection_type</strong> – The issue the ticket is being logged for.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tools.utils.Utils.format_price">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">format_price</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">price</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/utils.html#Utils.format_price"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.utils.Utils.format_price" title="Link to this definition"></a></dt>
+<dd><p>Clean and format a price string by removing unwanted characters and ensuring it has two decimal places.</p>
+<p>This function cleans up the provided <cite>price</cite> string by removing specific characters such as currency symbols,
+commas, newline characters, and price units (e.g., ‘/kg’, ‘avg/ea’). It also ensures that the price always has
+two decimal places.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>price</strong> – The price string to clean and format.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The cleaned and formatted price string with two decimal places.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tools.utils.Utils.get_bn_api_data">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_bn_api_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">retailer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">core_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collections_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/utils.html#Utils.get_bn_api_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.utils.Utils.get_bn_api_data" title="Link to this definition"></a></dt>
+<dd><p>Authenticate and fetch API data from BrandNudge API.</p>
+<p>This function performs authentication using <cite>Utils.bn_api_auth(retailer)</cite> for authorization headers,
+constructs necessary headers and parameters for the API request, and fetches data from <cite>BN_API_URL</cite>.
+It handles exceptions, logs errors to DB and file using <cite>LogHandler</cite>, and returns fetched data if successful.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>retailer</strong> – The current retailer name.</p></li>
+<li><p><strong>core_name</strong> – The core name of the retailer.</p></li>
+<li><p><strong>collections_type</strong> – The type of collections (e.g., ‘Core’, ‘Banners’).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The API response data as a dictionary if successful, otherwise None.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict or none</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tools.utils.Utils.get_country_info">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_country_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">country_code</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retailer</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/utils.html#Utils.get_country_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.utils.Utils.get_country_info" title="Link to this definition"></a></dt>
+<dd><p>Retrieve country information from the database based on the country code.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>country_code</strong> – The country code to query in the database.</p></li>
+<li><p><strong>retailer</strong> – The retailer name</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dictionary containing country information (if found).
+Keys: “countryName”, “countryCode”, “alpha2Code”, “currency”, “currencySymbol”, “proxyPort”</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tools.utils.Utils.get_field_id">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_field_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/utils.html#Utils.get_field_id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.utils.Utils.get_field_id" title="Link to this definition"></a></dt>
+<dd><p>Retrieve the ID of a specific field by its name from a ClickUp list.</p>
+<p>This function makes a GET request to the ClickUp API endpoint to fetch
+the fields of a specified list. It then searches for a field with a matching
+name and returns its ID if found.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Param<span class="colon">:</span></dt>
+<dd class="field-odd"><p>field_name: The name of the field to retrieve the ID for.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The ID of the field if found, None if not found or if there’s
+an error during the API request.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tools.utils.Utils.get_insert_query">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_insert_query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_columns</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/utils.html#Utils.get_insert_query"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.utils.Utils.get_insert_query" title="Link to this definition"></a></dt>
+<dd><p>Generate an SQL INSERT statement for a given table with specified columns.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>table_name</strong> – The name of the table into which data is to be inserted.</p></li>
+<li><p><strong>table_columns</strong> – List of column names to insert data into.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The generated SQL INSERT statement.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tools.utils.Utils.get_product_schema">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_product_schema</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema_products</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">search_term</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/utils.html#Utils.get_product_schema"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.utils.Utils.get_product_schema" title="Link to this definition"></a></dt>
+<dd><p>Extracts and cleans a schema product from a list based on a search term.</p>
+<p>This function iterates over a list of schema products, removes the script tags, and checks if the search term
+is present in the cleaned schema product. If the search term is found, it returns the cleaned schema product.
+If the search term is not found in any of the schema products, it returns None.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>schema_products</strong> – List of schema products as strings.</p></li>
+<li><p><strong>search_term</strong> – Term to search for within the cleaned schema products.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The cleaned schema product if the search term is found, otherwise None.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tools.utils.Utils.housekeeping">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">housekeeping</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">retailer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ingest_enabled</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/utils.html#Utils.housekeeping"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.utils.Utils.housekeeping" title="Link to this definition"></a></dt>
+<dd><p>Performs housekeeping tasks for the given retailer, including deleting database records
+and potentially deleting corresponding files from an S3 bucket.</p>
+<p>This method deletes rows from the <cite>collections_status</cite> table where the date is the current date
+and the retailer matches the given retailer. It then optionally deletes corresponding JSON files
+from an S3 bucket if ingestion is enabled.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>retailer</strong> – The retailer for which housekeeping is being performed.</p></li>
+<li><p><strong>debug</strong> – The debug level for debug information.</p></li>
+<li><p><strong>ingest_enabled</strong> – A flag indicating whether ingestion is enabled. If True, files are deleted from S3.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tools.utils.Utils.insert_to_db">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">insert_to_db</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">insert_query</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retailer</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/utils.html#Utils.insert_to_db"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.utils.Utils.insert_to_db" title="Link to this definition"></a></dt>
+<dd><p>Inserts a row of data into the database with error handling and logging.</p>
+<p>This method inserts a row of data into the database using the provided SQL insert query. If a unique violation
+occurs, it silently passes. For other exceptions, it logs the error using the utility functions for debugging,
+and also logs the error to the database and a file. The method ensures that the database connection and cursor
+are set up before the insert operation and handles the commit and exception management.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>insert_query</strong> – The SQL insert query.</p></li>
+<li><p><strong>row</strong> – The data to be inserted as a tuple.</p></li>
+<li><p><strong>retailer</strong> – The name of the retailer associated with the data.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tools.utils.Utils.insert_to_db_batch">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">insert_to_db_batch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">insert_query</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retailer</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/utils.html#Utils.insert_to_db_batch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.utils.Utils.insert_to_db_batch" title="Link to this definition"></a></dt>
+<dd><p>Inserts a batch of rows into the database with error handling and logging.</p>
+<p>This method inserts a batch of rows into the database using the provided SQL insert query. If a unique violation
+occurs, it silently passes. For other exceptions, it logs the error using the utility functions for debugging,
+and also logs the error to the database and a file. The method ensures that the database connection and cursor
+are set up before the insert operation and handles the commit and exception management.</p>
+<p>The <cite>psycopg2.extras.execute_batch</cite> function is used for efficient batch insertion. If autocommit is required,
+it can be enabled by uncommenting the <cite>connection.autocommit</cite> line.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>insert_query</strong> – The SQL insert query for batch execution.</p></li>
+<li><p><strong>batch</strong> – A list of tuples, where each tuple represents a row of data to be inserted.</p></li>
+<li><p><strong>retailer</strong> – The name of the retailer associated with the data.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tools.utils.Utils.make_request">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">make_request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">request_headers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">proxy</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retailer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cookies</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delay</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_redirects</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fail_gracefully</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/utils.html#Utils.make_request"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.utils.Utils.make_request" title="Link to this definition"></a></dt>
+<dd><p>Attempts to fetch a URL with retries, handling errors and logging.</p>
+<p>This method attempts to fetch the specified URL with a maximum number of retries defined in
+<cite>constants.MAX_RETRIES</cite>.It handles various request exceptions such as <cite>ProxyError</cite>, <cite>Timeout</cite>,
+and <cite>ConnectionError</cite>, logging the errors and retrying after a delay. If the request is successful
+(status code 200) or if <cite>fail_gracefully</cite> is True, it returns the response. If all retries fail,
+it logs the error to the database and a file, and finally returns None.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>url</strong> – The URL to be fetched.</p></li>
+<li><p><strong>request_headers</strong> – Dictionary of headers to be sent with the request.</p></li>
+<li><p><strong>proxy</strong> – Dictionary of proxies to be used for the request.</p></li>
+<li><p><strong>retailer</strong> – The name of the retailer associated with the request.</p></li>
+<li><p><strong>verify</strong> – Whether to verify SSL certificates.</p></li>
+<li><p><strong>timeout</strong> – Timeout for the request in seconds.</p></li>
+<li><p><strong>params</strong> – Dictionary of URL parameters to be sent with the request.</p></li>
+<li><p><strong>cookies</strong> – Dictionary of cookies to be sent with the request.</p></li>
+<li><p><strong>delay</strong> – Delay in seconds between retries.</p></li>
+<li><p><strong>allow_redirects</strong> – Whether to allow redirects.</p></li>
+<li><p><strong>fail_gracefully</strong> – Whether to return the response even if the status code is not 200.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The HTTP response if the request is successful or if fail_gracefully is True.
+None if all retries fail.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>requests.Response</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tools.utils.Utils.make_request_post">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">make_request_post</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">request_headers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">proxy</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retailer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">payload</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cookies</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delay</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convert</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fail_gracefully</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">original_response</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/utils.html#Utils.make_request_post"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.utils.Utils.make_request_post" title="Link to this definition"></a></dt>
+<dd><p>Attempts to send a POST request to a URL with retries, handling errors and logging.</p>
+<p>This method attempts to send a POST request to the specified URL with a maximum number of retries defined in
+<cite>constants.MAX_RETRIES</cite>. It handles various request exceptions such as <cite>ProxyError</cite>, <cite>Timeout</cite>, and
+<cite>ConnectionError</cite>,logging the errors and retrying after a delay. If the request is successful
+(status code 200) or if <cite>fail_gracefully</cite> is True, it returns the response. If all retries fail,
+it logs the error to the database and a file, and returns None if <cite>original_response</cite> is False,
+otherwise returns the last response.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>url</strong> – The URL to send the POST request to.</p></li>
+<li><p><strong>request_headers</strong> – Dictionary of headers to be sent with the request.</p></li>
+<li><p><strong>proxy</strong> – Dictionary of proxies to be used for the request.</p></li>
+<li><p><strong>retailer</strong> – The name of the retailer associated with the request.</p></li>
+<li><p><strong>payload</strong> – The data to send in the body of the POST request.</p></li>
+<li><p><strong>timeout</strong> – Timeout for the request in seconds.</p></li>
+<li><p><strong>cookies</strong> – Dictionary of cookies to be sent with the request.</p></li>
+<li><p><strong>delay</strong> – Delay in seconds between retries.</p></li>
+<li><p><strong>convert</strong> – Whether to convert the payload to JSON if it is a dict or list.</p></li>
+<li><p><strong>fail_gracefully</strong> – Whether to return the response even if the status code is not 200.</p></li>
+<li><p><strong>verify</strong> – Whether to verify SSL certificates.</p></li>
+<li><p><strong>params</strong> – Dictionary of URL parameters to be sent with the request.</p></li>
+<li><p><strong>original_response</strong> – Whether to return the response object even if retries fail.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The HTTP response if the request is successful or if fail_gracefully is True.
+None if all retries fail.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>requests.Response</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tools.utils.Utils.print_debug">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">print_debug</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">debug</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retailer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/utils.html#Utils.print_debug"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.utils.Utils.print_debug" title="Link to this definition"></a></dt>
+<dd><p>Handle debug messages based on the provided debug level.</p>
+<ul class="simple">
+<li><p>debug == 1: Print the message to terminal with green color.</p></li>
+<li><p>debug == 2: Log the message to the DB using LogHandler.debug_logs().</p></li>
+<li><p>debug == 3: Log the message to a file using LogHandler.debug_file().</p></li>
+<li><p>debug == 4: Print the message to terminal with green color and log to both DB and file.</p></li>
+<li><p>debug == 6: Print the message to terminal with green color.</p></li>
+<li><p>Other values: No action is taken.</p></li>
+</ul>
+<p>This function handles debug messages based on the debug level provided. Depending on the debug level:
+- It may print messages to the terminal with color coding.
+- It may log messages to a database or a file using appropriate methods from LogHandler.
+- If the debug level doesn’t match any defined cases, it performs no action.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>debug</strong> – Debug level integer indicating the type of debug actions to perform.</p></li>
+<li><p><strong>retailer</strong> – Name of the retailer associated with the debug message.</p></li>
+<li><p><strong>message</strong> – Debug message to be logged or printed.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tools.utils.Utils.print_error">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">print_error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">debug</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retailer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/utils.html#Utils.print_error"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.utils.Utils.print_error" title="Link to this definition"></a></dt>
+<dd><p>Handle error messages based on the provided debug level.</p>
+<ul class="simple">
+<li><p>debug == 1: Print the message to terminal with green color.</p></li>
+<li><p>debug == 2: Log the message to the DB using LogHandler.debug_logs().</p></li>
+<li><p>debug == 3: Log the message to a file using LogHandler.debug_file().</p></li>
+<li><p>debug == 4: Print the message to terminal with green color and log to both DB and file.</p></li>
+<li><p>debug == 6: Print the message to terminal with green color.</p></li>
+<li><p>Other values: No action is taken.</p></li>
+</ul>
+<p>This function handles debug messages based on the debug level provided. Depending on the debug level:
+- It may print messages to the terminal with color coding.
+- It may log messages to a database or a file using appropriate methods from LogHandler.
+- If the debug level doesn’t match any defined cases, it performs no action.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>debug</strong> – Debug level integer indicating the type of debug actions to perform.</p></li>
+<li><p><strong>retailer</strong> – Name of the retailer associated with the debug message.</p></li>
+<li><p><strong>message</strong> – Debug message to be logged or printed.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tools.utils.Utils.print_info">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">print_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">debug</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retailer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/utils.html#Utils.print_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.utils.Utils.print_info" title="Link to this definition"></a></dt>
+<dd><p>Handle print messages based on the provided debug level.</p>
+<ul class="simple">
+<li><p>debug == 1: Print the message to terminal with green color.</p></li>
+<li><p>debug == 2: Log the message to the DB using LogHandler.debug_logs().</p></li>
+<li><p>debug == 3: Log the message to a file using LogHandler.debug_file().</p></li>
+<li><p>debug == 4: Print the message to terminal with green color and log to both DB and file.</p></li>
+<li><p>debug == 6: Print the message to terminal with green color.</p></li>
+<li><p>Other values: No action is taken.</p></li>
+</ul>
+<p>This function handles debug messages based on the debug level provided. Depending on the debug level:
+- It may print messages to the terminal with color coding.
+- It may log messages to a database or a file using appropriate methods from LogHandler.
+- If the debug level doesn’t match any defined cases, it performs no action.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>debug</strong> – Debug level integer indicating the type of debug actions to perform.</p></li>
+<li><p><strong>retailer</strong> – Name of the retailer associated with the debug message.</p></li>
+<li><p><strong>message</strong> – Debug message to be logged or printed.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tools.utils.Utils.print_time">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">print_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/utils.html#Utils.print_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.utils.Utils.print_time" title="Link to this definition"></a></dt>
+<dd><p>Print the current timestamp prefixed to the provided text in the specified color.</p>
+<ul class="simple">
+<li><p>Uses the current local timestamp in the format ‘%d-%m %H:%M:%S’.</p></li>
+<li><p>Prefixes the formatted timestamp with the specified ANSI color code.</p></li>
+<li><p>Prints the timestamp and text message to the console.</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>text</strong> – The text message to be printed.</p></li>
+<li><p><strong>color</strong> – The ANSI color code to be applied to the timestamp.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tools.utils.Utils.proxy_country">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">proxy_country</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">proxy_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">country_code</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha_2_code</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/utils.html#Utils.proxy_country"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.utils.Utils.proxy_country" title="Link to this definition"></a></dt>
+<dd><p>Set up proxy configurations based on the type of proxy specified.</p>
+<p>Ensure environment variables SMARTPROXY_RESIDENTIAL and SMARTPROXY_DATACENTER are set with appropriate proxy
+URLs.
+‘COUNTRY_CODE’ placeholder in the proxy URLs will be replaced with alpha_2_code or country_code based on
+proxy_type.
+TO BE REMOVED ONCE ALL WERE MOVED OVER TO proxy_country_new</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>proxy_type</strong> – Type of proxy (‘Residential’ or ‘Data_center’).</p></li>
+<li><p><strong>country_code</strong> – Country code for Data_center proxy type.</p></li>
+<li><p><strong>alpha_2_code</strong> – Alpha-2 country code for Residential proxy type.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Alpha-2 country code for Residential proxy type.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict or bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tools.utils.Utils.proxy_country_new">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">proxy_country_new</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">proxy_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">country_code</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha_2_code</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/utils.html#Utils.proxy_country_new"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.utils.Utils.proxy_country_new" title="Link to this definition"></a></dt>
+<dd><p>Set up proxy configurations based on the type of proxy specified.</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt>Ensure environment variables SMARTPROXY_RESIDENTIAL_NEW and SMARTPROXY_DATACENTER_NEW are set with</dt><dd><p>appropriate proxy URLs.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>‘COUNTRY_CODE’ placeholder in the proxy URLs will be replaced with alpha_2_code or country_code based</dt><dd><p>on proxy_type.</p>
+</dd>
+</dl>
+</li>
+<li><p>‘PORT’ placeholder in the proxy URLs will be replaced with the corresponding port based on the country_code.</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>proxy_type</strong> – Type of proxy (‘Residential’ or ‘Data_center’).</p></li>
+<li><p><strong>country_code</strong> – Country code for Data_center proxy type.</p></li>
+<li><p><strong>alpha_2_code</strong> – Country code for Data_center proxy type.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dictionary containing updated proxy configurations if proxy_type is valid,
+False if proxy_type is not recognized.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tools.utils.Utils.read_yaml_config">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">read_yaml_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">retailer</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/utils.html#Utils.read_yaml_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.utils.Utils.read_yaml_config" title="Link to this definition"></a></dt>
+<dd><p>Load and validate YAML configuration for a retailer.</p>
+<p>Example:
+config_data = load_config(‘SomeRetailer’)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>retailer</strong> – Name of the retailer.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Configuration data loaded from the YAML file.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tools.utils.Utils.redact_api_key">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">redact_api_key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/utils.html#Utils.redact_api_key"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.utils.Utils.redact_api_key" title="Link to this definition"></a></dt>
+<dd><p>Redacts API keys from a given message by replacing them with ‘API_KEY_REDACTED’.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>message</strong> – The message containing API keys.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The message with API keys redacted or the original message if redaction fails.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tools.utils.Utils.remove_html_tags">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">remove_html_tags</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/utils.html#Utils.remove_html_tags"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.utils.Utils.remove_html_tags" title="Link to this definition"></a></dt>
+<dd><p>Remove HTML tags from the given text using regular expressions.</p>
+<p>This function uses a regular expression pattern to find and replace all HTML tags (including any attributes)
+with an empty string, effectively cleaning the text content.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>text</strong> – The input text containing HTML tags.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The text with HTML tags removed.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tools.utils.Utils.set_failed">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">set_failed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">retailer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tracking_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_scraper_validate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/utils.html#Utils.set_failed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.utils.Utils.set_failed" title="Link to this definition"></a></dt>
+<dd><p>Update the status of a failed data collection process in the database and create a task if not in debug mode.</p>
+<ul class="simple">
+<li><p>Retrieves the collection type from the database using <cite>tracking_id</cite>.</p></li>
+<li><p>Updates the <cite>run_status</cite> and <cite>end_time</cite> in the <cite>collections_status</cite> table.</p></li>
+<li><p>Logs errors to the database and file using <cite>LogHandler</cite> in case of exceptions.</p></li>
+<li><p>If not in debug mode (<cite>DEBUG=1</cite>), creates a ClickUp task based on the failure scenario.</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>retailer</strong> – The name or identifier of the retailer for which the collection status is being updated.</p></li>
+<li><p><strong>tracking_id</strong> – The ID of the collection process status record to update.</p></li>
+<li><p><strong>from_scraper_validate</strong> – Flag indicating if the failure occurred during scraper validation.
+Defaults to False.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tools.utils.Utils.set_finish">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">set_finish</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">retailer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tracking_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_length</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/utils.html#Utils.set_finish"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.utils.Utils.set_finish" title="Link to this definition"></a></dt>
+<dd><p>Update the status of a data collection process for a retailer in the database.</p>
+<ul class="simple">
+<li><p>Retrieves configuration data for the retailer from a YAML file using <cite>Utils.read_yaml_config()</cite>.</p></li>
+<li><p>Constructs SQL queries based on the <cite>collections_type</cite> retrieved from the config.</p></li>
+<li><p>Executes SQL queries to fetch and update collection status information in the database.</p></li>
+<li><p>Logs errors to the database and file using <cite>LogHandler</cite> in case of exceptions.</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>retailer</strong> – The name or identifier of the retailer for which the collection status is being updated.</p></li>
+<li><p><strong>tracking_id</strong> – The ID of the collection process status record to update.</p></li>
+<li><p><strong>data_file</strong> – File name or identifier associated with the collected retailer.</p></li>
+<li><p><strong>data_length</strong> – Length or size of the collected data.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tools.utils.Utils.set_new_task_category">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">set_new_task_category</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bug_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/utils.html#Utils.set_new_task_category"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.utils.Utils.set_new_task_category" title="Link to this definition"></a></dt>
+<dd><p>Update a ClickUp task with a bug ID in a specific custom field.</p>
+<p>This function updates a ClickUp task identified by <cite>task_id</cite> with a bug ID in a custom field named “Category”.
+It uses the ClickUp API to perform the update.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>task_id</strong> – The ID of the ClickUp task to update.</p></li>
+<li><p><strong>bug_id</strong> – The bug ID to set in the custom field.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if the task was successfully updated, False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tools.utils.Utils.set_start_time">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">set_start_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">retailer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collections_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ingest_enabled</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/utils.html#Utils.set_start_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.utils.Utils.set_start_time" title="Link to this definition"></a></dt>
+<dd><p>Start a data collection process for a retailer and log the process status to the database.</p>
+<ul class="simple">
+<li><p>Uses current local time adjusted to a specified timezone (<cite>TIMEZONE</cite>) for <cite>start_time</cite>.</p></li>
+<li><p>Inserts a new record into the collections_status table with initial values for start_time, retailer,
+run_status, collections_type, and ingest_enabled.</p></li>
+<li><p>Prints debug messages based on the debug level set by <cite>Utils.setup_debugging()</cite>.</p></li>
+<li><p>Handles exceptions such as UniqueViolation and logs errors to the database and file using <cite>LogHandler</cite>.</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>retailer</strong> – The name or identifier of the retailer for which the collection is being started.</p></li>
+<li><p><strong>collections_type</strong> – The type of the collection process e.g. core, reviews, ranking.</p></li>
+<li><p><strong>ingest_enabled</strong> – Indicates whether data ingestion is enabled or disabled for the collection.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The ID of the inserted record in the collections_status table.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tools.utils.Utils.setup_debugging">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">setup_debugging</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/utils.html#Utils.setup_debugging"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.utils.Utils.setup_debugging" title="Link to this definition"></a></dt>
+<dd><p>Parse command-line arguments related to debugging options.</p>
+<p>This function uses argparse to parse command-line arguments related to debugging options.
+It computes a debug level based on the combination of arguments provided and returns the integer value.</p>
+<ul class="simple">
+<li><p>‘-print’: Increase debug level by 1 if enabled.</p></li>
+<li><p>‘-log’: Increase debug level by 2 if enabled.</p></li>
+<li><p>‘-file’: Increase debug level by 3 if enabled.</p></li>
+<li><p>‘-debug’: Increase debug level by 4 if enabled.</p></li>
+<li><p>‘-noupload’: Increase debug level by 5 if enabled.</p></li>
+<li><p>‘-rerun’: Increase debug level by 10 if enabled.</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A debug level integer based on the parsed arguments.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tools.utils.Utils.time_format">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">time_format</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">duration</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/utils.html#Utils.time_format"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.utils.Utils.time_format" title="Link to this definition"></a></dt>
+<dd><p>Formats a given duration in seconds into a human-readable string.</p>
+<p>This method converts a duration in seconds into a human-readable format. Depending on the length of the duration,
+it formats the output to show days, hours, minutes, and seconds. The output format varies based on the value of the
+duration:
+- Days, hours, minutes, and seconds if the duration is greater than or equal to a day.
+- Hours, minutes, and seconds if the duration is less than a day but at least an hour.
+- Minutes and seconds if the duration is less than an hour but at least a minute.
+- Seconds if the duration is less than a minute but at least one second.
+- “N/a” if the duration is None.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>duration</strong> – The duration in seconds to be formatted. If None, returns “N/a”.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The formatted duration string in the format “DD HH mm ss”, “HH mm ss”,
+“mm ss”, or “ss” as appropriate. Returns “N/a” if the duration is None.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tools.utils.Utils.update_progress">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">update_progress</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">total_count</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tracking_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/utils.html#Utils.update_progress"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.utils.Utils.update_progress" title="Link to this definition"></a></dt>
+<dd><p>Update the ‘public.collections_status’ table with the provided total_count,
+current progress, and tracking_id.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>total_count</strong> – Total count to be updated.</p></li>
+<li><p><strong>current</strong> – Current progress to be updated.</p></li>
+<li><p><strong>tracking_id</strong> – ID of the record to update.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tools.utils.Utils.validate_data">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">validate_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">title</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shelf_price</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/utils.html#Utils.validate_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.utils.Utils.validate_data" title="Link to this definition"></a></dt>
+<dd><p>Validate product data attributes to ensure they are not empty or null.</p>
+<p>This function checks if the provided <cite>title</cite>, <cite>source_id</cite>, and <cite>shelf_price</cite>
+are not None or any of the following: “0”, “0.0”, “0.00”, “” (empty string).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>title</strong> – The product title.</p></li>
+<li><p><strong>source_id</strong> – The product ID or source identifier.</p></li>
+<li><p><strong>shelf_price</strong> – The product price as a string.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if all attributes are valid (not None or empty/invalid values),
+False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tools.utils.Utils.validate_images">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">validate_images</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">headers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retailer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">banner_url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">screenshot_url</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/utils.html#Utils.validate_images"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.utils.Utils.validate_images" title="Link to this definition"></a></dt>
+<dd><p>Check if the provided URLs for banner and screenshot images are valid.</p>
+<p>If DEBUG is True, returns True immediately assuming images won’t be uploaded.
+Otherwise, makes HTTP GET requests to verify each URL’s validity using <cite>Utils.make_request</cite>.
+Returns True if all URLs return a 200 status code, False otherwise.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>headers</strong> – Headers to be used in the HTTP requests.</p></li>
+<li><p><strong>retailer</strong> – Name of the retailer for debugging and logging purposes.</p></li>
+<li><p><strong>banner_url</strong> – URL of the banner image.</p></li>
+<li><p><strong>screenshot_url</strong> – URL of the screenshot image.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if all URLs are valid (return 200 status), False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tools.utils.Utils.validate_yaml">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">validate_yaml</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/utils.html#Utils.validate_yaml"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.utils.Utils.validate_yaml" title="Link to this definition"></a></dt>
+<dd><p>Validate all YAML files in the ‘config’ directory.</p>
+<p>This function iterates through all YAML files in the ‘config’ directory,
+attempts to load each file using yaml.safe_load(), and prints debug messages
+indicating whether each YAML file is valid or not.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tools.utils.Utils.zenrows">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">zenrows</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cookies</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retailer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">custom_validation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">headers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delay</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/utils.html#Utils.zenrows"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.utils.Utils.zenrows" title="Link to this definition"></a></dt>
+<dd><p>Attempts to send a GET request to a the ZenRows API with retries, handling errors and logging.</p>
+<p>This method attempts to send a GET request to the ZenRows APi with a maximum number of retries defined in
+<cite>constants.MAX_RETRIES</cite>. It handles various request exceptions such as <cite>ProxyError</cite>, <cite>Timeout</cite>, and `
+ConnectionError`,logging the errors and retrying after a delay. If a custom validation function is provided,
+it is applied to the response, and if it returns False, the response is not returned. If the request is
+successful (status code 200) and passes custom validation, it returns the response. If all retries fail
+or custom validation fails for all attempts, it logs the error to the database and a file, and returns None.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>url</strong> – The URL to send the GET request to.</p></li>
+<li><p><strong>params</strong> – Dictionary of ZenRows parameters to be sent with the request.</p></li>
+<li><p><strong>cookies</strong> – Dictionary of cookies to be sent with the request.</p></li>
+<li><p><strong>retailer</strong> – The name of the retailer associated with the request.</p></li>
+<li><p><strong>custom_validation</strong> – A custom validation function to validate the response (optional)</p></li>
+<li><p><strong>headers</strong> – Dictionary of headers to be sent with the request.</p></li>
+<li><p><strong>delay</strong> – Delay in seconds between retries.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The HTTP response if the request is successful and passes custom validation.
+None if all retries fail or custom validation fails for all attempts.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>requests.Response</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-tools.constants">
+<span id="tools-constants-module"></span><h2>tools.constants module<a class="headerlink" href="#module-tools.constants" title="Link to this heading"></a></h2>
+<dl class="py data">
+<dt class="sig sig-object py" id="tools.constants.BLUE">
+<span class="sig-prename descclassname"><span class="pre">tools.constants.</span></span><span class="sig-name descname"><span class="pre">BLUE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'\x1b[34m'</span></em><a class="headerlink" href="#tools.constants.BLUE" title="Link to this definition"></a></dt>
+<dd><p>Colour hex codes - Blue</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="tools.constants.CARREFOUR_QUERY">
+<span class="sig-prename descclassname"><span class="pre">tools.constants.</span></span><span class="sig-name descname"><span class="pre">CARREFOUR_QUERY</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'SELECT</span> <span class="pre">*</span> <span class="pre">FROM</span> <span class="pre">calculate_store_variance_cfr_fr()'</span></em><a class="headerlink" href="#tools.constants.CARREFOUR_QUERY" title="Link to this definition"></a></dt>
+<dd><p>Sql query to check for missing Carrefour FR stores by calling calculate_store_variance_cfr_fr function</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="tools.constants.COLLECTION_TYPE">
+<span class="sig-prename descclassname"><span class="pre">tools.constants.</span></span><span class="sig-name descname"><span class="pre">COLLECTION_TYPE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'Banners':</span> <span class="pre">'Banner</span> <span class="pre">Collection',</span> <span class="pre">'Core':</span> <span class="pre">'Price</span> <span class="pre">/</span> <span class="pre">Promo</span> <span class="pre">Collection'}</span></em><a class="headerlink" href="#tools.constants.COLLECTION_TYPE" title="Link to this definition"></a></dt>
+<dd><p>Collections type friendly names</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="tools.constants.GREEN">
+<span class="sig-prename descclassname"><span class="pre">tools.constants.</span></span><span class="sig-name descname"><span class="pre">GREEN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'\x1b[32m'</span></em><a class="headerlink" href="#tools.constants.GREEN" title="Link to this definition"></a></dt>
+<dd><p>Colour hex codes - Green</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="tools.constants.LECLERC_QUERY">
+<span class="sig-prename descclassname"><span class="pre">tools.constants.</span></span><span class="sig-name descname"><span class="pre">LECLERC_QUERY</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'SELECT</span> <span class="pre">*</span> <span class="pre">FROM</span> <span class="pre">calculate_store_variance_leclerc_fr()'</span></em><a class="headerlink" href="#tools.constants.LECLERC_QUERY" title="Link to this definition"></a></dt>
+<dd><p>Sql query to check for missing LeClerc stores by calling calculate_store_variance_leclerc_fr function</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="tools.constants.MAX_RETRIES">
+<span class="sig-prename descclassname"><span class="pre">tools.constants.</span></span><span class="sig-name descname"><span class="pre">MAX_RETRIES</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4</span></em><a class="headerlink" href="#tools.constants.MAX_RETRIES" title="Link to this definition"></a></dt>
+<dd><p>Maximum number of retries</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="tools.constants.PROXY_PORT_MAP">
+<span class="sig-prename descclassname"><span class="pre">tools.constants.</span></span><span class="sig-name descname"><span class="pre">PROXY_PORT_MAP</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'AU':</span> <span class="pre">30000,</span> <span class="pre">'BE':</span> <span class="pre">20001,</span> <span class="pre">'DE':</span> <span class="pre">20001,</span> <span class="pre">'EU':</span> <span class="pre">20001,</span> <span class="pre">'FR':</span> <span class="pre">40001,</span> <span class="pre">'IT':</span> <span class="pre">20001,</span> <span class="pre">'MX':</span> <span class="pre">20000,</span> <span class="pre">'PL':</span> <span class="pre">20001,</span> <span class="pre">'PT':</span> <span class="pre">20001,</span> <span class="pre">'SE':</span> <span class="pre">20001,</span> <span class="pre">'UK':</span> <span class="pre">30001,</span> <span class="pre">'US':</span> <span class="pre">20000}</span></em><a class="headerlink" href="#tools.constants.PROXY_PORT_MAP" title="Link to this definition"></a></dt>
+<dd><p>Proxy port mapping table</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="tools.constants.RED">
+<span class="sig-prename descclassname"><span class="pre">tools.constants.</span></span><span class="sig-name descname"><span class="pre">RED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'\x1b[31m'</span></em><a class="headerlink" href="#tools.constants.RED" title="Link to this definition"></a></dt>
+<dd><p>Colour hex codes - Red</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="tools.constants.REPORT_COUNT_QUERY">
+<span class="sig-prename descclassname"><span class="pre">tools.constants.</span></span><span class="sig-name descname"><span class="pre">REPORT_COUNT_QUERY</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'select</span> <span class="pre">*</span> <span class="pre">from</span> <span class="pre">calculate_retailer_status()'</span></em><a class="headerlink" href="#tools.constants.REPORT_COUNT_QUERY" title="Link to this definition"></a></dt>
+<dd><p>Daily report query to execute SQL function (calculate_retailer_status)</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="tools.constants.REPORT_COUNT_QUERY_US">
+<span class="sig-prename descclassname"><span class="pre">tools.constants.</span></span><span class="sig-name descname"><span class="pre">REPORT_COUNT_QUERY_US</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'select</span> <span class="pre">*</span> <span class="pre">from</span> <span class="pre">calculate_retailer_status_us()'</span></em><a class="headerlink" href="#tools.constants.REPORT_COUNT_QUERY_US" title="Link to this definition"></a></dt>
+<dd><p>Daily report query to execute SQL function (calculate_retailer_status) - US</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="tools.constants.RESET">
+<span class="sig-prename descclassname"><span class="pre">tools.constants.</span></span><span class="sig-name descname"><span class="pre">RESET</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'\x1b[0m'</span></em><a class="headerlink" href="#tools.constants.RESET" title="Link to this definition"></a></dt>
+<dd><p>Colour hex codes - Reset special formatting (such as colour)</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="tools.constants.YELLOW">
+<span class="sig-prename descclassname"><span class="pre">tools.constants.</span></span><span class="sig-name descname"><span class="pre">YELLOW</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'\x1b[33m'</span></em><a class="headerlink" href="#tools.constants.YELLOW" title="Link to this definition"></a></dt>
+<dd><p>Colour hex codes - Yellow</p>
+</dd></dl>
+
+</section>
+<section id="module-tools.create_collector">
+<span id="tools-create-collector-module"></span><h2>tools.create_collector module<a class="headerlink" href="#module-tools.create_collector" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="tools.create_collector.display_folder_structure">
+<span class="sig-prename descclassname"><span class="pre">tools.create_collector.</span></span><span class="sig-name descname"><span class="pre">display_folder_structure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">paths</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/create_collector.html#display_folder_structure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.create_collector.display_folder_structure" title="Link to this definition"></a></dt>
+<dd><p>Display the folder structure based on provided file paths.</p>
+<p>This function constructs a nested dictionary representing the folder structure
+and prints it with indentation to visualize the hierarchy. It uses ANSI escape
+codes to print folder names in green color.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>paths</strong> – List of file paths to construct the folder structure from.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tools.create_collector.generate_collectors_script">
+<span class="sig-prename descclassname"><span class="pre">tools.create_collector.</span></span><span class="sig-name descname"><span class="pre">generate_collectors_script</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">retailer_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">country_code</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/create_collector.html#generate_collectors_script"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.create_collector.generate_collectors_script" title="Link to this definition"></a></dt>
+<dd><p>Generate a Python scraper file based on the provided template</p>
+<p>This function will return a template format of the latest scraper logic</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>retailer_name</strong> – The retailer name for the new scraper</p></li>
+<li><p><strong>country_code</strong> – The country code for the new scraper</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Template response of the new scraper</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tools.create_collector.generate_sql_file">
+<span class="sig-prename descclassname"><span class="pre">tools.create_collector.</span></span><span class="sig-name descname"><span class="pre">generate_sql_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">retailer_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">country_code</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/create_collector.html#generate_sql_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.create_collector.generate_sql_file" title="Link to this definition"></a></dt>
+<dd><p>This function will generate a template response of the table structure
+for the new scraper by dynamically addnng the table name from the users
+input</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>retailer_name</strong> – The retailer name for the new scraper</p></li>
+<li><p><strong>country_code</strong> – The country code for the new scraper</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The template response for the SQL table structure and table name</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tools.create_collector.generate_yaml_config">
+<span class="sig-prename descclassname"><span class="pre">tools.create_collector.</span></span><span class="sig-name descname"><span class="pre">generate_yaml_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base_url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">country_code</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha_2_code</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collections_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retailer_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/create_collector.html#generate_yaml_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.create_collector.generate_yaml_config" title="Link to this definition"></a></dt>
+<dd><p>Generate a YAML configuration file based on provided parameters.</p>
+<p>This function generates a YAML configuration file for a retailer based on the provided parameters. It creates
+sections for default configuration, site-specific configuration, extra configuration, SQL queries, and URL
+taxonomy.</p>
+<ul class="simple">
+<li><p>Default Configuration:
+Contains default settings such as maximum retries and ingest/export delay.</p></li>
+<li><p>Site-specific Configuration:
+Includes parameters specific to the retailer, such as core name, base URL, table name, country code,
+alpha-2 code, collections type, proxy settings, number of workers, table schema, and ingest enablement.</p></li>
+<li><p>Extra Configuration:
+Allows for additional custom configuration settings specific to the retailer.</p></li>
+<li><p>SQL Queries:
+Currently empty, intended for storing SQL queries related to data operations.</p></li>
+<li><p>URL Taxonomy:
+Provides a list of URLs categorized by their purpose, with placeholders for actual URLs and categories.</p></li>
+</ul>
+<p>The generated YAML file will be saved in the ‘config’ directory with a filename based on the lowercase retailer
+name and country code (e.g., ‘example_retailer_us.yaml’).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>base_url</strong> – The base URL for the retailer’s website.</p></li>
+<li><p><strong>country_code</strong> – The ISO 3166-1 alpha-2 country code (e.g., ‘US’, ‘CA’).</p></li>
+<li><p><strong>alpha_2_code</strong> – The ISO 3166-1 alpha-2 code for the country</p></li>
+<li><p><strong>collections_type</strong> – Type of collector e.g. Core, Banners etc…</p></li>
+<li><p><strong>retailer_name</strong> – The name of the retailer.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>File name of the generated YAML configuration file.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tools.create_collector.main">
+<span class="sig-prename descclassname"><span class="pre">tools.create_collector.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tools/create_collector.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tools.create_collector.main" title="Link to this definition"></a></dt>
+<dd><p>Main function to generate scripts and configuration files for a retailer’s data collection and processing.</p>
+<p>Prompts the user for input to gather necessary information such as retailer name, website URL, country code,
+alpha-2 code, and type of collections. It then generates the following files:
+- A collectors script file in Python.
+- An SQL table file for data storage.
+- A YAML configuration file for data processing configuration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p>file_name: File path of the generated Python script.</p></li>
+<li><p>sql_file_name: File path of the generated SQL table definition file.</p></li>
+<li><p>collectors_config: Contents of the generated YAML configuration as a string.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Home" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Brand Nudge.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,7 +1,0 @@
-cmcmotorsports\_main module
-===========================
-
-.. automodule:: cmcmotorsports_main
-   :members:
-   :undoc-members:
-   :show-inheritance:

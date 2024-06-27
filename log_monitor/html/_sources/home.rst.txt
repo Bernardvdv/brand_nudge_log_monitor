@@ -1,0 +1,81 @@
+Home
+====
+.. image:: https://readthedocs.org/projects/example-sphinx-basic/badge/?version=latest
+    :target: https://eu-north-1.console.aws.amazon.com/codesuite/codecommit/repositories/data-collect-python/browse/refs/heads/develop/--/banners?region=eu-north-1
+    :alt: Documentation Status
+
+Welcome to the documentation for Brand Nudge Data Collect tools and helpers, a comprehensive collection of utilities designed to simplify and enhance the process of web scraping with Python. Whether you're a beginner or an experienced scraper, our tools aim to streamline your workflow and help you efficiently extract data from websites.
+
+.. note::
+
+   This project is under active development.
+
+Key Features
+------------
+#. Robust HTML Parsing: Easily navigate and parse complex HTML structures with our intuitive helpers.
+#. HTTP Requests: Simplified methods for making HTTP requests, handling sessions, and managing headers and cookies.
+#. Data Extraction: Tools for extracting data from web pages using CSS selectors, XPath, and regular expressions.
+#. Rate Limiting: Built-in support for rate limiting to avoid overloading servers and to comply with website policies.
+#. Proxy Management: Seamlessly integrate proxy support to bypass IP blocking and access geo-restricted content.
+#. Data Storage: Utilities for storing scraped data in various formats such as CSV, JSON, and databases.
+#. Error Handling: Comprehensive error handling to manage and debug issues during scraping.
+#. Extensibility: Easily extend and customize tools to fit your specific scraping needs.
+
+Repository Overview
+-------------------
+⚙️ `data-collect-python/ <https://eu-north-1.console.aws.amazon.com/codesuite/codecommit/repositories/data-collect-python/browse/refs/heads/develop/--/?region=eu-north-1>`_
+    Main repository folder.
+⚙️ `data-collect-python/banner_screenshots`
+    Folder to store banner screenshots temporarily. Does not exist in repo and automatically created.
+⚙️ `data-collect-python/banners <https://eu-north-1.console.aws.amazon.com/codesuite/codecommit/repositories/data-collect-python/browse/refs/heads/develop/--/banner_screenshots?region=eu-north-1>`_
+    Folder which contains banner collection files.
+⚙️ `data-collect-python/config <https://eu-north-1.console.aws.amazon.com/codesuite/codecommit/repositories/data-collect-python/browse/refs/heads/develop/--/config?region=eu-north-1>`_
+    Folder which contains all the collection configuration files in YAML format.
+⚙️ `data-collect-python/core <https://eu-north-1.console.aws.amazon.com/codesuite/codecommit/repositories/data-collect-python/browse/refs/heads/core/--/config?region=eu-north-1>`_
+    Folder which contains all the price and promo collection files in Python format.
+⚙️ `data-collect-python/docs <https://eu-north-1.console.aws.amazon.com/codesuite/codecommit/repositories/data-collect-python/browse/refs/heads/docs/--/config?region=eu-north-1>`_
+    A basic Sphinx project lives in ``docs/``. All the ``*.rst`` make up sections in the documentation.
+⚙️ `data-collect-python/reviews <https://eu-north-1.console.aws.amazon.com/codesuite/codecommit/repositories/data-collect-python/browse/refs/heads/reviews/--/config?region=eu-north-1>`_
+    Folder which contains all the ranking and reviews collection files in Python format.
+⚙️ `data-collect-python/sql <https://eu-north-1.console.aws.amazon.com/codesuite/codecommit/repositories/data-collect-python/browse/refs/heads/sql/--/config?region=eu-north-1>`_
+    Folder which contains all the table structures, stored procedures and functions in SQL format.
+⚙️ `data-collect-python/tests <https://eu-north-1.console.aws.amazon.com/codesuite/codecommit/repositories/data-collect-python/browse/refs/heads/tests/--/config?region=eu-north-1>`_
+    Folder which contains all the unit tests.
+⚙️ `data-collect-python/tools <https://eu-north-1.console.aws.amazon.com/codesuite/codecommit/repositories/data-collect-python/browse/refs/heads/tools/--/config?region=eu-north-1>`_
+    Folder which contains all the tools, classes and helpers used all over.
+⚙️ `data-collect-python/CHANGELOG.rst <https://eu-north-1.console.aws.amazon.com/codesuite/codecommit/repositories/data-collect-python/browse/refs/heads/CHANGELOG.RST--/config?region=eu-north-1>`_
+    Version control changelog. Not in use at the moment.
+⚙️ `data-collect-python/README.md <https://eu-north-1.console.aws.amazon.com/codesuite/codecommit/repositories/data-collect-python/browse/refs/heads//README.md--/config?region=eu-north-1>`_
+    Project documentation.
+⚙️ `data-collect-python/requirements.txt <https://eu-north-1.console.aws.amazon.com/codesuite/codecommit/repositories/data-collect-python/browse/refs/heads//requirements.txt--/config?region=eu-north-1>`_
+    Python dependencies are pinned to specific versions. Make sure to add your Python dependencies.
+
+Example Project Usage
+---------------------
+
+This project has a standard AWS EC2 layout which is built by the Data Collect team and can be build locally on your own laptop.
+
+You can build and view this documentation project locally - we recommend that you activate `a local Python virtual environment first <https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/#creating-a-virtual-environment>`_:
+
+.. code-block:: console
+
+    # Install required Python dependencies
+    pip install -r requirements.txt
+
+    # Enter the core directory
+    cd core/
+
+    # Run a collection
+    python supervalu.main.py
+
+Update The Docs
+---------------------
+Run below command to update the current documentation
+
+.. code-block:: console
+
+    # Enter the docs directory
+    cd core/
+
+    # Generate the new html documentation
+    make html

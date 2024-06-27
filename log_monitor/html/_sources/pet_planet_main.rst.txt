@@ -1,7 +1,0 @@
-pet\_planet\_main module
-========================
-
-.. automodule:: pet_planet_main
-   :members:
-   :undoc-members:
-   :show-inheritance:

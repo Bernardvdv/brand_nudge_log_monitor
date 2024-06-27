@@ -1,7 +1,0 @@
-wilko\_main module
-==================
-
-.. automodule:: wilko_main
-   :members:
-   :undoc-members:
-   :show-inheritance:

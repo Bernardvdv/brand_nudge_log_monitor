@@ -1,0 +1,38 @@
+Tools package
+=============
+
+tools.helpers module
+----------------------
+
+.. automodule:: tools.helpers
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+tools.utils module
+----------------------
+
+.. automodule:: tools.utils
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+tools.constants module
+----------------------
+
+.. automodule:: tools.constants
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+tools.create_collector module
+-----------------------------
+
+.. automodule:: tools.create_collector
+   :members:
+   :undoc-members:
+   :show-inheritance:
+.. automodule - tools.helpers: This directive generates documentation for the tools.helpers module.
+.. members -  This option includes all the module's members (functions, classes, etc.) in the documentation.
+.. undoc-members - This option includes members that do not have docstrings.
+.. show-inheritance = This option shows the inheritance hierarchy for classes.
