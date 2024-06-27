@@ -10,3 +10,5 @@ uwsgi==2.0.19.1
 psycopg2
 
 django-docs==0.3.1
+
+openai

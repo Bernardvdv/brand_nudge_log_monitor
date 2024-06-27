@@ -23,4 +23,44 @@
     <script src="/static/log_monitor/assets/demo/chart-bar-demo.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" crossorigin="anonymous"></script>
     <script src="/static/log_monitor/js/datatables-simple-demo.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+<script>
+        $(document).ready(function() {
+            $("#test").click(function(e) {
+              e.preventDefault();
+               $('#detail').html('')
+              var product = $("#product").val().trim();
+              var check = $('#deep:checked').val();
+              if (product === '' || product.length < 5) {
+                alert("You need to provide a product title longer than 5 characters")
+                return false;
+              }
+              var general = $('#gen:checked').val();
+              $.ajax({
+                type: "POST",
+                url: "/openai_classification/",
+                headers: {'X-CSRFToken': '{{ csrf_token }}'},
+                data: {
+                        'data': product,
+                        'deep': check,
+                        'general': general
+                       },
+                 beforeSend: function() {
+                      $("#loading-image").show();
+                   },
+                success: function(result) {
+                  console.log(result)
+                  $("#loading-image").hide();
+                  $('#detail').html(JSON.stringify(result, undefined, 2));
+                },
+                error: function(result) {
+                    $("#loading-image").hide();
+                  alert('Something went wrong!');
+                }
+              });
+
+
+            });
+        })
+    </script>
 </html>

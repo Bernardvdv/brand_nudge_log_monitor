@@ -1,3 +1,7 @@
+import json
+import re
+
+import openai
 from django.contrib.auth import authenticate, login
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
@@ -328,3 +332,107 @@ class ExceptionPageView(TemplateView):
 
         context['exception_logs'] = exception_logs
         return context
+
+
+class ClassificationPageView(TemplateView):
+    template_name = 'log_monitor/classification.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect('login')
+
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
+
+    def openai_classification(request):
+        print(request.POST, flush=True)
+        product = request.POST["data"]
+        if "deep" in request.POST:
+            deep = request.POST["deep"]
+        else:
+            deep = None
+
+        if "general" in request.POST:
+            general = request.POST["general"]
+        else:
+            general = None
+
+        openai.api_key = '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'
+        # request_message = f"As a json dictionary, give me the product taxonomy for a " \
+        #                   f"{product}. Can you also provide the keywords " \
+        #                   f"I can use to find this product on a website"
+
+        request_message = f"As html ordered items, give me the product taxonomy for a " \
+                          f"{product}. Can you also provide the keywords " \
+                          f"I can use to find this product on a website"
+
+        if general:
+            request_message = product
+
+        if deep:
+            response = openai.Completion.create(
+                model="text-davinci-003",
+                prompt=request_message,
+                temperature=0.2,
+                max_tokens=150,
+                top_p=1,
+                frequency_penalty=0,
+                presence_penalty=0.6,
+                stop=[" Human:", " AI:"]
+            )
+            string_to_clean = response["choices"][0]["text"]
+            string_to_clean = re.sub("'", '"', string_to_clean)
+            string_to_clean = re.sub(r"\s*{\s*", '{', string_to_clean)
+            string_to_clean = re.sub(r"\s*}\s*", '}', string_to_clean)
+            string_to_clean = re.sub(r"\s*\[\s*", '[', string_to_clean)
+            string_to_clean = re.sub(r"\s*\]\s*", ']', string_to_clean)
+            string_to_clean = re.sub(r"\s*:\s*", ':', string_to_clean)
+            string_to_clean = string_to_clean.replace('\n', "")
+
+            try:
+                dictionary = json.loads(string_to_clean.replace("\\", "").replace("\n", ""))
+
+                # Extract the message dictionary from the main dictionary
+                message = json.loads(dictionary['message'])
+            except:
+                message = string_to_clean.replace('\n', "")
+
+            data = {'message': message}
+            return JsonResponse(data)
+        else:
+            response = openai.ChatCompletion.create(
+                model="gpt-3.5-turbo",
+                temperature=0.2,
+                messages=[
+                    {"role": "system", "content": request_message},
+                ]
+            )
+            string_to_clean = response["choices"][0]["message"]["content"]
+            print(dir(string_to_clean), flush=True)
+
+            string_to_clean = re.sub("'", '"', string_to_clean)
+            string_to_clean = re.sub(r"\s*{\s*", '{', string_to_clean)
+            string_to_clean = re.sub(r"\s*}\s*", '}', string_to_clean)
+            string_to_clean = re.sub(r"\s*\[\s*", '[', string_to_clean)
+            string_to_clean = re.sub(r"\s*\]\s*", ']', string_to_clean)
+            string_to_clean = re.sub(r"\s*:\s*", ':', string_to_clean)
+            #
+            # try:
+            #     string_to_clean = json.loads(string_to_clean)
+            # except:
+            #     pass
+            try:
+                print(string_to_clean, flush=True)
+                dictionary = json.loads(string_to_clean.replace("\\", ""))
+                print(dictionary)
+                # Extract the message dictionary from the main dictionary
+                message = json.loads(dictionary)
+                print(message, flush=True)
+            except:
+                message = string_to_clean.replace('\n', "")
+
+            data = {'message': message}
+            return JsonResponse(data)
